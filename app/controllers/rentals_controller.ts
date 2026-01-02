@@ -4,7 +4,9 @@ export default class RentalsController {
   /**
    * Display a list of resource
    */
-  async index({}: HttpContext) {}
+  async index({ view }: HttpContext) {
+    return view.render('rentals/view', { pageTitle: 'Laenutus' })
+  }
 
   /**
    * Display form to create a new record
