@@ -58,5 +58,13 @@ public async index({ view }: HttpContext) {
   /**
    * Delete record
    */
-  async destroy({ params }: HttpContext) {}
+  async destroy({ params, response }: HttpContext) {
+    const rental = await Laenutus
+      .query()
+      .where('Slug', params.Slug)
+      .firstOrFail();
+
+    await rental.delete();
+    return response.redirect().toRoute('rentals.index');
+  }
 }

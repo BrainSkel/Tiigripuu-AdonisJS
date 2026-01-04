@@ -3,7 +3,6 @@
 <body>
     @include('partials/navigation')
 
-    <a href="{{route('rentals.index')}}">Back</a>
     <br />
 
     @each(rental in rentals)
@@ -14,6 +13,10 @@
 
     <div>
         <a href="{{route('rentals.edit', { Slug: rental.Slug })}}">Edit</a>
+        <form action="{{route('rentals.destroy', { Slug: rental.Slug })}}?_method=DELETE" method="POST" style="display:inline">
+            {{ csrfField() }}
+            <button type="submit">Delete</button>
+        </form>
     </div>
     <br />
     @endeach

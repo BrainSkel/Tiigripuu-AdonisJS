@@ -2,6 +2,7 @@
 <body>
 @include('partials/navigation')
 
+    <a href="{{route('rentals.index')}}">Back</a>
 <h1>Edit Rental: <h3>{{ rentals.Item_name }}</h3></h1>
 <form method="POST" action="{{route('rentals.update', { Slug: rentals.Slug })}}?_method=PATCH">
     {{ csrfField() }}
