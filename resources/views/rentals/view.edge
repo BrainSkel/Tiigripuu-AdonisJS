@@ -1,12 +1,21 @@
 @include('partials/head')
+
 <body>
     @include('partials/navigation')
 
+    <a href="{{route('rentals.index')}}">Back</a>
+    <br />
 
     @each(rental in rentals)
-        <img src="{{rental.Image_url}}" class="card-img-top" alt="{{rental.Item_name}}">
-          <h5 class="card-title">{{rental.Item_name}}</h5>
-          <p class="card-text">{{rental.Description}}</p>
+    <img src="{{rental.Image_url}}" class="card-img-top" alt="{{rental.Item_name}}">
+    <h5 class="card-title">{{rental.Item_name}}</h5>
+    <p class="card-text">Price: {{rental.Price}}</p>
+    <p class="card-text">Desc: {{rental.Description}}</p>
+
+    <div>
+        <a href="{{route('rentals.edit', { Slug: rental.Slug })}}">Edit</a>
+    </div>
+    <br />
     @endeach
 
 
