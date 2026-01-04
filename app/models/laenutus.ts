@@ -1,5 +1,6 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column } from '@adonisjs/lucid/orm'
+import string from '@adonisjs/core/helpers/string'
+import { BaseModel, column, beforeCreate } from '@adonisjs/lucid/orm'
 
 export default class Laenutus extends BaseModel {
   @column({ isPrimary: true }) 
@@ -25,4 +26,13 @@ export default class Laenutus extends BaseModel {
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime
+
+
+  @beforeCreate()
+  public static async generateSlug(laenutus: Laenutus) {
+
+    const base = await (laenutus.Item_name ?? 'laenutus')
+    const slugBase = string.slug(base)
+    laenutus.Slug = `${slugBase}-${Date.now()}`
+  }
 }
