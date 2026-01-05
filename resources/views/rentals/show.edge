@@ -1,0 +1,9 @@
+@include('partials/head')
+<body>
+@include('partials/navigation')
+
+<h1>{{ rental.Item_name }}</h1>
+<p>Price: {{ rental.Price }}</p>
+<p>Description: {{ rental.Description }}</p>
+<img src="{{ rental.Image_url }}" alt="{{ rental.Item_name }}">
+</body>

@@ -10,6 +10,14 @@ public async index({ view }: HttpContext) {
   const rentals = await Laenutus.all()            // plain objects
   return view.render('rentals/view', { pageTitle: 'Laenutus', rentals })
 }
+  /**
+   * Show individual record
+   */
+  async show({ params, view }: HttpContext) {
+    console.log(params);
+    const rental = await Laenutus.findBy('Slug', params.Slug)
+    return view.render('rentals/show', { pageTitle: 'Show', rental })
+  }
 
 
   /**
@@ -30,10 +38,6 @@ public async index({ view }: HttpContext) {
     return response.redirect().toRoute('rentals.index');
   }
 
-  /**
-   * Show individual record
-   */
-  async show({ params }: HttpContext) {}
 
   /**
    * Edit individual record

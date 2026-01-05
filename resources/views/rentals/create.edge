@@ -19,7 +19,7 @@
     </div>
     <div>
         <label for="Image_url">Image URL:</label>
-        <input type="text" id="Image_url" name="Image_url">
+        <input type="file" id="Image_url" name="Image_url" required>
 
         @if(flashMessages.has('inputErrorsBag.Image_url'))
             <div class="error">
