@@ -6,7 +6,7 @@
     <br />
 
     @each(rental in rentals)
-    <img src="{{rental.Image_url}}" class="card-img-top" alt="{{rental.Item_name}}">
+    <img src="storage/uploads/{{rental.Image_url}}" class="card-img-top" alt="{{rental.Item_name}}">
     <h5 class="card-title"><a href="{{route('rentals.show', { Slug: rental.Slug })}}">{{rental.Item_name}}</a></h5>
     <p class="card-text">Price: {{rental.Price}}</p>
     <p class="card-text">Desc: {{rental.Description}}</p>

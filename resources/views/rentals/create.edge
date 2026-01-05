@@ -3,7 +3,7 @@
 @include('partials/navigation')
 
 <h1>Create a New Rental</h1>
-<form method="POST" action="{{route('rentals.store')}}">
+<form method="POST" action="{{route('rentals.store')}}" enctype="multipart/form-data">
     {{ csrfField() }}
     <div>
         <label for="Item_name">Item Name:</label>

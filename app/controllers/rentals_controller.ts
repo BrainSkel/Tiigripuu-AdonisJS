@@ -1,15 +1,18 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import { createLaenutusSchema } from '#validators/create_laenutus_schema'
 import Laenutus from '#models/laenutus'
+import app from '@adonisjs/core/services/app'
+import { cuid } from '@adonisjs/core/helpers'
+import drive from '@adonisjs/drive/services/main'
 
 export default class RentalsController {
   /**
    * Display a list of resource
    */
-public async index({ view }: HttpContext) {
-  const rentals = await Laenutus.all()            // plain objects
-  return view.render('rentals/view', { pageTitle: 'Laenutus', rentals })
-}
+  public async index({ view }: HttpContext) {
+    const rentals = await Laenutus.all()            // plain objects
+    return view.render('rentals/view', { pageTitle: 'Laenutus', rentals })
+  }
   /**
    * Show individual record
    */
@@ -23,18 +26,35 @@ public async index({ view }: HttpContext) {
   /**
    * Display form to create a new record
    */
-  async create({view}: HttpContext) {
-    return view.render('rentals/create', { pageTitle: 'Uus laenutus'})
+  async create({ view }: HttpContext) {
+    return view.render('rentals/create', { pageTitle: 'Uus laenutus' })
   }
 
   /**
    * Handle form submission for the create action
    */
   async store({ request, response }: HttpContext) {
-    const payload = await request.validateUsing(createLaenutusSchema)
-    await Laenutus.create(payload);
+    const image = request.file('Image_url', {
+      size: '10mb',
+      extnames: ['jpg', 'png', 'jpeg'],
+    })
 
-    console.log(payload);
+    let imageName = ''
+    if (image) {
+      imageName = `${cuid()}.${image.extname}`
+      const key = `uploads/${imageName}`
+      await image.moveToDisk(key)
+    } else {
+      imageName = 'default.jpg'
+    }
+
+
+    const payload = await request.validateUsing(createLaenutusSchema)
+    const data = { ...payload, Image_url: imageName }
+    await Laenutus.create(data);
+
+
+    console.log(data);
     return response.redirect().toRoute('rentals.index');
   }
 
@@ -44,7 +64,7 @@ public async index({ view }: HttpContext) {
    */
   async edit({ view, params }: HttpContext) {
     const rentals = await Laenutus.findBy('Slug', params.Slug)
-    
+
     return view.render('rentals/edit', { pageTitle: 'Edit', rentals })
   }
 
