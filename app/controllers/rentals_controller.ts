@@ -47,8 +47,6 @@ export default class RentalsController {
     } else {
       imageName = 'default.jpg'
     }
-
-
     const payload = await request.validateUsing(createLaenutusSchema)
     const data = { ...payload, Image_url: imageName }
     await Laenutus.create(data);
@@ -75,7 +73,23 @@ export default class RentalsController {
   //uncomment after implementing
   async update({ params, request, response }: HttpContext) {
     const payload = await request.validateUsing(createLaenutusSchema)
-    await Laenutus.query().where('Slug', params.Slug).update(payload);
+const image = request.file('Image_url', {
+      size: '10mb',
+      extnames: ['jpg', 'png', 'jpeg'],
+    })
+
+    let imageName = ''
+    if (image) {
+      imageName = `${cuid()}.${image.extname}`
+      const key = `uploads/${imageName}`
+      await image.moveToDisk(key)
+    } else {
+      imageName = 'default.jpg'
+    }
+    const data = { ...payload, Image_url: imageName }
+
+    await Laenutus.query().where('Slug', params.Slug).update(data);
+
     return response.redirect().toRoute('rentals.index');
   }
 

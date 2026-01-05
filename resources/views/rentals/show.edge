@@ -1,9 +1,24 @@
 @include('partials/head')
-<body>
-@include('partials/navigation')
 
-<h1>{{ rental.Item_name }}</h1>
-<p>Price: {{ rental.Price }}</p>
-<p>Description: {{ rental.Description }}</p>
-<img src="{{ rental.Image_url }}" alt="{{ rental.Item_name }}">
+<body>
+    @include('partials/navigation')
+    <div class="album py-5 bg-body-tertiary">
+        <div class="container">
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+                <div class="col">
+                        <img src="/storage/uploads/{{rental.Image_url}}" class="card-img-top" alt="{{rental.Item_name}}">
+                        <div class="card-body">
+                            <h3><a href="{{route('rentals.show', { Slug: rental.Slug })}}">{{rental.Item_name}}</a></h3>
+                            <p class="card-text">{{rental.Description}}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
 </body>
