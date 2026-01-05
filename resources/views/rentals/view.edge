@@ -2,24 +2,34 @@
 
 <body>
     @include('partials/navigation')
+    <div class="album py-5 bg-body-tertiary">
+        <div class="container">
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
 
-    <br />
+                @each(rental in rentals)
+                <div class="col">
+                    <div class="card shadow-sm">
+                        <img src="storage/uploads/{{rental.Image_url}}" class="card-img-top" alt="{{rental.Item_name}}">
+                        <div class="card-body">
+                            <p class="card-text">{{rental.Description}}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                                    <form action="{{route('rentals.destroy', { Slug: rental.Slug })}}?_method=DELETE" method="POST" style="display:inline" class="btn-group">
+                                        {{ csrfField() }}
+                                        <button type="submit" class="btn btn-sm btn-outline-secondary">Delete</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @endeach
 
-    @each(rental in rentals)
-    <img src="storage/uploads/{{rental.Image_url}}" class="card-img-top" alt="{{rental.Item_name}}">
-    <h5 class="card-title"><a href="{{route('rentals.show', { Slug: rental.Slug })}}">{{rental.Item_name}}</a></h5>
-    <p class="card-text">Price: {{rental.Price}}</p>
-    <p class="card-text">Desc: {{rental.Description}}</p>
-
-    <div>
-        <a href="{{route('rentals.edit', { Slug: rental.Slug })}}">Edit</a>
-        <form action="{{route('rentals.destroy', { Slug: rental.Slug })}}?_method=DELETE" method="POST" style="display:inline">
-            {{ csrfField() }}
-            <button type="submit">Delete</button>
-        </form>
+            </div>
+        </div>
     </div>
-    <br />
-    @endeach
 
 
 </body>
