@@ -34,23 +34,12 @@ export default class RentalsController {
    * Handle form submission for the create action
    */
   async store({ request, response }: HttpContext) {
-    const image = request.file('Image_url', {
-      size: '10mb',
-      extnames: ['jpg', 'png', 'jpeg'],
-    })
-
-    let imageName = ''
-    if (image) {
-      imageName = `${cuid()}.${image.extname}`
-      const key = `uploads/${imageName}`
-      await image.moveToDisk(key)
-    } else {
-      imageName = 'default.jpg'
-    }
     const payload = await request.validateUsing(createLaenutusSchema)
+
+    const imageName = await this.uploadImageToDrive(request);
+
     const data = { ...payload, Image_url: imageName }
     await Laenutus.create(data);
-
 
     console.log(data);
     return response.redirect().toRoute('rentals.index');
@@ -73,19 +62,7 @@ export default class RentalsController {
   //uncomment after implementing
   async update({ params, request, response }: HttpContext) {
     const payload = await request.validateUsing(createLaenutusSchema)
-const image = request.file('Image_url', {
-      size: '10mb',
-      extnames: ['jpg', 'png', 'jpeg'],
-    })
-
-    let imageName = ''
-    if (image) {
-      imageName = `${cuid()}.${image.extname}`
-      const key = `uploads/${imageName}`
-      await image.moveToDisk(key)
-    } else {
-      imageName = 'default.jpg'
-    }
+    const imageName = await this.uploadImageToDrive(request); // Upload image to drive
     const data = { ...payload, Image_url: imageName }
 
     await Laenutus.query().where('Slug', params.Slug).update(data);
@@ -104,5 +81,23 @@ const image = request.file('Image_url', {
 
     await rental.delete();
     return response.redirect().toRoute('rentals.index');
+  }
+
+  async uploadImageToDrive(request: any) {
+    const image = request.file('Image_url', {
+      size: '10mb',
+      extnames: ['jpg', 'png', 'jpeg'],
+    })
+    let imageName = ''
+    if (image) {
+      imageName = `${cuid()}.${image.extname}`
+      const key = `uploads/${imageName}`
+      await image.moveToDisk(key)
+    } else {
+      imageName = 'default.jpg'
+    }
+
+    return imageName;
+
   }
 }
