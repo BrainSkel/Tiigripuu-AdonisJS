@@ -1,10 +1,14 @@
 import type { HttpContext } from '@adonisjs/core/http'
+import Handicraft from '#models/handicraft'
 
 export default class HandicraftsController {
   /**
    * Display a list of resource
    */
-  async index({}: HttpContext) {}
+  async index({ view }: HttpContext) {
+    const handicrafts = await Handicraft.all()            // plain objects
+    return view.render('handicrafts/view', { handicrafts, pageTitle: 'Kasitöö' })
+  }
 
   /**
    * Display form to create a new record

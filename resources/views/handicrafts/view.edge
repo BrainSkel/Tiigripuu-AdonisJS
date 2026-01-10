@@ -1,0 +1,35 @@
+@include('partials/head')
+
+<body>
+    @include('partials/navigation')
+    <div class="album py-5 bg-body-tertiary">
+        <div class="container">
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+
+                @each(handicraft in handicrafts)
+                <div class="col">
+                    <div class="card shadow-sm">
+                        <img src="/storage/uploads/{{handicraft.Image_url}}" class="card-img-top" alt="{{handicraft.Item_name}}">
+                        <div class="card-body">
+                            <h3><a href="{{route('handicrafts.show', { Slug: handicraft.Slug })}}">{{handicraft.Item_name}}</a></h3>
+                            <p class="card-text">{{handicrafts.Description}}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="btn-group">
+                                    <a type="button" class="btn btn-sm btn-outline-secondary" href="{{route('handicrafts.edit', { Slug: handicraft.Slug })}}">Edit</a>
+                                    <form action="{{route('handicrafts.destroy', { Slug: handicraft.Slug })}}?_method=DELETE" method="POST" style="display:inline" class="btn-group">
+                                        {{ csrfField() }}
+                                        <button type="submit" class="btn btn-sm btn-outline-secondary">Delete</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @endeach
+
+            </div>
+        </div>
+    </div>
+
+
+</body>
