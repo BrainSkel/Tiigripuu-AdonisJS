@@ -12,7 +12,7 @@
                         <img src="/storage/uploads/{{handicraft.Image_url}}" class="card-img-top" alt="{{handicraft.Item_name}}">
                         <div class="card-body">
                             <h3><a href="{{route('handicrafts.show', { Slug: handicraft.Slug })}}">{{handicraft.Item_name}}</a></h3>
-                            <p class="card-text">{{handicrafts.Description}}</p>
+                            <p class="card-text">{{handicraft.Description}}</p>
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="btn-group">
                                     <a type="button" class="btn btn-sm btn-outline-secondary" href="{{route('handicrafts.edit', { Slug: handicraft.Slug })}}">Edit</a>
