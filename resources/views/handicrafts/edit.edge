@@ -1,0 +1,72 @@
+@include('partials/head')
+
+<body>
+    @include('partials/navigation')
+
+    <a href="{{route('handicrafts.index')}}">Back</a>
+    <h1>Edit Handicraft: <h3>{{ handicrafts.Item_name }}</h3>
+    </h1>
+
+    <form method="POST" action="{{route('handicrafts.update', { Slug: handicrafts.Slug })}}?_method=PATCH" enctype="multipart/form-data">
+        {{ csrfField() }}
+        <div>
+            <label for="Category">Category:</label>
+            <select id="Category" name="Category" required>
+                <option value="Wooden" {{ handicrafts.Category == "Wooden" ? "selected" : "" }}>Wooden</option>
+                <option value="Ceramic" {{ handicrafts.Category == "Ceramic" ? "selected" : "" }}>Ceramic</option>
+                <option value="Textile" {{ handicrafts.Category == "Textile" ? "selected" : "" }}>Textile</option>
+            </select>
+        </div>
+        <div>
+            <label for="Item_name">Item Name:</label>
+            <input type="text" id="Item_name" name="Item_name" value="{{ handicrafts.Item_name }}" required>
+            @if(flashMessages.has('inputErrorsBag.Item_name'))
+            <div class="error">
+                @each(error in flashMessages.get('inputErrorsBag.Item_name'))
+                <p>{{error}}</p>
+                @endeach
+            </div>
+            @end
+        </div>
+
+        <div>
+            <label for="Image_url">Image URL:</label>
+            <img src="/storage/uploads/{{ handicrafts.Image_url }}" alt="{{ handicrafts.Item_name }}" width="150">
+            <input type="file" id="Image_url" name="Image_url" value="/storage/uploads/{{ handicrafts.Image_url }}">
+            @if(flashMessages.has('inputErrorsBag.Image_url'))
+            <div class="error">
+                @each(error in flashMessages.get('inputErrorsBag.Image_url'))
+                <p>{{error}}</p>
+                @endeach
+            </div>
+            @end
+        </div>
+
+        <div>
+            <label for="Price">Price:</label>
+            <input type="number" id="Price" name="Price" value="{{ handicrafts.Price}}" required>
+
+            @if(flashMessages.has('inputErrorsBag.Price'))
+            <div class="error">
+                @each(error in flashMessages.get('inputErrorsBag.Price'))
+                <p>{{error}}</p>
+                @endeach
+            </div>
+            @end
+        </div>
+        <div>
+            <label for="Description">Description:</label>
+            <textarea id="Description" name="Description" required>{{ handicrafts.Description }}</textarea>
+
+            @if(flashMessages.has('inputErrorsBag.Description'))
+            <div class="error">
+                @each(error in flashMessages.get('inputErrorsBag.Description'))
+                <p>{{error}}</p>
+                @endeach
+            </div>
+            @end
+
+        </div>
+        <button type="submit">Confirm edit</button>
+
+</body>

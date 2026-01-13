@@ -40,13 +40,25 @@ export default class HandicraftsController {
   /**
    * Edit individual record
    */
-  async edit({ params }: HttpContext) {}
+  async edit({ params, view  }: HttpContext) {
+    const handicrafts = await Handicraft.findBy('Slug', params.Slug)
+
+    return view.render('handicrafts/edit', { pageTitle: 'Edit', handicrafts })
+  }
 
   /**
    * Handle form submission for the edit action
    */
   
-  //async update({ params, request }: HttpContext) {}
+  async update({ params, request, response }: HttpContext) {
+        const payload = await request.validateUsing(createKasitooSchema)
+        const imageName = await this.uploadImageToDrive(request); // Upload image to drive
+        const data = { ...payload, Image_url: imageName }
+
+        await Handicraft.query().where('Slug', params.Slug).update(data);
+
+        return response.redirect().toRoute('handicrafts.index');
+  }
 
   /**
    * Delete record
