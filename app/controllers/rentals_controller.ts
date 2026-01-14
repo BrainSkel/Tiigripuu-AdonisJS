@@ -19,7 +19,7 @@ export default class RentalsController {
   async show({ params, view }: HttpContext) {
     console.log(params);
     const rental = await Laenutus.findBy('Slug', params.Slug)
-    return view.render('rentals/show', { pageTitle: 'Show', rental })
+    return view.render('rentals/show', { pageTitle: rental?.Item_name, rental })
   }
 
 

@@ -1,0 +1,24 @@
+@include('partials/head')
+
+<body>
+    @include('partials/navigation')
+    <div class="album py-5 bg-body-tertiary">
+        <div class="container">
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+                <div class="col">
+                        <img src="/storage/uploads/{{handicraft.Image_url}}" class="card-img-top" alt="{{handicraft.Item_name}}">
+                        <div class="card-body">
+                            <h3><a href="{{route('rentals.show', { Slug: handicraft.Slug })}}">{{handicraft.Item_name}}</a></h3>
+                            <p class="card-text">{{handicraft.Description}}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+</body>

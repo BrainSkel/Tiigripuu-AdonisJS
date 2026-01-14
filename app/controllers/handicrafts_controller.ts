@@ -1,4 +1,4 @@
-import type { HttpContext } from '@adonisjs/core/http'
+import { Redirect, type HttpContext } from '@adonisjs/core/http'
 import Handicraft from '#models/handicraft'
 import { createKasitooSchema } from '#validators/create_kasitoo_schema'
 import { cuid } from '@adonisjs/core/helpers'
@@ -35,7 +35,10 @@ export default class HandicraftsController {
   /**
    * Show individual record
    */
-  async show({ params }: HttpContext) {}
+  async show({ params, view }: HttpContext) {
+    const handicraft = await Handicraft.findBy('Slug', params.Slug)
+    return view.render('handicrafts/show', { handicraft, pageTitle: handicraft?.Item_name })
+  }
 
   /**
    * Edit individual record
@@ -63,7 +66,11 @@ export default class HandicraftsController {
   /**
    * Delete record
    */
-  async destroy({ params }: HttpContext) {}
+  async destroy({ params,response }: HttpContext) {
+    const handiCraft = await Handicraft.findBy('Slug', params.Slug)
+    await handiCraft?.delete()
+    return response.redirect().toRoute('handicrafts.index')
+  }
 
 
 
