@@ -62,7 +62,10 @@ export default class RentalsController {
   //uncomment after implementing
   async update({ params, request, response }: HttpContext) {
     const payload = await request.validateUsing(createLaenutusSchema)
-    const imageName = await this.uploadImageToDrive(request); // Upload image to drive
+    let imageName = request.input('Image_url'); // Default to existing image name
+    if (request.file('Image_url') !== null) {
+      imageName = await this.uploadImageToDrive(request); // Upload image to drive
+    }
     const data = { ...payload, Image_url: imageName }
 
     await Laenutus.query().where('Slug', params.Slug).update(data);
