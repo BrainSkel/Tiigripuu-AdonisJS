@@ -8,41 +8,56 @@
     <div class="row align-items-start">
         <!-- Rentals List -->
         <div class="d-flex flex-column flex-md-row p-4 gap-4 py-md-5 align-items-center justify-content-center col">
-            
             <div class="list-group">
                 <div class="p-2">
-                <h2>Rentals</h2>
-                <a href="{{route('rentals.create')}}">Create new rental</a>
-            </div>
-            @each(rental in rentals)
-                <div class="d-flex">
-                    <a href="{{route('rentals.show', { Slug: rental.Slug })}}"
-                        class="list-group-item list-group-item-action d-flex gap-3 py-3 border border-left-0"
-                        aria-current="true">
-                        <img src="/storage/uploads/{{rental.Image_url}}" alt="" width="32" height="32"
-                            class="rounded-circle flex-shrink-0">
-                        <div class="d-flex gap-2 w-100 justify-content-between">
-                            <div>
-                                <h6 class="mb-0">{{rental.Item_name}}</h6>
-                                <p class="mb-0 opacity-75">{{rental.Description}}</p>
-                            </div> <small class="opacity-50 text-nowrap">Hind: {{rental.Price}}€</small>
+                    <h2>Rentals</h2>
+                    <a href="{{route('rentals.create')}}">Create new rental</a>
+                </div>
+                @each(rental in rentals)
+                <div>
+                    <div class="d-flex">
+                        <a href="{{route('rentals.show', { Slug: rental.Slug })}}"
+                            class="list-group-item list-group-item-action d-flex gap-3 py-3 border border-left-0"
+                            aria-current="true">
+                            <img src="/storage/uploads/{{rental.Image_url}}" alt="" width="32" height="32"
+                                class="rounded-circle flex-shrink-0">
+                            <div class="d-flex gap-2 w-100 justify-content-between">
+                                <div>
+                                    <h6 class="mb-0">{{rental.Item_name}}</h6>
+                                    <p class="mb-0 opacity-75">{{rental.Description}}</p>
+                                </div> <small class="opacity-50 text-nowrap">Hind: {{rental.Price}}€</small>
+                            </div>
+                        </a>
+                        <div class="card-header shadow-sm object-fit-fill border border-left-0">
+                            <div class="btn-group flex-column">
+                                <a type="button" class="btn btn-sm btn-outline-secondary"
+                                    href="{{route('rentals.edit', { Slug: rental.Slug })}}">Edit</a>
+                                <form action="{{route('rentals.destroy', { Slug: rental.Slug })}}?_method=DELETE"
+                                    method="POST" style="display:inline" class="btn-group">
+                                    {{ csrfField() }}
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                                </form>
+                            </div>
                         </div>
-                    </a>
-                    <div class="card-header shadow-sm object-fit-fill border border-left-0">
-                        <div class="btn-group flex-column">
-                            <a type="button" class="btn btn-sm btn-outline-secondary"
-                                href="{{route('rentals.edit', { Slug: rental.Slug })}}">Edit</a>
-                            <form action="{{route('rentals.destroy', { Slug: rental.Slug })}}?_method=DELETE"
-                                method="POST" style="display:inline" class="btn-group">
-                                {{ csrfField() }}
-                                <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
-                            </form>
+                    </div>
+                    <div class="w-auto h-auto">
+                        <p class="d-inline-flex w-100 justify-content-end">
+                            <a class="btn btn-secondary w-100" data-bs-toggle="collapse"
+                                href="#collapse{{rental.Slug}}" role="button" aria-expanded="false"
+                                aria-controls="collapse{{rental.Slug}}">V</a>
+                        </p>
+                        <div class="collapse gap-0" id="collapse{{rental.Slug}}">
+                            <div class="card card-body">
+                                <p>Additinoal info:</p>
+                                <p>id: {{rental.id}}</p>
+                                <p>slug: {{rental.Slug}}</p>
+                                <p>image: {{rental.Image_url}}</p>
+                            </div>
                         </div>
                     </div>
                 </div>
                 @endeach
             </div>
-
         </div>
 
 
