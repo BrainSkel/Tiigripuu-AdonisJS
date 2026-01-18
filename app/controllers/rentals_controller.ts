@@ -1,9 +1,7 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import { createLaenutusSchema } from '#validators/create_laenutus_schema'
 import Laenutus from '#models/laenutus'
-import app from '@adonisjs/core/services/app'
 import { cuid } from '@adonisjs/core/helpers'
-import drive from '@adonisjs/drive/services/main'
 
 export default class RentalsController {
   /**
@@ -42,7 +40,7 @@ export default class RentalsController {
     await Laenutus.create(data);
 
     console.log(data);
-    return response.redirect().toRoute('rentals.index');
+    return response.redirect().toRoute('admin.dashboard');
   }
 
 

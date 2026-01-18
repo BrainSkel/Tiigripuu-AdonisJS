@@ -29,7 +29,7 @@ export default class HandicraftsController {
 
     const data = { ...payload, Image_url: imageName }
     await Handicraft.create(data);
-    return response.redirect().toRoute('handicrafts.index')
+    return response.redirect().toRoute('admin.dashboard');
   }
 
   /**
