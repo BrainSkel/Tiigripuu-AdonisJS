@@ -9,14 +9,14 @@
                 @each(handicraft in handicrafts)
                 <div class="col">
                     <div class="card shadow-sm">
-                        <img src="/storage/uploads/{{handicraft.Image_url}}" class="card-img-top" alt="{{handicraft.Item_name}}">
+                        <img src="/storage/uploads/{{handicraft.imageUrl}}" class="card-img-top" alt="{{handicraft.itemName}}">
                         <div class="card-body">
-                            <h3><a href="{{route('handicrafts.show', { Slug: handicraft.Slug })}}">{{handicraft.Item_name}}</a></h3>
-                            <p class="card-text">{{handicraft.Description}}</p>
+                            <h3><a href="{{route('handicrafts.show', { slug: handicraft.slug })}}">{{handicraft.itemName}}</a></h3>
+                            <p class="card-text">{{handicraft.description}}</p>
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="btn-group">
-                                    <a type="button" class="btn btn-sm btn-outline-secondary" href="{{route('handicrafts.edit', { Slug: handicraft.Slug })}}">Edit</a>
-                                    <form action="{{route('handicrafts.destroy', { Slug: handicraft.Slug })}}?_method=DELETE" method="POST" style="display:inline" class="btn-group">
+                                    <a type="button" class="btn btn-sm btn-outline-secondary" href="{{route('handicrafts.edit', { slug: handicraft.slug })}}">Edit</a>
+                                    <form action="{{route('handicrafts.destroy', { slug: handicraft.slug })}}?_method=DELETE" method="POST" style="display:inline" class="btn-group">
                                         {{ csrfField() }}
                                         <button type="submit" class="btn btn-sm btn-outline-secondary">Delete</button>
                                     </form>

@@ -9,14 +9,14 @@
                 @each(rental in rentals)
                 <div class="col">
                     <div class="card shadow-sm">
-                        <img src="/storage/uploads/{{rental.Image_url}}" class="card-img-top" alt="{{rental.Item_name}}">
+                        <img src="/storage/uploads/{{rental.imageUrl}}" class="card-img-top" alt="{{rental.itemName}}">
                         <div class="card-body">
-                            <h3><a href="{{route('rentals.show', { Slug: rental.Slug })}}">{{rental.Item_name}}</a></h3>
-                            <p class="card-text">{{rental.Description}}</p>
+                            <h3><a href="{{route('rentals.show', { slug: rental.slug })}}">{{rental.itemName}}</a></h3>
+                            <p class="card-text">{{rental.description}}</p>
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="btn-group">
-                                    <a type="button" class="btn btn-sm btn-outline-secondary" href="{{route('rentals.edit', { Slug: rental.Slug })}}">Edit</a>
-                                    <form action="{{route('rentals.destroy', { Slug: rental.Slug })}}?_method=DELETE" method="POST" style="display:inline" class="btn-group">
+                                    <a type="button" class="btn btn-sm btn-outline-secondary" href="{{route('rentals.edit', { slug: rental.slug })}}">Edit</a>
+                                    <form action="{{route('rentals.destroy', { slug: rental.slug })}}?_method=DELETE" method="POST" style="display:inline" class="btn-group">
                                         {{ csrfField() }}
                                         <button type="submit" class="btn btn-sm btn-outline-secondary">Delete</button>
                                     </form>

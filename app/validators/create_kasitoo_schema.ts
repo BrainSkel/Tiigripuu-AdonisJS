@@ -1,9 +1,10 @@
+import category from '#models/category';
 import vine from '@vinejs/vine'
 
 export const createKasitooSchema = vine.compile(vine.object({
-    Item_name: vine.string().minLength(3).maxLength(255),
-    //Image_url: vine.string().optional(),
-    Price: vine.number().min(0),
-    Description: vine.string().minLength(10).maxLength(1000),
-    Category: vine.string().minLength(3).maxLength(255),
+    item_name: vine.string().minLength(3).maxLength(255),
+    //image_url: vine.string().optional(),
+    price: vine.number().min(0),
+    description: vine.string().minLength(10).maxLength(1000),
+    category: vine.array(vine.number()).optional(),
 }));

@@ -1,17 +1,17 @@
 import { DateTime } from 'luxon'
 import string from '@adonisjs/core/helpers/string'
 import { BaseModel, column, beforeCreate, manyToMany } from '@adonisjs/lucid/orm'
-import Category from '#models/category'
+import Category from './category.js'
 import type { ManyToMany } from '@adonisjs/lucid/types/relations'
 
-export default class Handicraft extends BaseModel {
-  @column({ isPrimary: true })
+export default class Rental extends BaseModel {
+  @column({ isPrimary: true }) 
   declare id: number
 
-  @column({})
+  @column()
   declare slug: string
 
-  @manyToMany(() => Category, { pivotTable: 'handicraft_categories', pivotColumns: ['categorizableType'] })
+  @manyToMany(() => Category, { pivotTable: 'rental_categories', pivotColumns: ['categorizableType'] })
   declare categories: ManyToMany<typeof Category>
 
   @column()
@@ -34,10 +34,10 @@ export default class Handicraft extends BaseModel {
 
 
   @beforeCreate()
-  public static async generateslug(handicraft: Handicraft) {
+  public static async generateslug(laenutus: Rental) {
 
-    const base = await (handicraft.itemName ?? 'handicraft')
+    const base = await (laenutus.itemName ?? 'rental')
     const slugBase = string.slug(base)
-    handicraft.slug = `${slugBase}-${Date.now()}`
+    laenutus.slug = `${slugBase}-${Date.now()}`
   }
 }

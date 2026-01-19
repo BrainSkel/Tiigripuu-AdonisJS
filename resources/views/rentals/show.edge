@@ -6,10 +6,10 @@
         <div class="container">
             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
                 <div class="col">
-                        <img src="/storage/uploads/{{rental.Image_url}}" class="card-img-top" alt="{{rental.Item_name}}">
+                        <img src="/storage/uploads/{{rental.imageUrl}}" class="card-img-top" alt="{{rental.itemName}}">
                         <div class="card-body">
-                            <h3><a href="{{route('rentals.show', { Slug: rental.Slug })}}">{{rental.Item_name}}</a></h3>
-                            <p class="card-text">{{rental.Description}}</p>
+                            <h3><a href="{{route('rentals.show', { slug: rental.slug })}}">{{rental.itemName}}</a></h3>
+                            <p class="card-text">{{rental.description}}</p>
                             <div class="d-flex justify-content-between align-items-center">
 
                         </div>

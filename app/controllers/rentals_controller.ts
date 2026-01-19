@@ -1,6 +1,6 @@
 import type { HttpContext } from '@adonisjs/core/http'
-import { createLaenutusSchema } from '#validators/create_laenutus_schema'
-import Laenutus from '#models/laenutus'
+import { createRentalSchema } from '#validators/create_laenutus_schema'
+import Rental from '#models/rental'
 import { cuid } from '@adonisjs/core/helpers'
 
 export default class RentalsController {
@@ -8,16 +8,16 @@ export default class RentalsController {
    * Display a list of resource
    */
   public async index({ view }: HttpContext) {
-    const rentals = await Laenutus.all()            // plain objects
-    return view.render('rentals/view', { pageTitle: 'Laenutus', rentals })
+    const rentals = await Rental.all()            // plain objects
+    return view.render('rentals/view', { pageTitle: 'Rental', rentals })
   }
   /**
    * Show individual record
    */
   async show({ params, view }: HttpContext) {
     console.log(params);
-    const rental = await Laenutus.findBy('Slug', params.Slug)
-    return view.render('rentals/show', { pageTitle: rental?.Item_name, rental })
+    const rental = await Rental.findBy('slug', params.slug)
+    return view.render('rentals/show', { pageTitle: rental?.itemName, rental })
   }
 
 
@@ -32,12 +32,12 @@ export default class RentalsController {
    * Handle form submission for the create action
    */
   async store({ request, response }: HttpContext) {
-    const payload = await request.validateUsing(createLaenutusSchema)
+    const payload = await request.validateUsing(createRentalSchema)
 
     const imageName = await this.uploadImageToDrive(request);
 
-    const data = { ...payload, Image_url: imageName }
-    await Laenutus.create(data);
+    const data = { ...payload, image_url: imageName }
+    await Rental.create(data);
 
     console.log(data);
     return response.redirect().toRoute('admin.dashboard');
@@ -48,7 +48,7 @@ export default class RentalsController {
    * Edit individual record
    */
   async edit({ view, params }: HttpContext) {
-    const rentals = await Laenutus.findBy('Slug', params.Slug)
+    const rentals = await Rental.findBy('slug', params.slug)
 
     return view.render('rentals/edit', { pageTitle: 'Edit', rentals })
   }
@@ -59,14 +59,14 @@ export default class RentalsController {
 
   //uncomment after implementing
   async update({ params, request, response }: HttpContext) {
-    const payload = await request.validateUsing(createLaenutusSchema)
-    let imageName = request.input('Image_url'); // Default to existing image name
-    if (request.file('Image_url') !== null) {
+    const payload = await request.validateUsing(createRentalSchema)
+    let imageName = request.input('imageUrl'); // Default to existing image name
+    if (request.file('imageUrl') !== null) {
       imageName = await this.uploadImageToDrive(request); // Upload image to drive
     }
-    const data = { ...payload, Image_url: imageName }
+    const data = { ...payload, image_url: imageName }
 
-    await Laenutus.query().where('Slug', params.Slug).update(data);
+    await Rental.query().where('slug', params.slug).update(data);
 
     return response.redirect().toRoute('rentals.index');
   }
@@ -75,9 +75,9 @@ export default class RentalsController {
    * Delete record
    */
   async destroy({ params, response }: HttpContext) {
-    const rental = await Laenutus
+    const rental = await Rental
       .query()
-      .where('Slug', params.Slug)
+      .where('slug', params.slug)
       .firstOrFail();
 
     await rental.delete();
@@ -85,7 +85,7 @@ export default class RentalsController {
   }
 
   async uploadImageToDrive(request: any) {
-    const image = request.file('Image_url', {
+    const image = request.file('image_url', {
       size: '10mb',
       extnames: ['jpg', 'png', 'jpeg'],
     })

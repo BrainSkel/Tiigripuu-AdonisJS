@@ -17,10 +17,8 @@ export default class extends BaseSchema {
       table.string('customer_name').notNullable()
       table.string('customer_email').notNullable()
 
-
-
       table.index(['product_id', 'product_type'])
-      
+
       table.timestamp('created_at')
       table.timestamp('updated_at')
     })
