@@ -1,4 +1,3 @@
-import category from '#models/category';
 import vine from '@vinejs/vine'
 
 export const createKasitooSchema = vine.compile(vine.object({

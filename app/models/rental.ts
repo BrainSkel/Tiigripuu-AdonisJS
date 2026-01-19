@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon'
 import string from '@adonisjs/core/helpers/string'
 import { BaseModel, column, beforeCreate, manyToMany } from '@adonisjs/lucid/orm'
-import Category from './category.js'
+import Category from '#models/category'
 import type { ManyToMany } from '@adonisjs/lucid/types/relations'
 
 export default class Rental extends BaseModel {
@@ -11,7 +11,10 @@ export default class Rental extends BaseModel {
   @column()
   declare slug: string
 
-  @manyToMany(() => Category, { pivotTable: 'rental_categories', pivotColumns: ['categorizableType'] })
+  @manyToMany(() => Category, { 
+    pivotTable: 'rental_categories', 
+    pivotColumns: ['rental_id'] 
+  })
   declare categories: ManyToMany<typeof Category>
 
   @column()

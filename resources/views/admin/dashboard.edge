@@ -20,12 +20,12 @@
 
                         <button type="submit" class="btn btn-secondary">Add Category</button>
                     </form>
+
                     <div class="d-flex">
                         @each(category in rentalCategories)
                         <span class="badge bg-secondary me-1">{{category.name}}</span>
                         @endeach
                     </div>
-
                 </div>
                 @each(rental in rentals)
                 <div>
@@ -64,7 +64,11 @@
                             <div class="card card-body">
                                 <p>Db info:</p>
                                 <ul>
-                                    <li>Category: {{rental.categories}}</li>
+                                    <li>Categories:
+                                        @each(category in rental.categories)
+                                        <p class="badge rounded-pill bg-secondary me-1">{{category.name}}</p>
+                                        @endeach
+                                    </li>
                                     <li>Id: {{rental.id}}</li>
                                     <li>slug: {{rental.slug}}</li>
                                     <li>itemName: {{rental.itemName}}</li>
@@ -140,10 +144,12 @@
                             <div class="card card-body">
                                 <p>Db info:</p>
                                 <ul>
-                                    {{handicraft.categories}}
-                                    @each(category in handicraft.categories)
-                                    <li>Category: {{category.name}}</li>
-                                    @endeach
+                                    <li class="d-flex gap-2">
+                                        <div>Categories:</div>
+                                        @each(category in handicraft.categories)
+                                        <p class="badge rounded-pill bg-secondary me-1">{{category.name}}</p>
+                                        @endeach
+                                    </li>
                                     <li>Id: {{handicraft.id}}</li>
                                     <li>slug: {{handicraft.slug}}</li>
                                     <li>itemName: {{handicraft.itemName}}</li>

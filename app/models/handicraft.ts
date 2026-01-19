@@ -11,7 +11,10 @@ export default class Handicraft extends BaseModel {
   @column({})
   declare slug: string
 
-  @manyToMany(() => Category, { pivotTable: 'handicraft_categories', pivotColumns: ['categorizableType'] })
+  @manyToMany(() => Category, { 
+    pivotTable: 'handicraft_categories', 
+    pivotColumns: ['handicraft_id'], 
+  })
   declare categories: ManyToMany<typeof Category>
 
   @column()
