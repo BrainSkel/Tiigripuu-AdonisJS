@@ -15,7 +15,8 @@
 
                     <form method="POST" action="{{route('categories.store')}}" class="mt-3 d-flex gap-2">
                         <input type="hidden" name="product_type" value="rental">
-                        <input type="text" name="name" placeholder="New Category Name" required>
+                        <input type="text" name="name" placeholder="New Category Name" value="{{ old('name') || '' }}"
+                            required>
                         {{ csrfField() }}
 
                         <button type="submit" class="btn btn-secondary">Add Category</button>
@@ -94,7 +95,7 @@
                     <a href="{{route('handicrafts.create')}}" class="btn btn-primary">Create new handicraft</a>
                     <form method="POST" action="{{route('categories.store')}}" class="mt-3 d-flex gap-2">
                         <input type="hidden" name="product_type" value="handicraft">
-                        <input type="text" name="name" placeholder="New Category Name" required>
+                        <input type="text" name="name" placeholder="New Category Name" value="{{ old('name') || '' }}"required>
                         {{ csrfField() }}
 
                         <button type="submit" class="btn btn-secondary">Add Category</button>
