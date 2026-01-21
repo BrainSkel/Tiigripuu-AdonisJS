@@ -13,7 +13,7 @@ export default class Category extends BaseModel {
   declare name: string
 
   @column()
-  declare product_type: 'handicraft' | 'laenutus'
+  declare product_type: 'handicraft' | 'rental'
 
 
   @column.dateTime({ autoCreate: true })
