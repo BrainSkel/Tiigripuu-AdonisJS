@@ -9,4 +9,10 @@ export default class CategoriesController {
         await Category.create({name: data.name, product_type: data.product_type})
         return response.redirect().back()
     }
+
+    async destroy({ params, response }: HttpContext) {
+        const category = await Category.findBy('slug', params.slug)
+        await category?.delete()
+        return response.redirect().back()
+    }
 }

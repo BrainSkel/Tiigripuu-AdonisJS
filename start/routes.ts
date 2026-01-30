@@ -26,3 +26,4 @@ router.resource('handicrafts', HandicraftsController).params({
 router.get('/admin/orders', [AdminController, 'orders']).as('admin.orders');
 router.get('/admin/dashboard', [AdminController, 'dashboard']).as('admin.dashboard');
 router.post('/admin/categories', [CategoriesController, 'store']).as('categories.store');
+router.delete('/admin/destroy/:slug', [CategoriesController, 'destroy']).as('categories.destroy');

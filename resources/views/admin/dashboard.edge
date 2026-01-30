@@ -22,18 +22,31 @@
             </form>
 
             <div class="d-flex flex-column">
-                Rentals:
+                <h3>Rentals:</h3>
                 <ul class="list-group overflow-auto" style="max-height: 220px;">
                     @each(category in rentalCategories)
-                    <li class="list-group-item">{{category.name}}</li>
+                    <li class="list-group-item">{{category.name}}
+                        <form action="{{route('categories.destroy', { slug: category.slug })}}?_method=DELETE"
+                            method="POST" style="display:inline" class="btn-group">
+                            {{ csrfField() }}
+                            <button type="submit" class="btn btn-sm btn-outline-secondary">Delete</button>
+                        </form>
+                    </li>
                     @endeach
                 </ul>
             </div>
+
             <div class="d-flex flex-column">
-                Handicrafts:
+                <h3>Handicrafts:</h3>
                 <ul class="list-group overflow-auto" style="max-height: 220px;">
                     @each(category in handicraftCategories)
-                    <li class="list-group-item">{{category.name}}</li>
+                    <li class="list-group-item">{{category.name}}
+                        <form action="{{route('categories.destroy', { slug: category.slug })}}?_method=DELETE" method="POST" style="display:inline" class="btn-group">
+                            {{ csrfField() }}
+                            <button type="submit" class="btn btn-sm btn-outline-secondary">Delete</button>
+                        </form>
+                    </li>
+
                     @endeach
                 </ul>
 

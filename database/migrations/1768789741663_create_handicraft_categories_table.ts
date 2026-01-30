@@ -7,8 +7,8 @@ export default class extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
 
-      table.integer('handicraft_id').unsigned().references('handicrafts.id')
-      table.integer('category_id').unsigned().references('categories.id')
+      table.integer('handicraft_id').unsigned().references('handicrafts.id').onDelete('CASCADE')
+      table.integer('category_id').unsigned().references('categories.id').onDelete('CASCADE')
 
       table.unique(['handicraft_id', 'category_id'])
 
