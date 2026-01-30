@@ -1,6 +1,5 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import Category from '#models/category'
-import session from '#config/session'
 import { createCategorySchema } from '#validators/create_category_schema'
 
 export default class CategoriesController {
