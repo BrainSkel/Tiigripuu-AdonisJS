@@ -9,7 +9,9 @@
 import AdminController from '#controllers/admin_controller';
 import CategoriesController from '#controllers/categories_controller';
 import HandicraftsController from '#controllers/handicrafts_controller';
+import OrdersController from '#controllers/orders_controller';
 import RentalsController from '#controllers/rentals_controller';
+import Order from '#models/order';
 import router from '@adonisjs/core/services/router'
 
 
@@ -22,6 +24,8 @@ router.resource('rentals', RentalsController).params({
 router.resource('handicrafts', HandicraftsController).params({
     handicrafts: 'slug',
 })
+router.get('/orders/:type/:slug/create', [OrdersController, 'create']).as('orders.create')
+router.post('/orders', [OrdersController, 'store']).as('orders.store')
 
 router.get('/admin/orders', [AdminController, 'orders']).as('admin.orders');
 router.get('/admin/dashboard', [AdminController, 'dashboard']).as('admin.dashboard');

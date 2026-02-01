@@ -1,0 +1,50 @@
+@include('partials/head')
+
+<body>
+
+    <h1>Create Order</h1>
+    <div>
+        <div class="d-flex">
+            <img src="/storage/uploads/{{order.imageUrl}}" alt="" width="32" height="32"
+                class="rounded-circle flex-shrink-0">
+            <div class="d-flex gap-2 w-100 justify-content-between">
+                <div>
+                    <h6 class="mb-0">{{order.itemName}}</h6>
+                    <p class="mb-0 opacity-75">{{order.description}}</p>
+                </div>
+                <small class="opacity-50 text-nowrap">Hind: {{order.price}}€</small>
+            </div>
+        </div>
+        <div class="w-auto h-auto">
+            </p>
+            <ul>
+                <li class="d-flex gap-2">
+                    <div>Categories:</div>
+                    @each(category in order.categories)
+                    <p class="badge rounded-pill bg-secondary me-1">{{category.name}}
+                    </p>
+                    @endeach
+                </li>
+                <li>Id: {{order.id}}</li>
+                <li>slug: {{order.slug}}</li>
+                <li>itemName: {{order.itemName}}</li>
+                <li>imageUrl: {{order.imageUrl}}</li>
+                <li>price: {{order.price}}</li>
+                <li>description: {{order.description}}</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- FORM -->
+
+<form method="POST" action="{{route('orders.store')}}">
+    {{ csrfField() }}
+    <input type="hidden" name="productType" id="productType" value="{{productType}}">
+    <input type="hidden" name="productSlug" id="productSlug" value="{{order.slug}}">
+
+    <label for="First_name">Eesnimi</label>
+    <input type="text" name="First_name">
+</form>
+
+
+</body>
