@@ -14,7 +14,10 @@ export default class extends BaseSchema {
 
       table.enu('status', ['pending', 'confirmed', 'completed', 'cancelled']).notNullable()
 
-      table.string('customer_name').notNullable()
+      table.date('order_completion_date').nullable()
+
+      table.string('customer_first_name').notNullable()
+      table.string('customer_last_name').notNullable()
       table.string('customer_email').notNullable()
 
       table.index(['product_id', 'product_type'])
