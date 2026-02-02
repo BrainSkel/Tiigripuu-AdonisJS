@@ -10,15 +10,16 @@ export default class extends BaseSchema {
       table.string('order_number').notNullable().unique()
 
       table.integer('product_id').unsigned().nullable()
-      table.enu('product_type', ['laenutus', 'handiwork', 'custom_handiwork']).notNullable()
+      table.enu('product_type', ['rental', 'handiwork', 'custom_handiwork']).notNullable()
 
-      table.enu('status', ['pending', 'confirmed', 'completed', 'cancelled']).notNullable()
+      table.enu('status', ['pending', 'confirmed', 'completed', 'cancelled']).notNullable().defaultTo('pending')
 
       table.date('order_completion_date').nullable()
 
       table.string('customer_first_name').notNullable()
       table.string('customer_last_name').notNullable()
       table.string('customer_email').notNullable()
+      table.string('customer_comment').nullable()
 
       table.index(['product_id', 'product_type'])
 
