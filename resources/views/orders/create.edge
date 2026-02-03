@@ -39,33 +39,71 @@
     <div class="mx-auto p-2" style="width:75%">
         <form method="POST" action="{{route('orders.store')}}" class="form-floating">
             {{ csrfField() }}
-            <input type="hidden" name="productType" id="productType" value="{{productType}}">
-            <input type="hidden" name="productSlug" id="productSlug" value="{{order.slug}}">
+            <input type="hidden" name="product_type" id="productType" value="{{productType}}">
+            <input type="hidden">
+            <input type="hidden" name="product_slug" id="productSlug" value="{{order.slug}}">
+            <input type="hidden" name="status" id="status" value="pending">
             <div class="input-group">
                 <div class="form-floating mb-3">
-                    @if(flashMessages.has(inputErrorsBag.FirstName))
-                    <input type="email" class="form-control is-invalid" id="email" placeholder="name@example.com" value="test@example.com">
-                    <label for="email">Invalid input</label>
+                    @if(!flashMessages.has('inputErrorsBag.customer_first_name'))
+                    <input type="text" aria-label="First name" id="customer_first_name" name="customer_first_name"
+                        class="form-control invalid" placeholder="Eesnimi">
+                    <label for="customer_first_name">Eesnimi</label>
                     @end
-                    <input type="text" aria-label="First name" id="First_name" class="form-control"
-                        placeholder="Eesnimi">
-                    <label for="First_name">Eesnimi</label>
-                </div>
-                <div class="form-floating mb-3">
-                    <input type="text" aria-label="Last name" id="Last_name" class="form-control"
-                        placeholder="Perekonna nimi">
-                    <label for="Last_name">Perekonna nimi</label>
-                </div>
-            </div>
-            <div class="form-floating mb-3">
-                <input type="email" class="form-control" id="email" placeholder="name@example.com">
-                <label for="email">Email</label>
-            </div>
-            <div class="form-floating mb-3">
 
+                    @if(flashMessages.has('inputErrorsBag.customer_first_name'))
+                    <input type="text" aria-label="First name" id="customer_first_name" name="customer_first_name"
+                        class="form-control is-invalid" placeholder="Eesnimi">
+                    <label for="customer_first_name">Invalid</label>
+                    @each(error in flashMessages.get('inputErrorsBag.customer_first_name'))
+                    <p>{{error}}</p>
+                    @endeach
+                    @end
+                </div>
+
+                <div class="form-floating mb-3">
+                    @if(!flashMessages.has('inputErrorsBag.customer_last_name'))
+                    <input type="text" aria-label="Last name" id="customer_last_name" name="customer_last_name"
+                        class="form-control invalid" placeholder="Perekonna nimi">
+                    <label for="customer_last_name">Perekonna nimi</label>
+                    @end
+
+                    @if(flashMessages.has('inputErrorsBag.customer_last_name'))
+                    <input type="text" aria-label="Last name" id="customer_last_name" name="customer_last_name"
+                        class="form-control is-invalid" placeholder="Perekonna nimi">
+                    <label for="customer_last_name">Invalid</label>
+                    @each(error in flashMessages.get('inputErrorsBag.customer_last_name'))
+                    <p>{{error}}</p>
+                    @endeach
+                    @end
+                </div>
             </div>
+            <div class="form-floating mb-3">
+                @if(flashMessages.has('inputErrorsBag.customer_email'))
+                <input type="email" class="form-control is-invalid" id="customer_email" name="customer_email"
+                    placeholder="name@example.com" value="test@example.com">
+                <label for="customer_email">Invalid input</label>
+                @each(error in flashMessages.get('inputErrorsBag.customer_email'))
+                <p>{{error}}</p>
+                @endeach
+                @end
+                @if(!flashMessages.has('inputErrorsBag.customer_email'))
+                <input type="email" class="form-control" id="customer_email" name="customer_email"
+                    placeholder="name@example.com">
+                <label for="customer_email">Email</label>
+                @end
+            </div>
+            <button type="submit">Place Order</button>
+            @if(flashMessages.has('inputErrorsBag'))
+                @each(error in flashMessages.get('inputErrorsBag'))
+                <p>{{error}}</p>
+                @endeach
+            @end
+
+
         </form>
     </div>
+
 
 
 

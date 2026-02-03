@@ -1,5 +1,6 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column } from '@adonisjs/lucid/orm'
+import { BaseModel, column, beforeCreate } from '@adonisjs/lucid/orm'
+import { randomBytes } from 'crypto'
 
 export default class Order extends BaseModel {
   @column({ isPrimary: true })
@@ -13,13 +14,16 @@ export default class Order extends BaseModel {
   declare productId: number | null
 
   @column()
-  declare productType: 'laenutus' | 'handiwork' | 'custom_handiwork'
+  declare productType: 'rental' | 'handiwork' | 'custom_handiwork'
 
   @column()
   declare status: 'pending' | 'confirmed' | 'completed' | 'cancelled'
 
   @column()
-  declare customerName: string
+  declare customerFirstName: string
+
+  @column()
+  declare customerLastName: string
 
   @column()
   declare customerEmail: string
@@ -30,4 +34,11 @@ export default class Order extends BaseModel {
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime
+
+  @beforeCreate()
+  public static async generateOrderNumber(order: Order) {
+    const random = randomBytes(4).toString().toUpperCase()
+
+    order.orderNumber = `${random}-${DateTime.now().toFormat('MM dd')}`
+  }
 }

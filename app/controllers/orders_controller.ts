@@ -2,6 +2,7 @@ import type { HttpContext } from '@adonisjs/core/http'
 import Rental from '#models/rental'
 import Handicraft from '#models/handicraft'
 import Order from '#models/order'
+import { createOrderSchema } from '#validators/create_order_schema';
 
 export default class OrdersController {
   /**
@@ -16,11 +17,11 @@ export default class OrdersController {
 
     const productType = params.type;
     let order = null;
-    if( productType == "Laenutus") {
+    if( productType == "rental") {
       order = await Rental.findBy('slug', params.slug)
-    } else if (productType == "Kasitoo") {
+    } else if (productType == "handiwork") {
       order = await Handicraft.findBy('slug', params.slug)
-    } else if (productType == "KasitooCustom") {
+    } else if (productType == "custom_handiwork") {
       console.log("No kasitooCustom created yet")
     }
 
@@ -30,7 +31,15 @@ export default class OrdersController {
   /**
    * Handle form submission for the create action
    */
-  async store({ request }: HttpContext) {}
+  async store({ request, response }: HttpContext) {
+    const payload = await request.validateUsing(createOrderSchema)
+
+    await Order.create(payload);
+    console.log(response)
+
+    response.redirect().toRoute('admin.dashboard')
+
+  }
 
   /**
    * Show individual record
@@ -51,5 +60,5 @@ export default class OrdersController {
   /**
    * Delete record
    */
-  async destroy({ params }: HttpContext) {}
+  //async destroy({ params }: HttpContext) {}
 }

@@ -6,11 +6,13 @@
         <div class="container">
             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
                 <div class="col">
-                        <img src="/storage/uploads/{{handicraft.imageUrl}}" class="card-img-top" alt="{{handicraft.itemName}}">
-                        <div class="card-body">
-                            <h3><a href="{{route('rentals.show', { slug : handicraft.slug })}}">{{handicraft.itemName}}</a></h3>
-                            <p class="card-text">{{handicraft.description}}</p>
-                            <div class="d-flex justify-content-between align-items-center">
+                    <img src="/storage/uploads/{{handicraft.imageUrl}}" class="card-img-top"
+                        alt="{{handicraft.itemName}}">
+                    <div class="card-body">
+                        <h3><a href="{{route('rentals.show', { slug : handicraft.slug })}}">{{handicraft.itemName}}</a>
+                        </h3>
+                        <p class="card-text">{{handicraft.description}}</p>
+                        <div class="d-flex justify-content-between align-items-center">
 
                         </div>
                     </div>
