@@ -10,6 +10,7 @@ export default class extends BaseSchema {
       table.string('order_number').notNullable().unique()
 
       table.integer('product_id').unsigned().nullable()
+      
       table.enu('product_type', ['rental', 'handiwork', 'custom_handiwork']).notNullable()
 
       table.enu('status', ['pending', 'confirmed', 'completed', 'cancelled']).notNullable().defaultTo('pending')

@@ -41,6 +41,6 @@ export default class Rental extends BaseModel {
 
     const base = await (laenutus.itemName ?? 'rental')
     const slugBase = string.slug(base)
-    laenutus.slug = `${slugBase}-${Date.now()}`
+    laenutus.slug = `R${slugBase}-${Date.now()}`
   }
 }

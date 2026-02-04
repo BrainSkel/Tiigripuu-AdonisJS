@@ -41,6 +41,6 @@ export default class Handicraft extends BaseModel {
 
     const base = await (handicraft.itemName ?? 'handicraft')
     const slugBase = string.slug(base)
-    handicraft.slug = `${slugBase}-${Date.now()}`
+    handicraft.slug = `H${slugBase}-${Date.now()}`
   }
 }

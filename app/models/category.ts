@@ -28,6 +28,6 @@ export default class Category extends BaseModel {
 
     const base = await (categories.name ?? 'category')
     const slugBase = string.slug(base)
-    categories.slug = `${slugBase}-${Date.now()}`
+    categories.slug = `CAT-${slugBase}-${Date.now()}`
   }
 }
