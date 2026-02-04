@@ -1,6 +1,7 @@
 import { DateTime } from 'luxon'
 import { BaseModel, column, beforeCreate } from '@adonisjs/lucid/orm'
 import { randomBytes } from 'crypto'
+import { nanoid } from 'nanoid'
 
 export default class Order extends BaseModel {
   @column({ isPrimary: true })
@@ -37,8 +38,11 @@ export default class Order extends BaseModel {
 
   @beforeCreate()
   public static async generateOrderNumber(order: Order) {
-    const random = randomBytes(4).toString().toUpperCase()
+    const random = nanoid(6).toUpperCase()
+    const orderType = await order.productType[0].toUpperCase()
 
-    order.orderNumber = `${random}-${DateTime.now().toFormat('MM dd')}`
+    const orderNumber = `${orderType}-${DateTime.now().toFormat('ddMM')}${random}`
+
+    order.orderNumber = orderNumber
   }
 }

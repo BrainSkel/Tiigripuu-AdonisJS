@@ -3,5 +3,10 @@
 <body>
     @include('partials/navigation')
     <h1>Orders Management</h1>
+    @each(order in orders)
+    <div>
+        <p>{{order.orderNumber}}</p>
+    </div>
+    @endeach
 
 </body>

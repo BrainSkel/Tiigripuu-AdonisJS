@@ -2,6 +2,7 @@
 import { HttpContext } from '@adonisjs/core/http'
 import Handicraft from '#models/handicraft'
 import Rental from '#models/rental'
+import Order from '#models/order'
 import Category from '#models/category'
 // import { createKasitooSchema } from '#validators/create_kasitoo_schema'
 // import { createRentalSchema } from '#validators/create_laenutus_schema'
@@ -12,7 +13,8 @@ export default class AdminController {
   public async orders({ view }: HttpContext) {
     const rentals = await Rental.all()
     const handicrafts = await Handicraft.all() // plain objects
-    return view.render('admin/orders', { pageTitle: 'Admin- Orders', rentals, handicrafts })
+    const orders = await Order.all()
+    return view.render('admin/orders', { pageTitle: 'Admin- Orders', rentals, handicrafts, orders  })
   }
 
 
