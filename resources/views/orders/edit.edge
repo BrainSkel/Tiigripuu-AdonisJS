@@ -2,7 +2,7 @@
 
 <body>
 
-    <h1>Create Order</h1>
+    <h1>Edit Order: {{order.orderNumber}}</h1>
     <div>
         <div class="d-flex">
             <img src="/storage/uploads/{{order.imageUrl}}" alt="" width="32" height="32"
@@ -25,12 +25,11 @@
                     </p>
                     @endeach
                 </li>
-                <li>Id: {{order.id}}</li>
-                <li>slug: {{order.slug}}</li>
-                <li>itemName: {{order.itemName}}</li>
-                <li>imageUrl: {{order.imageUrl}}</li>
-                <li>price: {{order.price}}</li>
-                <li>description: {{order.description}}</li>
+                <li>slug: {{product.slug}}</li>
+                <li>itemName: {{product.itemName}}</li>
+                <li>imageUrl: {{product.imageUrl}}</li>
+                <li>price: {{product.price}}</li>
+                <li>description: {{product.description}}</li>
             </ul>
         </div>
     </div>
@@ -41,7 +40,7 @@
             {{ csrfField() }}
             <input type="hidden" name="product_type" id="productType" value="{{productType}}">
             <input type="hidden">
-            <input type="hidden" name="product_id" id="productSlug" value="{{order.slug}}">
+            <input type="hidden" name="product_slug" id="productSlug" value="{{order.slug}}">
             <input type="hidden" name="status" id="status" value="pending">
             <div class="input-group">
                 <div class="form-floating mb-3">
@@ -92,9 +91,6 @@
                     placeholder="name@example.com">
                 <label for="customer_email">Email</label>
                 @end
-            </div>
-            <div>
-                <textarea name="customer_comment"></textarea>
             </div>
             <button type="submit">Place Order</button>
             @if(flashMessages.has('inputErrorsBag'))

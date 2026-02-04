@@ -6,6 +6,7 @@
     @each(order in orders)
     <div>
         <p>{{order.orderNumber}}</p>
+        <a href="{{route('orders.edit', {orderId: order.orderNumber})}}">Edit</a>
     </div>
     @endeach
 

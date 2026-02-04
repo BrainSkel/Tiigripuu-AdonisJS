@@ -49,7 +49,24 @@ export default class OrdersController {
   /**
    * Edit individual record
    */
-  async edit({ params }: HttpContext) {}
+  async edit({ params, view }: HttpContext) {
+    const order = await Order.findBy('order_number', params.orderId) 
+    const productType = await order?.productType
+    const productId = await order?.productId
+    let product = null;
+    if(  productType == "rental") {
+      product = await Rental.findBy('slug', productId)
+    } else if (productType == "handiwork") {
+      product = await Handicraft.findBy('slug', productId)
+    } else if (productType == "custom_handiwork") {
+      console.log("No kasitooCustom created yet")
+    } else {
+      console.log("edit open error")
+    }
+
+    return view.render('orders/edit', {pageTitle: 'Edit', order, product})
+
+  }
 
   /**
    * Handle form submission for the edit action
