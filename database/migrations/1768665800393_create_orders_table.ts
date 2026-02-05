@@ -7,22 +7,14 @@ export default class extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
 
+      table.integer('customer_id').unsigned().references('id').inTable('customers').onDelete('CASCADE')
+
       table.string('order_number').notNullable().unique()
-
-      table.integer('product_id').unsigned().nullable()
-      
-      table.enu('product_type', ['rental', 'handiwork', 'custom_handiwork']).notNullable()
-
+      table.decimal('total_price', 10, 2).notNullable()
       table.enu('status', ['pending', 'confirmed', 'completed', 'cancelled']).notNullable().defaultTo('pending')
-
+      table.string('customer_note').nullable()
       table.date('order_completion_date').nullable()
 
-      table.string('customer_first_name').notNullable()
-      table.string('customer_last_name').notNullable()
-      table.string('customer_email').notNullable()
-      table.string('customer_comment').nullable()
-
-      table.index(['product_id', 'product_type'])
 
       table.timestamp('created_at')
       table.timestamp('updated_at')
