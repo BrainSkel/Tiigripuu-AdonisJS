@@ -5,9 +5,9 @@ export default class extends BaseSchema {
 
   async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table.increments('id')
+      //table.increments('id') product id is primary key
 
-      table.integer('product_id').primary().references('id').inTable('products').onDelete('CASCADE')
+      table.integer('product_id').primary().unsigned().references('id').inTable('products').onDelete('CASCADE')
       table.text('handiwork_details')
       
       table.timestamp('created_at')

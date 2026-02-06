@@ -1,5 +1,5 @@
 import { Redirect, type HttpContext } from '@adonisjs/core/http'
-import Handicraft from '#models/handicraft'
+import Product from '#models/product'
 import { createKasitooSchema } from '#validators/create_kasitoo_schema'
 import { cuid } from '@adonisjs/core/helpers'
 import category from '#models/category'
@@ -9,7 +9,11 @@ export default class HandicraftsController {
    * Display a list of resource
    */
   async index({ view }: HttpContext) {
-    const handicrafts = await Handicraft.all()            // plain objects
+    const handicrafts = await Product.query()
+    .where('product_type', 'handicraft')
+    .preload('categories', (query) => {
+      query.pivotColumns(['product_id'])
+    })
     return view.render('handicrafts/view', { handicrafts, pageTitle: 'Kasitöö' })
   }
 
@@ -39,7 +43,7 @@ export default class HandicraftsController {
       imageUrl: imageName
     }
 
-    const handicraft = await Handicraft.create(data)
+    const handicraft = await Product.create(data)
     await handicraft.related('categories').attach(categoryIds)
 
     return response.redirect().toRoute('admin.dashboard')
@@ -50,7 +54,7 @@ export default class HandicraftsController {
    * Show individual record
    */
   async show({ params, view }: HttpContext) {
-    const handicraft = await Handicraft.findBy('slug', params.slug)
+    const handicraft = await Product.findBy('slug', params.slug)
     return view.render('handicrafts/show', { handicraft, pageTitle: handicraft?.itemName })
   }
 
@@ -58,7 +62,7 @@ export default class HandicraftsController {
    * Edit individual record
    */
   async edit({ params, view }: HttpContext) {
-    const handicrafts = await Handicraft.findBy('slug', params.slug)
+    const handicrafts = await Product.findBy('slug', params.slug)
 
     return view.render('handicrafts/edit', { pageTitle: 'Edit', handicrafts })
   }
@@ -75,7 +79,7 @@ export default class HandicraftsController {
     }
     const data = { ...payload, image_url: imageName }
 
-    await Handicraft.query().where('slug', params.slug).update(data);
+    await Product.query().where('slug', params.slug).update(data);
 
     return response.redirect().toRoute('handicrafts.index');
   }
@@ -84,7 +88,7 @@ export default class HandicraftsController {
    * Delete record
    */
   async destroy({ params, response }: HttpContext) {
-    const handiCraft = await Handicraft.findBy('slug', params.slug)
+    const handiCraft = await Product.findBy('slug', params.slug)
     await handiCraft?.delete()
     return response.redirect().toRoute('handicrafts.index')
   }

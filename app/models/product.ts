@@ -32,7 +32,7 @@ export default class Product extends BaseModel {
 
 
   @column()
-  declare productType: 'rental' | 'handiwork'
+  declare productType: 'rental' | 'handicraft'
 
   @column()
   declare itemName: string

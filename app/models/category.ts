@@ -14,8 +14,13 @@ export default class Category extends BaseModel {
   @column()
   declare name: string
 
-  @column()
-  declare allowed_product_type: 'rental' | 'handiwork'
+  @column(
+    {
+      consume: (value: string) => { JSON.parse(value) },
+      prepare: (value: JSON) => { JSON.stringify(value) }
+    }
+  )
+  declare allowed_product_type: ('rental' | 'handicraft' | 'custom')[]
 
   @manyToMany(() => Product, {
     pivotTable: 'product_categories',

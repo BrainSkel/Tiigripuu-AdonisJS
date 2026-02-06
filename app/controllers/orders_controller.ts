@@ -1,6 +1,5 @@
 import type { HttpContext } from '@adonisjs/core/http'
-import Rental from '#models/rental'
-import Handicraft from '#models/handicraft'
+import Product from '#models/product';
 import Order from '#models/order'
 import { createOrderSchema } from '#validators/create_order_schema';
 
@@ -18,11 +17,11 @@ export default class OrdersController {
     const productType = params.type;
     let order = null;
     if( productType == "rental") {
-      order = await Rental.findBy('slug', params.slug)
-    } else if (productType == "handiwork") {
-      order = await Handicraft.findBy('slug', params.slug)
-    } else if (productType == "custom_handiwork") {
-      console.log("No kasitooCustom created yet")
+      order = await Product.query().where('product_type', 'rental').where('slug', params.slug).first()
+    } else if (productType == "handicraft") {
+      order = await Product.query().where('product_type', 'handicraft').where('slug', params.slug).first()
+    } else if (productType == "custom_handicraft") {
+      console.log("No custom_handicraft created yet")
     }
 
     return view.render('orders/create', {pageTitle: "Order", order, productType })
@@ -50,16 +49,24 @@ export default class OrdersController {
    * Edit individual record
    */
   async edit({ params, view }: HttpContext) {
-    const order = await Order.findBy('order_number', params.orderId) 
-    const productType = await order?.productType
-    const productId = await order?.productId
+    const order = await Order.query()
+    .where('id', params.id)
+    .preload('items', (itemQuery) => {
+      itemQuery.preload('product', (productQuery) => {
+        productQuery.preload('categories', (categoryQuery) => {
+          categoryQuery.pivotColumns(['product_id'])
+        }).preload('images')
+    })})
+    .firstOrFail()
+    const productType = await order.items[0].product.productType
+
     let product = null;
     if(  productType == "rental") {
-      product = await Rental.findBy('slug', productId)
-    } else if (productType == "handiwork") {
-      product = await Handicraft.findBy('slug', productId)
-    } else if (productType == "custom_handiwork") {
-      console.log("No kasitooCustom created yet")
+      product = await Product.query().where('product_type', 'rental').where('slug', order.items[0].product.slug).first()
+    } else if (productType == "handicraft") {
+      product = await Product.query().where('product_type', 'handicraft').where('slug', order.items[0].product.slug).first()
+    } else if (productType == "custom_handicraft") {
+      console.log("No custom_handicraft created yet")
     } else {
       console.log("edit open error")
     }

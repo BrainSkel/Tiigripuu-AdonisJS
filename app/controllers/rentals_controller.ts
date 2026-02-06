@@ -1,6 +1,6 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import { createRentalSchema } from '#validators/create_laenutus_schema'
-import Rental from '#models/rental'
+import Product from '#models/product'
 import { cuid } from '@adonisjs/core/helpers'
 
 export default class RentalsController {
@@ -8,7 +8,7 @@ export default class RentalsController {
    * Display a list of resource
    */
   public async index({ view }: HttpContext) {
-    const rentals = await Rental.all()            // plain objects
+    const rentals = await Product.query().where('product_type', 'rental')            // plain objects
     return view.render('rentals/view', { pageTitle: 'Rental', rentals })
   }
   /**
@@ -16,7 +16,7 @@ export default class RentalsController {
    */
   async show({ params, view }: HttpContext) {
     console.log(params);
-    const rental = await Rental.findBy('slug', params.slug)
+    const rental = await Product.findBy('slug', params.slug)
     return view.render('rentals/show', { pageTitle: rental?.itemName, rental })
   }
 
@@ -36,8 +36,8 @@ export default class RentalsController {
 
     const imageName = await this.uploadImageToDrive(request);
 
-    const data = { ...payload, image_url: imageName }
-    await Rental.create(data);
+    const data = { ...payload, image_url: imageName, product_type: 'rental' }
+    await Product.create(data);
 
     console.log(data);
     return response.redirect().toRoute('admin.dashboard');
@@ -48,7 +48,7 @@ export default class RentalsController {
    * Edit individual record
    */
   async edit({ view, params }: HttpContext) {
-    const rentals = await Rental.findBy('slug', params.slug)
+    const rentals = await Product.findBy('slug', params.slug)
 
     return view.render('rentals/edit', { pageTitle: 'Edit', rentals })
   }
@@ -66,7 +66,7 @@ export default class RentalsController {
     }
     const data = { ...payload, image_url: imageName }
 
-    await Rental.query().where('slug', params.slug).update(data);
+    await Product.query().where('slug', params.slug).update(data);
 
     return response.redirect().toRoute('rentals.index');
   }
@@ -75,7 +75,7 @@ export default class RentalsController {
    * Delete record
    */
   async destroy({ params, response }: HttpContext) {
-    const rental = await Rental
+    const rental = await Product
       .query()
       .where('slug', params.slug)
       .firstOrFail();
