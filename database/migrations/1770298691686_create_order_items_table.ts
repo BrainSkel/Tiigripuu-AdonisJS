@@ -8,7 +8,7 @@ export default class extends BaseSchema {
       table.increments('id')
 
 
-      table.integer('product_id').unsigned().references('id').inTable('products').onDelete('CASCADE')
+      table.integer('product_id').unsigned().references('id').inTable('products')
       table.integer('order_id').unsigned().references('id').inTable('orders').onDelete('CASCADE')
       table.integer('quantity').notNullable().defaultTo(1)
       table.decimal('price_at_purchase', 10, 2).notNullable()

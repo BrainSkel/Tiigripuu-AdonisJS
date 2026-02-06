@@ -7,8 +7,8 @@ export default class extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
 
-      table.string('name').notNullable()
       table.string('slug').notNullable().unique()
+      table.string('name').notNullable()
       table.enum('allowed_product_types', ['rental', 'handiwork'])
 
       table.timestamp('created_at')

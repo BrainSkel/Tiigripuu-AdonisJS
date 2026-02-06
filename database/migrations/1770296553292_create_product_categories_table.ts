@@ -10,6 +10,8 @@ export default class extends BaseSchema {
       table.integer('product_id').unsigned().references('id').inTable('products').onDelete('CASCADE')
       table.integer('category_id').unsigned().references('id').inTable('categories').onDelete('CASCADE')
 
+      table.primary(['product_id', 'category_id'])
+
       table.timestamp('created_at')
       table.timestamp('updated_at')
     })

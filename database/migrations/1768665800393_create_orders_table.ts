@@ -7,7 +7,7 @@ export default class extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
 
-      table.integer('customer_id').unsigned().references('id').inTable('customers').onDelete('CASCADE')
+      table.integer('customer_id').unsigned().references('id').inTable('customers')
 
       table.string('order_number').notNullable().unique()
       table.decimal('total_price', 10, 2).notNullable()
