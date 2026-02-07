@@ -1,10 +1,11 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column, hasMany, manyToMany, hasOne } from '@adonisjs/lucid/orm'
+import { BaseModel, column, hasMany, manyToMany, hasOne, beforeCreate } from '@adonisjs/lucid/orm'
 import type { ManyToMany, HasMany, HasOne } from '@adonisjs/lucid/types/relations'
 import Category from '#models/category'
 import ProductImage from './product_image.js'
 import RentalDetail from './rental_detail.js'
 import HandicraftDetail from './handicraft_detail.js'
+import { before } from 'node:test'
 
 export default class Product extends BaseModel {
   @column({ isPrimary: true })
@@ -54,4 +55,11 @@ export default class Product extends BaseModel {
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime
+
+  @beforeCreate()
+  static async generateSlug(product: Product) {
+    if (!product.slug) {
+      product.slug = `${product.itemName.toLowerCase().replace(/\s+/g, '-')}-${Date.now()}`
+    }
+  }
 }
