@@ -3,6 +3,9 @@ import { createRentalSchema } from '#validators/create_laenutus_schema'
 import Product from '#models/product'
 import { cuid } from '@adonisjs/core/helpers'
 import ProductImage from '#models/product_image'
+import RentalInstruction from '#models/rental_instruction'
+import RentalDetail from '#models/rental_detail'
+import { createRentalDetailsSchema } from '#validators/create_rental_details_schema'
 
 export default class RentalsController {
   /**
@@ -40,7 +43,13 @@ export default class RentalsController {
 
     const data = { ...payload, product_type: 'rental' }
     const newProduct = await Product.create(data);
-    await this.uploadImageToDrive(request, newProduct.id);
+    const payloadDetails = await request.validateUsing(createRentalDetailsSchema)
+    await RentalDetail.create({
+      productId: newProduct.id,
+      rentalInfo: payloadDetails.rental_info,
+    })
+    await this.uploadImagesToDrive(request, newProduct.id);
+    await this.uploadFilesToDrive(request, newProduct.id);
 
     console.log(data);
     return response.redirect().toRoute('admin.dashboard');
@@ -66,7 +75,7 @@ export default class RentalsController {
     const product = await Product.query().where('slug', params.slug).firstOrFail();
     let imageName = request.input('imageUrl'); // Default to existing image name
     if (request.file('imageUrl') !== null) {
-      imageName = await this.uploadImageToDrive(request, product.id); // Upload image to drive
+      imageName = await this.uploadImagesToDrive(request, product.id); // Upload image to drive
     }
     const data = { ...payload, image_url: imageName }
 
@@ -90,7 +99,7 @@ export default class RentalsController {
 
 
 
-  async uploadImageToDrive(request: any, productId: number) {
+  async uploadImagesToDrive(request: any, productId: number) {
     const product = await Product.find(productId);
     const image = request.files('image_url', {
       size: '10mb',
@@ -116,6 +125,31 @@ export default class RentalsController {
         productId: productId,
         dispalyInGallery: dispalyInGallery,
         displayOrder: imageOrder
+      })
+    }
+  }
+
+  async uploadFilesToDrive(request: any, productId: number) {
+    const product = await Product.find(productId);
+    const files = request.files('rental_instructions', {
+      size: '10mb',
+      extnames: ['pdf', 'doc', 'docx'],
+    })
+    let fileOrder = 0;
+    for (const file of files) {
+      fileOrder++;
+      let fileName = ''
+      if (file) {
+        fileName = `${product?.productType}_${fileOrder}${product?.itemName.replace(/\s+/g, '_')}.${file.extname}`
+        const key = `uploads/${fileName}`
+        await file.moveToDisk(key)
+      } else {
+        fileName = 'default.pdf'
+      }
+
+      RentalInstruction.create({
+        instructionUrl: fileName,
+        rentalDetailId: productId,
       })
     }
   }

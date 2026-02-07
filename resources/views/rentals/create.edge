@@ -116,6 +116,36 @@
 
         <!-- -->
 
+        <div>
+            <label for="rentalInfo">Ekstra info laenutuse osas:</label>
+            <textarea type="text" id="rentalInfo" name="rental_info" required> </textarea>
+
+            @if(flashMessages.has('inputErrorsBag.rentalInfo'))
+            <div class="error">
+                @each(error in flashMessages.get('inputErrorsBag.rentalInfo'))
+                <p>{{error}}</p>
+                @endeach
+            </div>
+            @end
+        </div>
+
+        <!-- -->
+
+
+        <div>
+            <label for="rentalInstructions">Laenutus eseme juhised</label>
+            <input type="file" id="rentalInstructions" name="rental_instructions" multiple>
+
+            @if(flashMessages.has('inputErrorsBag.rentalInstructions'))
+            <div class="error">
+                @each(error in flashMessages.get('inputErrorsBag.rentalInstructions'))
+                <p>{{error}}</p>
+                @endeach
+            </div>
+            @end
+        </div>
+
+        <!-- -->
 
 
 
