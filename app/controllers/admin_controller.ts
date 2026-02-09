@@ -15,10 +15,8 @@ export default class AdminController {
 
 
   public async dashboard({ view }: HttpContext) {
-      const products = await Product.query()
-      .preload('categories', (query) => {
-        query.pivotColumns(['product_id'])
-      })
+      const products = await Product.query().preload('images')
+      
 
     const rentals = products.filter(product => product.productType === 'rental')
     const handicrafts = products.filter(product => product.productType === 'handicraft')
