@@ -9,7 +9,7 @@ export default class extends BaseSchema {
 
       table.string('slug').notNullable().unique()
       table.string('name').notNullable()
-      table.json('allowed_product_types')
+      table.enum('allowed_product_types', ['rental', 'handicraft', 'custom']).notNullable()
 
       table.timestamp('created_at')
       table.timestamp('updated_at')

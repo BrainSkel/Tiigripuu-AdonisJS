@@ -1,7 +1,7 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import { createRentalSchema } from '#validators/create_laenutus_schema'
 import Product from '#models/product'
-import { cuid } from '@adonisjs/core/helpers'
+//import { cuid } from '@adonisjs/core/helpers'
 import ProductImage from '#models/product_image'
 import RentalInstruction from '#models/rental_instruction'
 import RentalDetail from '#models/rental_detail'
