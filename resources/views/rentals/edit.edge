@@ -4,13 +4,47 @@
     @include('partials/navigation')
 
     <a href="{{route('rentals.index')}}">Back</a>
-    <h1>Edit Rental: <h3>{{ rentals.itemName }}</h3>
+    <h1>Edit Rental: <h3>{{ rental.itemName }}</h3>
     </h1>
-    <form method="POST" action="{{route('rentals.update', { slug: rentals.slug })}}?_method=PATCH" enctype="multipart/form-data">
+    @each(image in rental.images)
+    
+    <img src="/storage/uploads/{{image.imageUrl}}" alt="{{rental.itemName}}"
+        style="max-width: 200px; margin-top: 10px;">
+    <form method="POST" action="{{route('images.destroy', { id: image.id })}}?_method=DELETE">
         {{ csrfField() }}
+        <input type="hidden" name="image_id" value="{{image.id}}">
+        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+    </form>
+    @endeach
+
+
+    <form method="POST" action="{{route('rentals.update', { slug: rental.slug })}}?_method=PATCH"
+        enctype="multipart/form-data">
+        {{ csrfField() }}
+
+        <!-- CATEGORY -->
         <div>
-            <label for="itemName">Item Name:</label>
-            <input type="text" id="itemName" name="item_name" value="{{ rentals.itemName }}" required>
+            <label for="category" class="form-label">Kategooria</label>
+            <select name="category" id="category" class="form-control" required>
+                <option value="">Select a category</option>
+                @each(category in rentalCategories)
+                <option value="{{category.slug}}">{{category.name}}</option>
+                @endeach
+            </select>
+
+            @if(flashMessages.has('inputErrorsBag.category'))
+            <div class="error">
+                @each(error in flashMessages.get('inputErrorsBag.category'))
+                <p>{{error}}</p>
+                @endeach
+            </div>
+            @end
+        </div>
+
+        <!-- -->
+        <div>
+            <label for="itemName" class="form-label">Toote nimi:</label>
+            <input type="text" id="itemName" name="item_name" class="form-control" required value="{{rental.itemName}}">
 
             @if(flashMessages.has('inputErrorsBag.itemName'))
             <div class="error">
@@ -21,22 +55,47 @@
             @end
         </div>
 
-        <div>
-            <label for="imageUrl">Image URL:</label>
-            <img src="/storage/uploads/{{ rentals.imageUrl }}" alt="{{ rentals.itemName }}" width="150">
-            <input type="file" id="imageUrl" name="image_url" value="/storage/uploads/{{ rentals.imageUrl }}">
-            @if(flashMessages.has('inputErrorsBag.imageUrl'))
-            <div class="error">
-                @each(error in flashMessages.get('inputErrorsBag.imageUrl'))
-                <p>{{error}}</p>
-                @endeach
-            </div>
-            @end
-        </div>
+
+        <!-- IAMGES START-->
 
         <div>
-            <label for="price">price:</label>
-            <input type="number" id="price" name="price" value="{{ rentals.price}}" required>
+            <div>
+                <label for="imageUrl" class="form-label">Lisa pilt:</label>
+                <input type="file" id="imageUrl" name="image_url" accept=".png, .jpeg, .jpg" required multiple
+                    class="form-control">
+
+                @if(flashMessages.has('inputErrorsBag.imageUrl'))
+                <div class="error">
+                    @each(error in flashMessages.get('inputErrorsBag.imageUrl'))
+                    <p>{{error}}</p>
+                    @endeach
+                </div>
+                @end
+            </div>
+            <!-- -->
+
+            <div>
+                <label for="displayInGallery" class="form-check-label">Näita galeriis:</label>
+                <input type="checkbox" id="displayInGallery" name="display_in_gallery" value="0"
+                    class="form-check-input">
+
+                @if(flashMessages.has('inputErrorsBag.displayInGallery'))
+                <div class="error">
+                    @each(error in flashMessages.get('inputErrorsBag.displayInGallery'))
+                    <p>{{error}}</p>
+                    @endeach
+                </div>
+                @end
+            </div>
+        </div>
+        <!-- -->
+
+        <!-- IMAGES END-->
+
+
+        <div>
+            <label for="price" class="form-label">Hind:</label>
+            <input type="number" id="price" name="price" step="any" min="0.01" required class="form-control">
 
             @if(flashMessages.has('inputErrorsBag.price'))
             <div class="error">
@@ -46,9 +105,12 @@
             </div>
             @end
         </div>
+
+
+        <!-- -->
         <div>
-            <label for="description">description:</label>
-            <textarea id="description" name="description" required>{{ rentals.description }}</textarea>
+            <label for="description" class="form-label">Kirjeldus:</label>
+            <textarea id="description" name="description" required class="form-control"></textarea>
 
             @if(flashMessages.has('inputErrorsBag.description'))
             <div class="error">
@@ -57,8 +119,101 @@
                 @endeach
             </div>
             @end
-
         </div>
-        <button type="submit">Confirm edit</button>
+        <!-- -->
+        <div>
+            <label for="stockAmount" class="form-label">Kogus:</label>
+            <input type="number" id="stockAmount" name="stock_amount" min="0" required class="form-control">
+
+            @if(flashMessages.has('inputErrorsBag.stockAmount'))
+            <div class="error">
+                @each(error in flashMessages.get('inputErrorsBag.stockAmount'))
+                <p>{{error}}</p>
+                @endeach
+            </div>
+            @end
+        </div>
+
+        <!-- -->
+        <div class="form-check">
+            <label for="isVisible" class="form-check-label">Nähtav</label>
+            <input type="checkbox" id="isVisible" name="is_visible" value="1" class="form-check-input">
+
+            @if(flashMessages.has('inputErrorsBag.isVisible'))
+            <div class="error">
+                @each(error in flashMessages.get('inputErrorsBag.isVisible'))
+                <p>{{error}}</p>
+                @endeach
+            </div>
+            @end
+        </div>
+
+
+        <!-- -->
+
+        <div>
+            <label for="rentalInfo" class="form-label">Ekstra info laenutuse osas:</label>
+            <textarea type="text" id="rentalInfo" name="rental_info" required class="form-control"> </textarea>
+
+            @if(flashMessages.has('inputErrorsBag.rentalInfo'))
+            <div class="error">
+                @each(error in flashMessages.get('inputErrorsBag.rentalInfo'))
+                <p>{{error}}</p>
+                @endeach
+            </div>
+            @end
+        </div>
+
+        <!-- -->
+
+
+        <div>
+            <label for="rentalInstructions" class="form-label">Laenutus eseme juhised</label>
+            <input type="file" id="rentalInstructions" name="rental_instructions" multiple class="form-control">
+
+            @if(flashMessages.has('inputErrorsBag.rentalInstructions'))
+            <div class="error">
+                @each(error in flashMessages.get('inputErrorsBag.rentalInstructions'))
+                <p>{{error}}</p>
+                @endeach
+            </div>
+            @end
+        </div>
+        {{--
+        <!-- -->
+
+        <div>
+            <label for="needsSeller">Vajadus müüja kohta:</label>
+            <input type="checkbox" id="needsSeller" name="needs_seller" value="1">
+
+            @if(flashMessages.has('inputErrorsBag.needsSeller'))
+            <div class="error">
+                @each(error in flashMessages.get('inputErrorsBag.needsSeller'))
+                <p>{{error}}</p>
+                @endeach
+            </div>
+            @end
+        </div>
+
+        <!-- -->
+        <div>
+            <label for="rentalInstructions">Laenutus eseme juhised</label>
+            <input type="file" id="rentalInstructions" name="rental_instructions" multiple>
+
+            @if(flashMessages.has('inputErrorsBag.rentalInstructions'))
+            <div class="error">
+                @each(error in flashMessages.get('inputErrorsBag.rentalInstructions'))
+                <p>{{error}}</p>
+                @endeach
+            </div>
+            @end
+        </div>
+
+        <!-- --> --}}
+
+
+
+        <button type="submit" class="btn btn-primary">Update Rental</button>
+    </form>
 
 </body>

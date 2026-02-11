@@ -5,7 +5,9 @@ import Product from '#models/product'
 import ProductImage from '#models/product_image'
 import RentalInstruction from '#models/rental_instruction'
 import RentalDetail from '#models/rental_detail'
+import Category from '#models/category'
 import { createRentalDetailsSchema } from '#validators/create_rental_details_schema'
+import { createProductSchema } from '#validators/create_product_schema'
 
 export default class RentalsController {
   /**
@@ -30,17 +32,19 @@ export default class RentalsController {
    * Display form to create a new record
    */
   async create({ view }: HttpContext) {
-    return view.render('rentals/create', { pageTitle: 'Uus laenutus' })
+    const categories = await Category.query().from('categories').select('*').whereNotNull('allowed_product_types')
+    const rentalCategories = categories.filter(category => category.allowed_product_types.includes('rental'))
+    return view.render('rentals/create', { pageTitle: 'Uus laenutus', rentalCategories })
   }
 
   /**
    * Handle form submission for the create action
    */
   async store({ request, response }: HttpContext) {
-    const payload = await request.validateUsing(createRentalSchema)
+    const payload = await request.validateUsing(createProductSchema)
 
 
-
+    const categories = request.input('categories') || [];
     const data = { ...payload, product_type: 'rental' }
     const newProduct = await Product.create(data);
     const payloadDetails = await request.validateUsing(createRentalDetailsSchema)
@@ -48,6 +52,7 @@ export default class RentalsController {
       productId: newProduct.id,
       rentalInfo: payloadDetails.rental_info,
     })
+    await newProduct.related('categories').attach(categories.map((id: string) => Number(id)));
     await this.uploadImagesToDrive(request, newProduct.id);
     await this.uploadFilesToDrive(request, newProduct.id);
 
@@ -60,9 +65,9 @@ export default class RentalsController {
    * Edit individual record
    */
   async edit({ view, params }: HttpContext) {
-    const rentals = await Product.findBy('slug', params.slug)
+    const rental = await Product.query().where('slug', params.slug).preload('images').preload('rentalDetail').preload('categories').firstOrFail();
 
-    return view.render('rentals/edit', { pageTitle: 'Edit', rentals })
+    return view.render('rentals/edit', { pageTitle: 'Edit', rental })
   }
 
   /**
@@ -96,6 +101,8 @@ export default class RentalsController {
     await rental.delete();
     return response.redirect().toRoute('rentals.index');
   }
+
+
 
 
 
