@@ -11,6 +11,12 @@ export default class RentalInstruction extends BaseModel {
   declare rentalDetail: BelongsTo<typeof RentalDetail>
 
   @column()
+  declare fileName: string
+
+  @column()
+  declare fileOrder: number
+
+  @column()
   declare rentalDetailId: number
 
   @column()

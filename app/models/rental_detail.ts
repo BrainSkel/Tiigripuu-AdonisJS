@@ -9,12 +9,15 @@ export default class RentalDetail extends BaseModel {
   @belongsTo(() => Product)
   declare product: BelongsTo<typeof Product>
 
-  @hasMany(() => RentalInstruction)
+  @hasMany(() => RentalInstruction, {
+    foreignKey: 'rentalDetailId',
+    localKey: 'productId',
+  })
   declare instructions: HasMany<typeof RentalInstruction>
   
 
 
-  @column()
+  @column({isPrimary: true})
   declare productId: number
 
   @column()

@@ -9,7 +9,9 @@
                 @each(rental in rentals)
                 <div class="col">
                     <div class="card shadow-sm">
+                        @if(rental.images.length > 0)
                         <img src="/storage/uploads/{{rental.images[0].imageUrl}}" class="card-img-top" alt="{{rental.itemName}}">
+                        @endif
                         <div class="card-body">
                             <h3><a href="{{route('rentals.show', { slug: rental.slug })}}">{{rental.itemName}}</a></h3>
                             <p class="card-text">{{rental.description}}</p>

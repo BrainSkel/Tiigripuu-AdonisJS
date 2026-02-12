@@ -42,6 +42,7 @@ export default class RentalsController {
    */
   async store({ request, response }: HttpContext) {
     const payload = await request.validateUsing(createProductSchema)
+        await console.log(request.input('instructions'));
 
 
     const categories = request.input('categories') || [];
@@ -53,8 +54,12 @@ export default class RentalsController {
       rentalInfo: payloadDetails.rental_info,
     })
     await newProduct.related('categories').attach(categories.map((id: string) => Number(id)));
-    await this.uploadImagesToDrive(request, newProduct.id);
+
     await this.uploadFilesToDrive(request, newProduct.id);
+        
+
+    await this.uploadImagesToDrive(request, newProduct.id);
+    
 
     console.log(data);
     return response.redirect().toRoute('admin.dashboard');
@@ -65,9 +70,17 @@ export default class RentalsController {
    * Edit individual record
    */
   async edit({ view, params }: HttpContext) {
-    const rental = await Product.query().where('slug', params.slug).preload('images').preload('rentalDetail').preload('categories').firstOrFail();
+    const rental = await Product.query()
+    .where('slug', params.slug)
+    .preload('images')
+    .preload('rentalDetail', (query) => {
+      query.preload('instructions')
+    })
+    .preload('categories').firstOrFail();
 
-    return view.render('rentals/edit', { pageTitle: 'Edit', rental })
+    const categories = await Category.query().from('categories').select('*').whereNotNull('allowed_product_types')
+    const rentalCategories = categories.filter(category => category.allowed_product_types.includes('rental'))
+    return view.render('rentals/edit', { pageTitle: 'Edit', rental, rentalCategories })
   }
 
   /**
@@ -138,14 +151,14 @@ export default class RentalsController {
 
   async uploadFilesToDrive(request: any, productId: number) {
     const product = await Product.find(productId);
-    const files = request.files('rental_instructions', {
-      size: '10mb',
-      extnames: ['pdf', 'doc', 'docx'],
-    })
+    const rows = request.input('instructions');
     let fileOrder = 0;
-    for (const file of files) {
+    for (const row of rows) {
       fileOrder++;
+      const file = row.file ? row.file : null;
+      const file_Name = row.file_name ? row.file_name : `instruction_${fileOrder}`; 
       let fileName = ''
+      console.log(file);
       if (file) {
         fileName = `${product?.productType}_${fileOrder}${product?.itemName.replace(/\s+/g, '_')}.${file.extname}`
         const key = `uploads/${fileName}`
@@ -156,6 +169,8 @@ export default class RentalsController {
 
       RentalInstruction.create({
         instructionUrl: fileName,
+        fileName: file_Name,
+        fileOrder: fileOrder,
         rentalDetailId: productId,
       })
     }

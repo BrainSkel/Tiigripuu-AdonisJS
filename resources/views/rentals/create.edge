@@ -1,4 +1,6 @@
 @include('partials/head')
+<script src="{{asset('resources/js/rental.js')}}" defer></script>
+</head>
 
 <body>
     @include('partials/navigation')
@@ -29,7 +31,7 @@
         <!-- -->
         <div>
             <label for="itemName" class="form-label">Toote nimi:</label>
-            <input type="text" id="itemName" name="item_name" class="form-control" required>
+            <input type="text" id="itemName" name="item_name" class="form-control" value="{{old('item_name') || ''}}" required>
 
             @if(flashMessages.has('inputErrorsBag.itemName'))
             <div class="error">
@@ -151,40 +153,26 @@
 
         <!-- -->
 
-
         <div>
             <label for="rentalInstructions" class="form-label">Laenutus eseme juhised</label>
-            <input type="file" id="rentalInstructions" name="rental_instructions" multiple class="form-control">
+            <div id="instructions">
+                <div class="input-group mb-3">
 
-            @if(flashMessages.has('inputErrorsBag.rentalInstructions'))
-            <div class="error">
-                @each(error in flashMessages.get('inputErrorsBag.rentalInstructions'))
-                <p>{{error}}</p>
-                @endeach
+                    <input type="file" id="rentalInstructions" name="instructions[0][file]" class="form-control">
+                    <input type="text" id="fileName" name="instructions[0][file_name]" class="form-control mt-2"
+                        placeholder="Anna failile nimi">
+                    <button type="button" class="btn btn-danger mt-2" onclick="removeInstruction(this)">Eemalda</button>
+
+
+                </div>
+
+                <!-- More instructions inputs -->
+
+
+
+
             </div>
-            @end
-        </div>
-        {{--
-        <!-- -->
-
-        <div>
-            <label for="needsSeller">Vajadus müüja kohta:</label>
-            <input type="checkbox" id="needsSeller" name="needs_seller" value="1">
-
-            @if(flashMessages.has('inputErrorsBag.needsSeller'))
-            <div class="error">
-                @each(error in flashMessages.get('inputErrorsBag.needsSeller'))
-                <p>{{error}}</p>
-                @endeach
-            </div>
-            @end
-        </div>
-
-        <!-- -->
-        <div>
-            <label for="rentalInstructions">Laenutus eseme juhised</label>
-            <input type="file" id="rentalInstructions" name="rental_instructions" multiple>
-
+            <button type="button" class="btn btn-secondary mt-2" onclick="addInstruction()">Lisa juhis</button>
             @if(flashMessages.has('inputErrorsBag.rentalInstructions'))
             <div class="error">
                 @each(error in flashMessages.get('inputErrorsBag.rentalInstructions'))
@@ -194,11 +182,16 @@
             @end
         </div>
 
-        <!-- --> --}}
 
+
+
+        <!-- -->
 
 
         <button type="submit" class="btn btn-primary">Create Rental</button>
     </form>
+
+
+
 
 </body>

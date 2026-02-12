@@ -1,4 +1,6 @@
 @include('partials/head')
+<script src="{{ asset('js/rental.js') }}" defer></script>
+</head>
 
 <body>
     @include('partials/navigation')
@@ -7,7 +9,7 @@
     <h1>Edit Rental: <h3>{{ rental.itemName }}</h3>
     </h1>
     @each(image in rental.images)
-    
+
     <img src="/storage/uploads/{{image.imageUrl}}" alt="{{rental.itemName}}"
         style="max-width: 200px; margin-top: 10px;">
     <form method="POST" action="{{route('images.destroy', { id: image.id })}}?_method=DELETE">
@@ -25,7 +27,7 @@
         <!-- CATEGORY -->
         <div>
             <label for="category" class="form-label">Kategooria</label>
-            <select name="category" id="category" class="form-control" required>
+            <select name="category" id="category" class="form-control">
                 <option value="">Select a category</option>
                 @each(category in rentalCategories)
                 <option value="{{category.slug}}">{{category.name}}</option>
@@ -44,7 +46,7 @@
         <!-- -->
         <div>
             <label for="itemName" class="form-label">Toote nimi:</label>
-            <input type="text" id="itemName" name="item_name" class="form-control" required value="{{rental.itemName}}">
+            <input type="text" id="itemName" name="item_name" class="form-control" value="{{rental.itemName}}">
 
             @if(flashMessages.has('inputErrorsBag.itemName'))
             <div class="error">
@@ -61,7 +63,7 @@
         <div>
             <div>
                 <label for="imageUrl" class="form-label">Lisa pilt:</label>
-                <input type="file" id="imageUrl" name="image_url" accept=".png, .jpeg, .jpg" required multiple
+                <input type="file" id="imageUrl" name="image_url" accept=".png, .jpeg, .jpg" multiple
                     class="form-control">
 
                 @if(flashMessages.has('inputErrorsBag.imageUrl'))
@@ -76,7 +78,8 @@
 
             <div>
                 <label for="displayInGallery" class="form-check-label">Näita galeriis:</label>
-                <input type="checkbox" id="displayInGallery" name="display_in_gallery" value="0"
+                <input type="checkbox" id="displayInGallery" name="display_in_gallery"
+                    value="{{rental.displayInGallery ? '1' : '0'}}" {{ rental.displayInGallery ? 'checked' : '' }}
                     class="form-check-input">
 
                 @if(flashMessages.has('inputErrorsBag.displayInGallery'))
@@ -95,7 +98,8 @@
 
         <div>
             <label for="price" class="form-label">Hind:</label>
-            <input type="number" id="price" name="price" step="any" min="0.01" required class="form-control">
+            <input type="number" id="price" name="price" step="any" min="0.01" required class="form-control"
+                value="{{rental.price}}">
 
             @if(flashMessages.has('inputErrorsBag.price'))
             <div class="error">
@@ -110,7 +114,8 @@
         <!-- -->
         <div>
             <label for="description" class="form-label">Kirjeldus:</label>
-            <textarea id="description" name="description" required class="form-control"></textarea>
+            <textarea id="description" name="description" required
+                class="form-control">{{rental.description}}</textarea>
 
             @if(flashMessages.has('inputErrorsBag.description'))
             <div class="error">
@@ -123,7 +128,8 @@
         <!-- -->
         <div>
             <label for="stockAmount" class="form-label">Kogus:</label>
-            <input type="number" id="stockAmount" name="stock_amount" min="0" required class="form-control">
+            <input type="number" id="stockAmount" name="stock_amount" min="0" required class="form-control"
+                value="{{rental.stockAmount}}">
 
             @if(flashMessages.has('inputErrorsBag.stockAmount'))
             <div class="error">
@@ -137,7 +143,8 @@
         <!-- -->
         <div class="form-check">
             <label for="isVisible" class="form-check-label">Nähtav</label>
-            <input type="checkbox" id="isVisible" name="is_visible" value="1" class="form-check-input">
+            <input type="checkbox" id="isVisible" name="is_visible" value="{{rental.isVisible ? '1' : '0'}}"
+                class="form-check-input">
 
             @if(flashMessages.has('inputErrorsBag.isVisible'))
             <div class="error">
@@ -153,7 +160,8 @@
 
         <div>
             <label for="rentalInfo" class="form-label">Ekstra info laenutuse osas:</label>
-            <textarea type="text" id="rentalInfo" name="rental_info" required class="form-control"> </textarea>
+            <textarea type="text" id="rentalInfo" name="rental_info" required
+                class="form-control">{{rental.rentalDetail.rentalInfo}}</textarea>
 
             @if(flashMessages.has('inputErrorsBag.rentalInfo'))
             <div class="error">
@@ -168,7 +176,7 @@
 
 
         <div>
-            <label for="rentalInstructions" class="form-label">Laenutus eseme juhised</label>
+            <label for="rentalInstructions" class="form-label">Lisa eseme juhised</label>
             <input type="file" id="rentalInstructions" name="rental_instructions" multiple class="form-control">
 
             @if(flashMessages.has('inputErrorsBag.rentalInstructions'))
@@ -179,41 +187,23 @@
             </div>
             @end
         </div>
-        {{--
-        <!-- -->
-
-        <div>
-            <label for="needsSeller">Vajadus müüja kohta:</label>
-            <input type="checkbox" id="needsSeller" name="needs_seller" value="1">
-
-            @if(flashMessages.has('inputErrorsBag.needsSeller'))
-            <div class="error">
-                @each(error in flashMessages.get('inputErrorsBag.needsSeller'))
-                <p>{{error}}</p>
-                @endeach
-            </div>
-            @end
-        </div>
-
-        <!-- -->
-        <div>
-            <label for="rentalInstructions">Laenutus eseme juhised</label>
-            <input type="file" id="rentalInstructions" name="rental_instructions" multiple>
-
-            @if(flashMessages.has('inputErrorsBag.rentalInstructions'))
-            <div class="error">
-                @each(error in flashMessages.get('inputErrorsBag.rentalInstructions'))
-                <p>{{error}}</p>
-                @endeach
-            </div>
-            @end
-        </div>
-
-        <!-- --> --}}
 
 
 
         <button type="submit" class="btn btn-primary">Update Rental</button>
+    </form>
+    @each(file in rental.rentalDetail.instructions)
+
+    <a href="/storage/uploads/{{file.instructionUrl}}" target="_blank">{{file.fileName}}</a>
+    <form method="POST" action="{{route('instructions.destroy', { id: file.id })}}?_method=DELETE">
+        {{ csrfField() }}
+        <input type="hidden" name="instruction_id" value="{{file.id}}">
+        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+    </form>
+    @endeach
+
+    <form>
+
     </form>
 
 </body>
