@@ -1,5 +1,5 @@
 @include('partials/head')
-<script src="{{ asset('js/rental.js') }}" defer></script>
+<script src="{{asset('resources/js/rental.js')}}" defer></script>
 </head>
 
 <body>
@@ -27,9 +27,16 @@
         <!-- CATEGORY -->
         <div>
             <label for="category" class="form-label">Kategooria</label>
-            <select name="category" id="category" class="form-control">
-                <option value="">Select a category</option>
-                @each(category in rentalCategories)
+            @each(category in rental.categories)
+            <p class="badge rounded-pill bg-secondary me-1">{{category.name}}
+            </p>
+            @endeach
+
+            <select name="category[]" id="category" class="form-control" multiple>
+                @each(category in rental.categories)
+                <option value="{{category.slug}}" selected="selected">{{category.name}}</option>
+                @endeach
+                @each(category in notInProductCategories)
                 <option value="{{category.slug}}">{{category.name}}</option>
                 @endeach
             </select>
@@ -177,8 +184,6 @@
 
         <div>
             <label for="rentalInstructions" class="form-label">Lisa eseme juhised</label>
-            <input type="file" id="rentalInstructions" name="rental_instructions" multiple class="form-control">
-
             @if(flashMessages.has('inputErrorsBag.rentalInstructions'))
             <div class="error">
                 @each(error in flashMessages.get('inputErrorsBag.rentalInstructions'))
@@ -188,21 +193,31 @@
             @end
         </div>
 
+        @each(file in rental.rentalDetail.instructions)
+
+        <a href="/storage/uploads/{{file.instructionUrl}}" target="_blank">{{file.fileName}}</a>
+        <form method="POST" action="{{route('instructions.destroy', { id: file.id })}}?_method=DELETE">
+            {{ csrfField() }}
+            <input type="hidden" name="instruction_id" value="{{file.id}}">
+            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+        </form>
+        @endeach
+        <div id="instructions"></div>
+
+        <button type="button" class="btn btn-secondary mt-2" onclick="addInstruction()">Lisa juhis</button>
+        @if(flashMessages.has('inputErrorsBag.rentalInstructions'))
+        <div class="error">
+            @each(error in flashMessages.get('inputErrorsBag.rentalInstructions'))
+            <p>{{error}}</p>
+            @endeach
+        </div>
+        @end
+        </div>
 
 
-        <button type="submit" class="btn btn-primary">Update Rental</button>
-    </form>
-    @each(file in rental.rentalDetail.instructions)
 
-    <a href="/storage/uploads/{{file.instructionUrl}}" target="_blank">{{file.fileName}}</a>
-    <form method="POST" action="{{route('instructions.destroy', { id: file.id })}}?_method=DELETE">
-        {{ csrfField() }}
-        <input type="hidden" name="instruction_id" value="{{file.id}}">
-        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-    </form>
-    @endeach
-
-    <form>
+<div></div>
+        <button type="submit" class="btn btn-primary mt-3">Update Rental</button>
 
     </form>
 

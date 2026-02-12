@@ -31,7 +31,8 @@
         <!-- -->
         <div>
             <label for="itemName" class="form-label">Toote nimi:</label>
-            <input type="text" id="itemName" name="item_name" class="form-control" value="{{old('item_name') || ''}}" required>
+            <input type="text" id="itemName" name="item_name" class="form-control" value="{{old('item_name') || ''}}"
+                required>
 
             @if(flashMessages.has('inputErrorsBag.itemName'))
             <div class="error">
@@ -184,14 +185,8 @@
 
 
 
-
-        <!-- -->
-
-
         <button type="submit" class="btn btn-primary">Create Rental</button>
+
     </form>
-
-
-
 
 </body>

@@ -8,6 +8,7 @@ import RentalDetail from '#models/rental_detail'
 import Category from '#models/category'
 import { createRentalDetailsSchema } from '#validators/create_rental_details_schema'
 import { createProductSchema } from '#validators/create_product_schema'
+import { json } from 'stream/consumers'
 
 export default class RentalsController {
   /**
@@ -42,7 +43,7 @@ export default class RentalsController {
    */
   async store({ request, response }: HttpContext) {
     const payload = await request.validateUsing(createProductSchema)
-        await console.log(request.input('instructions'));
+    await console.log(request.input('instructions'));
 
 
     const categories = request.input('categories') || [];
@@ -56,10 +57,10 @@ export default class RentalsController {
     await newProduct.related('categories').attach(categories.map((id: string) => Number(id)));
 
     await this.uploadFilesToDrive(request, newProduct.id);
-        
+
 
     await this.uploadImagesToDrive(request, newProduct.id);
-    
+
 
     console.log(data);
     return response.redirect().toRoute('admin.dashboard');
@@ -71,16 +72,21 @@ export default class RentalsController {
    */
   async edit({ view, params }: HttpContext) {
     const rental = await Product.query()
-    .where('slug', params.slug)
-    .preload('images')
-    .preload('rentalDetail', (query) => {
-      query.preload('instructions')
-    })
-    .preload('categories').firstOrFail();
+      .where('slug', params.slug)
+      .preload('images')
+      .preload('rentalDetail', (query) => {
+        query.preload('instructions')
+      })
+      .preload('categories').firstOrFail();
+
+    const id = rental.id;
 
     const categories = await Category.query().from('categories').select('*').whereNotNull('allowed_product_types')
     const rentalCategories = categories.filter(category => category.allowed_product_types.includes('rental'))
-    return view.render('rentals/edit', { pageTitle: 'Edit', rental, rentalCategories })
+    const notInProductCategories = await Category.query().where('allowed_product_types', 'rental').whereNotIn('id', (sub) => {
+      sub.from('product_categories').select('category_id').where('product_id', id)
+    })
+    return view.render('rentals/edit', { pageTitle: 'Edit', rental, notInProductCategories })
   }
 
   /**
@@ -90,14 +96,29 @@ export default class RentalsController {
   //uncomment after implementing
   async update({ params, request, response }: HttpContext) {
     const payload = await request.validateUsing(createRentalSchema)
-    const product = await Product.query().where('slug', params.slug).firstOrFail();
+    const product = await Product.findByOrFail('slug', params.slug)
+
     let imageName = request.input('imageUrl'); // Default to existing image name
     if (request.file('imageUrl') !== null) {
       imageName = await this.uploadImagesToDrive(request, product.id); // Upload image to drive
     }
-    const data = { ...payload, image_url: imageName }
 
-    await Product.query().where('slug', params.slug).update(data);
+    const data = { ...payload }
+
+    product.merge(data)
+    await product.save()
+
+    const slugs = request.input('category', [])
+    const slugArray = Array.isArray(slugs) ? slugs : [slugs]
+
+
+
+    const categories = await Category
+      .query()
+      .whereIn('slug', slugArray)
+
+    //await Product.query().where('slug', params.slug).update(data);
+    await product.related('categories').sync(categories.map(c => c.id))
 
     return response.redirect().toRoute('rentals.index');
   }
@@ -156,7 +177,7 @@ export default class RentalsController {
     for (const row of rows) {
       fileOrder++;
       const file = row.file ? row.file : null;
-      const file_Name = row.file_name ? row.file_name : `instruction_${fileOrder}`; 
+      const file_Name = row.file_name ? row.file_name : `instruction_${fileOrder}`;
       let fileName = ''
       console.log(file);
       if (file) {
