@@ -59,7 +59,6 @@ export default class RentalsController {
     await this.uploadImagesToDrive(request, newProduct.id);
 
 
-    console.log(data);
     return response.redirect().toRoute('admin.dashboard');
   }
 
@@ -100,13 +99,11 @@ export default class RentalsController {
     const isVisible = await request.input('is_visible') === '1';
 
     const data = { ...payload, isVisible: isVisible }
-    console.log(data);
 
 
     product.merge(data)
     await product.save()
 
-    console.log(request.files('imageUrl'));
     if (request.files('imageUrl') != null) {
       await this.uploadImagesToDrive(request, product.id); // Upload image to drive
     }
@@ -168,8 +165,6 @@ export default class RentalsController {
 
 
       const dispalyInGallery = request.input('display_in_gallery') === '1' ? true : false;
-      console.log("-----------------")
-      console.log(image)
       ProductImage.create({
         imageUrl: imageName,
         productId: productId,
@@ -180,16 +175,14 @@ export default class RentalsController {
   }
 
   async uploadFilesToDrive(request: any, productId: number) {
-    console.log(request.input('instructions'));
     const product = await Product.find(productId);
-    const rows = request.input('instructions');
+    const rows = request.input('instructions', []);
     let fileOrder = 0;
     for (const row of rows) {
       fileOrder++;
       const file = row.file ? row.file : null;
       const file_Name = row.file_name ? row.file_name : `instruction_${fileOrder}`;
       let fileName = ''
-      console.log(file);
       if (file) {
         fileName = `${product?.productType}_${fileOrder}${product?.itemName.replace(/\s+/g, '_')}.${file.extname}`
         const key = `uploads/${fileName}`

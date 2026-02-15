@@ -150,7 +150,8 @@
         <!-- -->
         <div class="form-check">
             <label for="isVisible" class="form-check-label">Nähtav</label>
-            <input type="checkbox" id="isVisible" name="is_visible" value="1" {{ rental.isVisible ? 'checked' : '' }}   class="form-check-input">
+            <input type="checkbox" id="isVisible" name="is_visible" value="1" {{ rental.isVisible ? 'checked' : '' }}
+                class="form-check-input">
 
             @if(flashMessages.has('inputErrorsBag.is_visible'))
             <div class="error">
@@ -182,7 +183,25 @@
 
 
         <div>
-            <label for="rentalInstructions" class="form-label">Lisa eseme juhised</label>
+            <label for="rentalInstructions" class="form-label">Laenutus eseme juhised</label>
+            <div id="instructions">
+                <div class="input-group mb-3">
+
+                    <input type="file" id="rentalInstructions" name="instructions[0][file]" class="form-control">
+                    <input type="text" id="fileName" name="instructions[0][file_name]" class="form-control mt-2"
+                        placeholder="Anna failile nimi">
+                    <button type="button" class="btn btn-danger mt-2" onclick="removeInstruction(this)">Eemalda</button>
+
+
+                </div>
+
+                <!-- More instructions inputs -->
+
+
+
+
+            </div>
+            <button type="button" class="btn btn-secondary mt-2" onclick="addInstruction()">Lisa juhis</button>
             @if(flashMessages.has('inputErrorsBag.rentalInstructions'))
             <div class="error">
                 @each(error in flashMessages.get('inputErrorsBag.rentalInstructions'))
@@ -192,32 +211,22 @@
             @end
         </div>
 
-        @each(file in rental.rentalDetail.instructions)
 
+        <button type="submit" class="btn btn-primary mt-3">Update Rental</button>
+
+    </form>
+
+    <div>
+        @each(file in rental.rentalDetail.instructions)
         <a href="/storage/uploads/{{file.instructionUrl}}" target="_blank">{{file.fileName}}</a>
+
         <form method="POST" action="{{route('instructions.destroy', { id: file.id })}}?_method=DELETE">
             {{ csrfField() }}
             <input type="hidden" name="instruction_id" value="{{file.id}}">
             <button type="submit" class="btn btn-danger btn-sm">Delete</button>
         </form>
         @endeach
-        <div id="instructions"></div>
+    </div>
 
-        <button type="button" class="btn btn-secondary mt-2" onclick="addInstruction()">Lisa juhis</button>
-        @if(flashMessages.has('inputErrorsBag.rentalInstructions'))
-        <div class="error">
-            @each(error in flashMessages.get('inputErrorsBag.rentalInstructions'))
-            <p>{{error}}</p>
-            @endeach
-        </div>
-        @end
-        </div>
-
-
-
-<div></div>
-        <button type="submit" class="btn btn-primary mt-3">Update Rental</button>
-
-    </form>
 
 </body>
