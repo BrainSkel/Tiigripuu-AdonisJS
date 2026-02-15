@@ -123,7 +123,7 @@ export default class RentalsController {
     //await Product.query().where('slug', params.slug).update(data);
     await product.related('categories').sync(categories.map(c => c.id))
 
-    return response.redirect().toRoute('rentals.index');
+    return response.redirect().toRoute('admin.dashboard');
   }
 
   /**
@@ -136,7 +136,7 @@ export default class RentalsController {
       .firstOrFail();
 
     await rental.delete();
-    return response.redirect().toRoute('rentals.index');
+    return response.redirect().toRoute('admin.dashboard');
   }
 
 

@@ -12,17 +12,17 @@
         <!-- CATEGORY -->
         <div>
             <label for="category" class="form-label">Kategooria</label>
-            <select name="category" id="category" class="form-control" required>
-                <option value="">Select a category</option>
+            Vali kategooriad, mille alla see ese kuulub. Hoia Ctrl klahvi all, et valida mitu kategooriat.
+            <select name="category" id="category" class="form-control" multiple required>
                 @each(category in rentalCategories)
-                <option value="{{category.slug}}">{{category.name}}</option>
+                <option value="{{category.slug}}" {{old('category') && old('category').includes(category.slug) ? 'selected' : ''}}>{{category.name}}</option>
                 @endeach
             </select>
 
             @if(flashMessages.has('inputErrorsBag.category'))
             <div class="error">
                 @each(error in flashMessages.get('inputErrorsBag.category'))
-                <p>{{error}}</p>
+                <p class="text-danger">{{error}}</p>
                 @endeach
             </div>
             @end
@@ -37,7 +37,7 @@
             @if(flashMessages.has('inputErrorsBag.itemName'))
             <div class="error">
                 @each(error in flashMessages.get('inputErrorsBag.itemName'))
-                <p>{{error}}</p>
+                <p class="text-danger">{{error}}</p>
                 @endeach
             </div>
             @end
@@ -55,7 +55,7 @@
                 @if(flashMessages.has('inputErrorsBag.imageUrl'))
                 <div class="error">
                     @each(error in flashMessages.get('inputErrorsBag.imageUrl'))
-                    <p>{{error}}</p>
+                    <p class="text-danger">{{error}}</p>
                     @endeach
                 </div>
                 @end
@@ -64,13 +64,13 @@
 
             <div>
                 <label for="displayInGallery" class="form-check-label">Näita galeriis:</label>
-                <input type="checkbox" id="displayInGallery" name="display_in_gallery" value="0"
+                <input type="checkbox" id="displayInGallery" name="display_in_gallery" value="{{old('display_in_gallery') || '0'}}"
                     class="form-check-input">
 
                 @if(flashMessages.has('inputErrorsBag.displayInGallery'))
                 <div class="error">
                     @each(error in flashMessages.get('inputErrorsBag.displayInGallery'))
-                    <p>{{error}}</p>
+                    <p class="text-danger">{{error}}</p>
                     @endeach
                 </div>
                 @end
@@ -83,12 +83,12 @@
 
         <div>
             <label for="price" class="form-label">Hind:</label>
-            <input type="number" id="price" name="price" step="any" min="0.01" required class="form-control">
+            <input type="number" id="price" name="price" step="any" min="0.01" required class="form-control" value="{{old('price') || ''}}">
 
             @if(flashMessages.has('inputErrorsBag.price'))
             <div class="error">
                 @each(error in flashMessages.get('inputErrorsBag.price'))
-                <p>{{error}}</p>
+                <p class="text-danger">{{error}}</p>
                 @endeach
             </div>
             @end
@@ -98,12 +98,12 @@
         <!-- -->
         <div>
             <label for="description" class="form-label">Kirjeldus:</label>
-            <textarea id="description" name="description" required class="form-control"></textarea>
+            <textarea id="description" name="description" required class="form-control">{{old('description') || ''}}</textarea>
 
             @if(flashMessages.has('inputErrorsBag.description'))
             <div class="error">
                 @each(error in flashMessages.get('inputErrorsBag.description'))
-                <p>{{error}}</p>
+                <p class="text-danger">{{error}}</p>
                 @endeach
             </div>
             @end
@@ -111,12 +111,12 @@
         <!-- -->
         <div>
             <label for="stockAmount" class="form-label">Kogus:</label>
-            <input type="number" id="stockAmount" name="stock_amount" min="0" required class="form-control">
+            <input type="number" id="stockAmount" name="stock_amount" min="0" required class="form-control" value="{{old('stock_amount') || ''}}">
 
             @if(flashMessages.has('inputErrorsBag.stockAmount'))
             <div class="error">
                 @each(error in flashMessages.get('inputErrorsBag.stockAmount'))
-                <p>{{error}}</p>
+                <p class="text-danger">{{error}}</p>
                 @endeach
             </div>
             @end
@@ -125,12 +125,12 @@
         <!-- -->
         <div class="form-check">
             <label for="isVisible" class="form-check-label">Nähtav</label>
-            <input type="checkbox" id="isVisible" name="is_visible" value="1" class="form-check-input">
+            <input type="checkbox" id="isVisible" name="is_visible" value="1" {{old('is_visible') ? 'checked' : ''}} class="form-check-input">
 
             @if(flashMessages.has('inputErrorsBag.isVisible'))
             <div class="error">
                 @each(error in flashMessages.get('inputErrorsBag.isVisible'))
-                <p>{{error}}</p>
+                <p class="text-danger">{{error}}</p>
                 @endeach
             </div>
             @end
@@ -141,12 +141,12 @@
 
         <div>
             <label for="rentalInfo" class="form-label">Ekstra info laenutuse osas:</label>
-            <textarea type="text" id="rentalInfo" name="rental_info" required class="form-control"> </textarea>
+            <textarea type="text" id="rentalInfo" name="rental_info" required class="form-control">{{old('rental_info') || ''}}</textarea>
 
             @if(flashMessages.has('inputErrorsBag.rentalInfo'))
             <div class="error">
                 @each(error in flashMessages.get('inputErrorsBag.rentalInfo'))
-                <p>{{error}}</p>
+                <p class="text-danger">{{error}}</p>
                 @endeach
             </div>
             @end
@@ -177,7 +177,7 @@
             @if(flashMessages.has('inputErrorsBag.rentalInstructions'))
             <div class="error">
                 @each(error in flashMessages.get('inputErrorsBag.rentalInstructions'))
-                <p>{{error}}</p>
+                <p class="text-danger">{{error}}</p>
                 @endeach
             </div>
             @end
