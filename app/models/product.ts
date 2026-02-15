@@ -32,6 +32,7 @@ export default class Product extends BaseModel {
 
 
 
+
   @column()
   declare productType: 'rental' | 'handicraft'
 

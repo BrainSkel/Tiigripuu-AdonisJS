@@ -5,7 +5,7 @@ export const createProductSchema = vine.compile(vine.object({
     price: vine.number().decimal(2).positive(),
     description: vine.string().maxLength(1000),
     stock_amount: vine.number().positive(),
-    is_visible: vine.boolean(),
+    //is_visible: vine.boolean(),
 
 
 

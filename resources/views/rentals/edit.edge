@@ -138,9 +138,9 @@
             <input type="number" id="stockAmount" name="stock_amount" min="0" required class="form-control"
                 value="{{rental.stockAmount}}">
 
-            @if(flashMessages.has('inputErrorsBag.stockAmount'))
+            @if(flashMessages.has('inputErrorsBag.stock_amount'))
             <div class="error">
-                @each(error in flashMessages.get('inputErrorsBag.stockAmount'))
+                @each(error in flashMessages.get('inputErrorsBag.stock_amount'))
                 <p>{{error}}</p>
                 @endeach
             </div>
@@ -150,12 +150,11 @@
         <!-- -->
         <div class="form-check">
             <label for="isVisible" class="form-check-label">Nähtav</label>
-            <input type="checkbox" id="isVisible" name="is_visible" value="{{rental.isVisible ? '1' : '0'}}"
-                class="form-check-input">
+            <input type="checkbox" id="isVisible" name="is_visible" value="1" {{ rental.isVisible ? 'checked' : '' }}   class="form-check-input">
 
-            @if(flashMessages.has('inputErrorsBag.isVisible'))
+            @if(flashMessages.has('inputErrorsBag.is_visible'))
             <div class="error">
-                @each(error in flashMessages.get('inputErrorsBag.isVisible'))
+                @each(error in flashMessages.get('inputErrorsBag.is_visible'))
                 <p>{{error}}</p>
                 @endeach
             </div>

@@ -43,9 +43,6 @@ export default class RentalsController {
    */
   async store({ request, response }: HttpContext) {
     const payload = await request.validateUsing(createProductSchema)
-    await console.log(request.input('instructions'));
-
-
     const categories = request.input('categories') || [];
     const data = { ...payload, product_type: 'rental' }
     const newProduct = await Product.create(data);
@@ -95,18 +92,27 @@ export default class RentalsController {
 
   //uncomment after implementing
   async update({ params, request, response }: HttpContext) {
-    const payload = await request.validateUsing(createRentalSchema)
+    const payload = await request.validateUsing(createProductSchema)
     const product = await Product.findByOrFail('slug', params.slug)
+    const productImages = await product.related('images').query()
 
-    let imageName = request.input('imageUrl'); // Default to existing image name
-    if (request.file('imageUrl') !== null) {
-      imageName = await this.uploadImagesToDrive(request, product.id); // Upload image to drive
-    }
 
-    const data = { ...payload }
+    const isVisible = await request.input('is_visible') === '1';
+
+    const data = { ...payload, isVisible: isVisible }
+    console.log(data);
+
 
     product.merge(data)
     await product.save()
+
+    console.log(request.files('imageUrl'));
+    if (request.files('imageUrl') != null) {
+      await this.uploadImagesToDrive(request, product.id); // Upload image to drive
+    }
+    if (request.input('instructions') != null) {
+      await this.uploadFilesToDrive(request, product.id); // Upload instruction files to drive
+    }
 
     const slugs = request.input('category', [])
     const slugArray = Array.isArray(slugs) ? slugs : [slugs]
@@ -142,11 +148,13 @@ export default class RentalsController {
 
   async uploadImagesToDrive(request: any, productId: number) {
     const product = await Product.find(productId);
+    await product?.load('images');
     const image = request.files('image_url', {
       size: '10mb',
       extnames: ['jpg', 'png', 'jpeg'],
     })
-    let imageOrder = 0;
+    const imgAmount = product?.images.length || 0;
+    let imageOrder = imgAmount;
     for (const img of image) {
       imageOrder++;
       let imageName = ''
@@ -159,8 +167,9 @@ export default class RentalsController {
       }
 
 
-      const dispalyInGallery = request.input('display_in_gallery') === 'on' ? true : false;
-
+      const dispalyInGallery = request.input('display_in_gallery') === '1' ? true : false;
+      console.log("-----------------")
+      console.log(image)
       ProductImage.create({
         imageUrl: imageName,
         productId: productId,
@@ -171,6 +180,7 @@ export default class RentalsController {
   }
 
   async uploadFilesToDrive(request: any, productId: number) {
+    console.log(request.input('instructions'));
     const product = await Product.find(productId);
     const rows = request.input('instructions');
     let fileOrder = 0;
