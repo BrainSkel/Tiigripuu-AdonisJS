@@ -14,7 +14,7 @@ export default class HandicraftDetail extends BaseModel {
   declare productId: number
 
   @column()
-  declare handiworkDetails: string
+  declare handicraftDetails: string
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime

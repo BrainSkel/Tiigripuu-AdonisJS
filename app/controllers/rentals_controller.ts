@@ -1,14 +1,11 @@
 import type { HttpContext } from '@adonisjs/core/http'
-import { createRentalSchema } from '#validators/create_laenutus_schema'
 import Product from '#models/product'
-//import { cuid } from '@adonisjs/core/helpers'
 import ProductImage from '#models/product_image'
 import RentalInstruction from '#models/rental_instruction'
 import RentalDetail from '#models/rental_detail'
 import Category from '#models/category'
 import { createRentalDetailsSchema } from '#validators/create_rental_details_schema'
 import { createProductSchema } from '#validators/create_product_schema'
-import { json } from 'stream/consumers'
 
 export default class RentalsController {
   /**
@@ -78,7 +75,7 @@ export default class RentalsController {
     const id = rental.id;
 
     const categories = await Category.query().from('categories').select('*').whereNotNull('allowed_product_types')
-    const rentalCategories = categories.filter(category => category.allowed_product_types.includes('rental'))
+    //const rentalCategories = categories.filter(category => category.allowed_product_types.includes('rental'))
     const notInProductCategories = await Category.query().where('allowed_product_types', 'rental').whereNotIn('id', (sub) => {
       sub.from('product_categories').select('category_id').where('product_id', id)
     })

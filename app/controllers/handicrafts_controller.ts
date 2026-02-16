@@ -1,8 +1,10 @@
 import { Redirect, type HttpContext } from '@adonisjs/core/http'
 import Product from '#models/product'
-import { createKasitooSchema } from '#validators/create_kasitoo_schema'
-import { cuid } from '@adonisjs/core/helpers'
-import category from '#models/category'
+import Category from '#models/category'
+import { createProductSchema } from '#validators/create_product_schema'
+import { createKasitooDetailsSchema } from '#validators/create_kasitoo_details_schema'
+import HandicraftDetail from '#models/handicraft_detail'
+import ProductImage from '#models/product_image'
 
 export default class HandicraftsController {
   /**
@@ -21,32 +23,32 @@ export default class HandicraftsController {
    * Display form to create a new record
    */
   async create({ view }: HttpContext) {
-    const categories = await category.query().where('product_type', 'handicraft')
-    return view.render('handicrafts/create', { categories, pageTitle: 'Uus kasitöö' })
+    const categories = await Category.query().from('categories').select('*').whereNotNull('allowed_product_types')
+    const handicraftCategories = categories.filter(category => category.allowed_product_types.includes('handicraft'))
+    return view.render('handicrafts/create', { categories, handicraftCategories, pageTitle: 'Uus kasitöö' })
   }
 
   /**
    * Handle form submission for the create action
    */
   async store({ request, response }: HttpContext) {
-    const payload = await request.validateUsing(createKasitooSchema)
+    const payload = await request.validateUsing(createProductSchema)
+    const categories = request.input('categories') || [];
+    const data = { ...payload, product_type: 'handicraft' }
+    const newProduct = await Product.create(data);
+    const payloadDetails = await request.validateUsing(createKasitooDetailsSchema)
 
-    const imageName = await this.uploadImageToDrive(request)
+    await HandicraftDetail.create({
+      productId: newProduct.id,
+      handicraftDetails: payloadDetails.handicraft_details,
+    })
+    await newProduct.related('categories').attach(categories.map((id: string) => Number(id)));
 
-    // Convert form string IDs to numbers for pivot
-    const categoryIds: number[] = (payload.category || []).map(id => Number(id))
+    await this.uploadImagesToDrive(request, newProduct.id);
 
-    const data = {
-      itemName: payload.item_name,
-      price: payload.price,
-      description: payload.description,
-      imageUrl: imageName
-    }
+    return response.redirect().toRoute('admin.dashboard');
 
-    const handicraft = await Product.create(data)
-    await handicraft.related('categories').attach(categoryIds)
 
-    return response.redirect().toRoute('admin.dashboard')
   }
 
 
@@ -62,9 +64,21 @@ export default class HandicraftsController {
    * Edit individual record
    */
   async edit({ params, view }: HttpContext) {
-    const handicrafts = await Product.findBy('slug', params.slug)
+    const handicraft = await Product.query()
+    .where('slug', params.slug)
+    .preload('categories')
+    .preload('images')
+    .preload('handicraftDetail')
+    .firstOrFail();
 
-    return view.render('handicrafts/edit', { pageTitle: 'Edit', handicrafts })
+    const id = handicraft.id;
+
+    //const categories = await Category.query().from('categories').select('*').whereNotNull('allowed_product_types')
+    const notInProductCategories = await Category.query().where('allowed_product_types', 'handicraft').whereNotIn('id', (sub) => {
+      sub.from('product_categories').select('category_id').where('product_id', id)
+    })
+
+    return view.render('handicrafts/edit', { pageTitle: 'Edit', handicraft, notInProductCategories })
   }
 
   /**
@@ -72,44 +86,73 @@ export default class HandicraftsController {
    */
 
   async update({ params, request, response }: HttpContext) {
-    const payload = await request.validateUsing(createKasitooSchema)
-    let imageName = request.input('imageUrl'); // Default to existing image name
-    if (request.file('imageUrl') !== null) {
-      imageName = await this.uploadImageToDrive(request); // Upload image to drive
+    const payload = await request.validateUsing(createProductSchema)
+    const product = await Product.findBy('slug', params.slug)
+    const productImages = await product?.related('images').query()
+  
+    const isVisible = await request.input('is_visible') === '1';
+
+    const data = { ...payload, isVisible }
+
+    product?.merge(data)
+    await product?.save()
+
+    if(request.files('image_url') != null) {
+      await this.uploadImagesToDrive(request, product?.id as number);
     }
-    const data = { ...payload, image_url: imageName }
 
-    await Product.query().where('slug', params.slug).update(data);
+    const slugs = request.input('category', [])
+    const slugArray = Array.isArray(slugs) ? slugs : [slugs];
 
-    return response.redirect().toRoute('handicrafts.index');
+    const categories = await Category
+    .query()
+    .whereIn('slug', slugArray)
+
+    await product?.related('categories').sync(categories.map(c => c.id))
+
+    return response.redirect().toRoute('admin.dashboard');
   }
 
   /**
    * Delete record
    */
   async destroy({ params, response }: HttpContext) {
-    const handiCraft = await Product.findBy('slug', params.slug)
-    await handiCraft?.delete()
-    return response.redirect().toRoute('handicrafts.index')
+    const handicraft = await Product.query().where('slug', params.slug).firstOrFail();
+
+    await handicraft?.delete()
+    return response.redirect().toRoute('admin.dashboard')
   }
 
 
 
-  async uploadImageToDrive(request: any) {
-    const image = request.file('image_url', {
+  async uploadImagesToDrive(request: any, productId: number) {
+    const product = await Product.find(productId);
+    await product?.load('images');
+    const image = request.files('image_url', {
       size: '10mb',
       extnames: ['jpg', 'png', 'jpeg'],
     })
-    let imageName = ''
-    if (image) {
-      imageName = `${cuid()}.${image.extname}`
-      const key = `uploads/${imageName}`
-      await image.moveToDisk(key)
-    } else {
-      imageName = 'default.jpg'
+    const imgAmount = product?.images.length || 0;
+    let imageOrder = imgAmount;
+    for (const img of image) {
+      imageOrder++;
+      let imageName = ''
+      if (img) {
+        imageName = `${product?.productType}_${imageOrder}${product?.itemName.replace(/\s+/g, '_')}.${img.extname}`
+        const key = `uploads/${imageName}`
+        await img.moveToDisk(key)
+      } else {
+        imageName = 'default.jpg'
+      }
+
+
+      const dispalyInGallery = request.input('display_in_gallery') === '1' ? true : false;
+      ProductImage.create({
+        imageUrl: imageName,
+        productId: productId,
+        dispalyInGallery: dispalyInGallery,
+        displayOrder: imageOrder
+      })
     }
-
-    return imageName;
-
   }
 }
