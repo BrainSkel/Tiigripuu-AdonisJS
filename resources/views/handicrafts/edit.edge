@@ -1,28 +1,60 @@
 @include('partials/head')
+<script src="{{asset('resources/js/handicraft.js')}}" defer></script>
+</head>
 
 <body>
     @include('partials/navigation')
 
     <a href="{{route('handicrafts.index')}}">Back</a>
-    <h1>Edit Handicraft: <h3>{{ handicrafts.itemName }}</h3>
+    <h1>Edit handicraft: <h3>{{ handicraft.itemName }}</h3>
     </h1>
+    @each(image in handicraft.images)
 
-    <form method="POST" action="{{route('handicrafts.update', { slug: handicrafts.slug })}}?_method=PATCH"
+    <img src="/storage/uploads/{{image.imageUrl}}" alt="{{handicraft.itemName}}"
+        style="max-width: 200px; margin-top: 10px;">
+    <form method="POST" action="{{route('images.destroy', { id: image.id })}}?_method=DELETE">
+        {{ csrfField() }}
+        <input type="hidden" name="image_id" value="{{image.id}}">
+        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+    </form>
+    @endeach
+
+
+    <form method="POST" action="{{route('handicrafts.update', { slug: handicraft.slug })}}?_method=PATCH"
         enctype="multipart/form-data">
         {{ csrfField() }}
-        <div class="input-group mb-3">
-            <label class="input-group-text" for="category">Options</label>
-            <select class="form-select" id="category" name="category">
-                @each(category in categories)
-                @if(category.productType === 'handicraft')
-                <option value="{{category.name}}">{{category.name}}</option>
-                @end
+
+        <!-- CATEGORY -->
+        <div>
+            <label for="category" class="form-label">Kategooria</label>
+            @each(category in handicraft.categories)
+            <p class="badge rounded-pill bg-secondary me-1">{{category.name}}
+            </p>
+            @endeach
+
+            <select name="category[]" id="category" class="form-control" multiple>
+                @each(category in handicraft.categories)
+                <option value="{{category.slug}}" selected="selected">{{category.name}}</option>
+                @endeach
+                @each(category in notInProductCategories)
+                <option value="{{category.slug}}">{{category.name}}</option>
                 @endeach
             </select>
+
+            @if(flashMessages.has('inputErrorsBag.category'))
+            <div class="error">
+                @each(error in flashMessages.get('inputErrorsBag.category'))
+                <p>{{error}}</p>
+                @endeach
+            </div>
+            @end
         </div>
+
+        <!-- -->
         <div>
-            <label for="itemName">Item Name:</label>
-            <input type="text" id="itemName" name="item_name" value="{{ handicrafts.itemName }}" required>
+            <label for="itemName" class="form-label">Toote nimi:</label>
+            <input type="text" id="itemName" name="item_name" class="form-control" value="{{handicraft.itemName}}">
+
             @if(flashMessages.has('inputErrorsBag.itemName'))
             <div class="error">
                 @each(error in flashMessages.get('inputErrorsBag.itemName'))
@@ -32,22 +64,49 @@
             @end
         </div>
 
-        <div>
-            <label for="imageUrl">Image URL:</label>
-            <img src="/storage/uploads/{{ handicrafts.imageUrl }}" alt="{{ handicrafts.itemName }}" width="150">
-            <input type="file" id="imageUrl" name="image_url" value="/storage/uploads/{{ handicrafts.imageUrl }}">
-            @if(flashMessages.has('inputErrorsBag.imageUrl'))
-            <div class="error">
-                @each(error in flashMessages.get('inputErrorsBag.imageUrl'))
-                <p>{{error}}</p>
-                @endeach
-            </div>
-            @end
-        </div>
+
+        <!-- IAMGES START-->
 
         <div>
-            <label for="price">price:</label>
-            <input type="number" id="price" name="price" value="{{ handicrafts.price}}" required>
+            <div>
+                <label for="imageUrl" class="form-label">Lisa pilt:</label>
+                <input type="file" id="imageUrl" name="image_url" accept=".png, .jpeg, .jpg" multiple
+                    class="form-control">
+
+                @if(flashMessages.has('inputErrorsBag.imageUrl'))
+                <div class="error">
+                    @each(error in flashMessages.get('inputErrorsBag.imageUrl'))
+                    <p>{{error}}</p>
+                    @endeach
+                </div>
+                @end
+            </div>
+            <!-- -->
+
+            <div>
+                <label for="displayInGallery" class="form-check-label">Näita galeriis:</label>
+                <input type="checkbox" id="displayInGallery" name="display_in_gallery"
+                    value="{{handicraft.displayInGallery ? '1' : '0'}}" {{ handicraft.displayInGallery ? 'checked' : '' }}
+                    class="form-check-input">
+
+                @if(flashMessages.has('inputErrorsBag.displayInGallery'))
+                <div class="error">
+                    @each(error in flashMessages.get('inputErrorsBag.displayInGallery'))
+                    <p>{{error}}</p>
+                    @endeach
+                </div>
+                @end
+            </div>
+        </div>
+        <!-- -->
+
+        <!-- IMAGES END-->
+
+
+        <div>
+            <label for="price" class="form-label">Hind:</label>
+            <input type="number" id="price" name="price" step="any" min="0.01" required class="form-control"
+                value="{{handicraft.price}}">
 
             @if(flashMessages.has('inputErrorsBag.price'))
             <div class="error">
@@ -57,9 +116,13 @@
             </div>
             @end
         </div>
+
+
+        <!-- -->
         <div>
-            <label for="description">description:</label>
-            <textarea id="description" name="description" required>{{ handicrafts.description }}</textarea>
+            <label for="description" class="form-label">Kirjeldus:</label>
+            <textarea id="description" name="description" required
+                class="form-control">{{handicraft.description}}</textarea>
 
             @if(flashMessages.has('inputErrorsBag.description'))
             <div class="error">
@@ -68,8 +131,62 @@
                 @endeach
             </div>
             @end
-
         </div>
-        <button type="submit">Confirm edit</button>
+        <!-- -->
+        <div>
+            <label for="stockAmount" class="form-label">Kogus:</label>
+            <input type="number" id="stockAmount" name="stock_amount" min="0" required class="form-control"
+                value="{{handicraft.stockAmount}}">
+
+            @if(flashMessages.has('inputErrorsBag.stock_amount'))
+            <div class="error">
+                @each(error in flashMessages.get('inputErrorsBag.stock_amount'))
+                <p>{{error}}</p>
+                @endeach
+            </div>
+            @end
+        </div>
+
+        <!-- -->
+        <div class="form-check">
+            <label for="isVisible" class="form-check-label">Nähtav</label>
+            <input type="checkbox" id="isVisible" name="is_visible" value="1" {{ handicraft.isVisible ? 'checked' : '' }}
+                class="form-check-input">
+
+            @if(flashMessages.has('inputErrorsBag.is_visible'))
+            <div class="error">
+                @each(error in flashMessages.get('inputErrorsBag.is_visible'))
+                <p>{{error}}</p>
+                @endeach
+            </div>
+            @end
+        </div>
+
+
+        <!-- -->
+
+        <div>
+            <label for="handicraftDetails" class="form-label">Ekstra info kasitöö osas:</label>
+            <textarea type="text" id="handicraftDetails" name="handicraft_details" required class="form-control">{{old('handicraft_details') || handicraft.handicraftDetail?.handicraftDetails}}</textarea>
+
+            @if(flashMessages.has('inputErrorsBag.handicraftDetails'))
+            <div class="error">
+                @each(error in flashMessages.get('inputErrorsBag.handicraftDetails'))
+                <p class="text-danger">{{error}}</p>
+                @endeach
+            </div>
+            @end
+        </div>
+
+        <!-- -->
+
+
+        
+
+
+        <button type="submit" class="btn btn-primary mt-3">Update handicraft</button>
+
+    </form>
+
 
 </body>

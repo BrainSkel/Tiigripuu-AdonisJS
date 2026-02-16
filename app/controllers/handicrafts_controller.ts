@@ -87,8 +87,11 @@ export default class HandicraftsController {
 
   async update({ params, request, response }: HttpContext) {
     const payload = await request.validateUsing(createProductSchema)
-    const product = await Product.findBy('slug', params.slug)
-    const productImages = await product?.related('images').query()
+    const product = await Product.query().where('slug', params.slug).firstOrFail();
+    const detailsPayload = await request.validateUsing(createKasitooDetailsSchema)
+    console.log(detailsPayload)
+    product.handicraftDetail?.merge({ handicraftDetails: detailsPayload.handicraft_details }).save()
+
   
     const isVisible = await request.input('is_visible') === '1';
 
@@ -96,6 +99,8 @@ export default class HandicraftsController {
 
     product?.merge(data)
     await product?.save()
+
+    
 
     if(request.files('image_url') != null) {
       await this.uploadImagesToDrive(request, product?.id as number);
@@ -107,6 +112,8 @@ export default class HandicraftsController {
     const categories = await Category
     .query()
     .whereIn('slug', slugArray)
+
+    //await product?.related('handicraftDetail').save(productDetails)
 
     await product?.related('categories').sync(categories.map(c => c.id))
 

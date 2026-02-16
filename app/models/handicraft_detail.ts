@@ -4,13 +4,11 @@ import type { BelongsTo } from '@adonisjs/lucid/types/relations'
 import Product from './product.js'
 
 export default class HandicraftDetail extends BaseModel {
-  @column({ isPrimary: true })
-  declare id: number
 
   @belongsTo(() => Product)
   declare product: BelongsTo<typeof Product>
 
-  @column()
+  @column({ columnName: 'product_id', isPrimary: true })
   declare productId: number
 
   @column()

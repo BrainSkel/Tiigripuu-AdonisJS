@@ -89,8 +89,9 @@ export default class RentalsController {
   //uncomment after implementing
   async update({ params, request, response }: HttpContext) {
     const payload = await request.validateUsing(createProductSchema)
-    const product = await Product.findByOrFail('slug', params.slug)
-    const productImages = await product.related('images').query()
+    const product = await Product.query().where('slug', params.slug).preload('rentalDetail').firstOrFail();
+  const detailsPayload = await request.validateUsing(createRentalDetailsSchema)
+  product.rentalDetail?.merge({ rentalInfo: detailsPayload.rental_info }).save();
 
 
     const isVisible = await request.input('is_visible') === '1';
