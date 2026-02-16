@@ -9,7 +9,7 @@
                 @each(handicraft in handicrafts)
                 <div class="col">
                     <div class="card shadow-sm">
-                        <img src="/storage/uploads/{{handicraft.imageUrl}}" class="card-img-top" alt="{{handicraft.itemName}}">
+                        <img src="/storage/uploads/{{handicraft.images[0].imageUrl}}" class="card-img-top" alt="{{handicraft.itemName}}">
                         <div class="card-body">
                             <h3><a href="{{route('handicrafts.show', { slug: handicraft.slug })}}">{{handicraft.itemName}}</a></h3>
                             <p class="card-text">{{handicraft.description}}</p>
@@ -20,7 +20,7 @@
                                         {{ csrfField() }}
                                         <button type="submit" class="btn btn-sm btn-outline-secondary">Delete</button>
                                     </form>
-                                    <a type="button" class="btn btn-sm btn-outline-secondary" href="{{route('orders.create', { type: 'handiwork', slug: handicraft.slug})}}">Osta</a>
+                                    <a type="button" class="btn btn-sm btn-outline-secondary" href="{{route('orders.create', { type: 'handicraft', slug: handicraft.slug})}}">Osta</a>
                                 </div>
                             </div>
                         </div>

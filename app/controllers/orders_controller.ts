@@ -2,6 +2,8 @@ import type { HttpContext } from '@adonisjs/core/http'
 import Product from '#models/product';
 import Order from '#models/order'
 import { createOrderSchema } from '#validators/create_order_schema';
+import { createCustomerSchema } from '#validators/create_customer_schema';
+import Customer from '#models/customer';
 
 export default class OrdersController {
   /**
@@ -14,27 +16,40 @@ export default class OrdersController {
    */
   async create({ view, params }: HttpContext) {
 
-    const productType = params.type;
+    const productType = await params.type;
+    console.log(productType);
     let order = null;
     if( productType == "rental") {
-      order = await Product.query().where('product_type', 'rental').where('slug', params.slug).first()
+      order = await Product.query().where('product_type', 'rental').where('slug', params.slug).preload('rentalDetail').preload('images').preload('categories').firstOrFail()
     } else if (productType == "handicraft") {
-      order = await Product.query().where('product_type', 'handicraft').where('slug', params.slug).first()
+      order = await Product.query().where('product_type', 'handicraft').where('slug', params.slug).preload('handicraftDetail').preload('images').preload('categories').firstOrFail()
     } else if (productType == "custom_handicraft") {
       console.log("No custom_handicraft created yet")
+    } else {
+      console.log("create open error")
     }
 
+    //!!order. total price
+
+    await console.log(order);
     return view.render('orders/create', {pageTitle: "Order", order, productType })
+
   }
 
   /**
    * Handle form submission for the create action
    */
   async store({ request, response }: HttpContext) {
-    const payload = await request.validateUsing(createOrderSchema)
+    const orderPayload = await request.validateUsing(createOrderSchema)
+    const customerPayload = await request.validateUsing(createCustomerSchema)
 
-    await Order.create(payload);
-    console.log(response)
+    //!!const totalPrice = request.input('total_price');
+
+
+    const order = await Order.create(orderPayload);
+    const customerData = await {...customerPayload, orders: order.id}
+    //!! Customer.create(customerData);
+    console.log(orderPayload)
 
     response.redirect().toRoute('admin.dashboard')
 

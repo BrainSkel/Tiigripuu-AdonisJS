@@ -15,7 +15,7 @@ export default class HandicraftsController {
     .where('product_type', 'handicraft')
     .preload('categories', (query) => {
       query.pivotColumns(['product_id'])
-    })
+    }).preload('images')
     return view.render('handicrafts/view', { handicrafts, pageTitle: 'Kasitöö' })
   }
 
