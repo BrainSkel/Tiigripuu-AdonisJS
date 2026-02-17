@@ -11,7 +11,9 @@ export default class extends BaseSchema {
       table.integer('product_id').unsigned().references('id').inTable('products')
       table.integer('order_id').unsigned().references('id').inTable('orders').onDelete('CASCADE')
       table.integer('quantity').notNullable().defaultTo(1)
-      table.decimal('price_at_purchase', 10, 2).notNullable()
+      
+      table.decimal('unit_price', 10, 2).notNullable()
+      table.decimal('total_price', 10, 2).notNullable()
 
       table.timestamp('created_at')
       table.timestamp('updated_at')

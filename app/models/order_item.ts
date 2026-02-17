@@ -24,7 +24,10 @@ export default class OrderItem extends BaseModel {
   declare quantity: number
 
   @column()
-  declare priceAtPurchase: number
+  declare unitPrice: number
+
+  @column()
+  declare totalPrice: number
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
