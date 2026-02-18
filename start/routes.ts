@@ -13,6 +13,7 @@ import ImagesController from '#controllers/images_controller';
 import OrdersController from '#controllers/orders_controller';
 import RentalsController from '#controllers/rentals_controller';
 import InstructionsController from '#controllers/instructions_controller';
+import ShoppingCartsController from '#controllers/shopping_carts_controller';
 import Order from '#models/order';
 import router from '@adonisjs/core/services/router'
 
@@ -31,6 +32,9 @@ router.resource('images', ImagesController).params({
 })
 router.resource('instructions', InstructionsController).params({
     instructions: 'id',
+})
+router.resource('shopping-carts', ShoppingCartsController).params({
+    'shopping-carts': 'id',
 })
 
 
