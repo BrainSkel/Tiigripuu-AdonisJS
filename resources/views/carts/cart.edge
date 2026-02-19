@@ -11,5 +11,17 @@
         </div>
         <small class="opacity-50 text-nowrap">Hind: {{cartItem.product.price}}€</small>
     </div>
-</div>
-@endeach
+    <div class="d-flex gap-2 w-100 justify-content-between">
+        <div>
+            <h6 class="mb-0">Kogus: {{cartItem.quantity}}</h6>
+            <form action="{{route('shopping_carts.update', {id: cartItem.id })}}?_method=PATCH" method="POST"
+                style="display:inline" class="btn-group">
+                {{ csrfField() }}
+
+                <input type="number" name="quantity" id="quantity" value="{{cartItem.quantity}}" min="0"
+                    class="form-control form-control-sm w-25 d-inline-block">
+                <button type="submit" class="btn btn-sm btn-outline-secondary">Uuenda kogust</button>
+            </form>
+        </div>
+    </div>
+    @endeach

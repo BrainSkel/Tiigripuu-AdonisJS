@@ -2,7 +2,7 @@
 import Cart from '#models/cart';
 import CartItem from '#models/cart_item';
 import { addShoppingCartItem } from '#validators/add_shopping_cart_item'
-import type { HttpContext } from '@adonisjs/core/http'
+import { Redirect, type HttpContext } from '@adonisjs/core/http'
 import { randomUUID } from 'node:crypto'
 
 export default class ShoppingCartsController {
@@ -11,7 +11,9 @@ export default class ShoppingCartsController {
    */
   async index({ params, view, request, response }: HttpContext) {
     let cart;
-    if (!request.cookie('cartKey')) {
+    const cartExsists = await Cart.query().where('cartKey', request.cookie('cartKey')).first();
+    if (!request.cookie('cartKey') || !cartExsists) {
+      response.clearCookie('cartKey');
       const cartKey = randomUUID();
       cart = await Cart.create({ cartKey: cartKey, status: 'active'});
       response.cookie('cartKey', cartKey, {httpOnly: true, maxAge: '5d'})
@@ -67,20 +69,24 @@ export default class ShoppingCartsController {
   /**
    * Handle form submission for the edit action
    */
-  async update({ params, request }: HttpContext) {
+  async update({ params, request, response }: HttpContext) {
 
     const product = params.id;
-    const payload = await request.validateUsing(addShoppingCartItem);
-    const cartItem = await CartItem.findByOrFail('productId', product);
+    //const payload = await request.validateUsing(addShoppingCartItem);
+    const cartItem = await CartItem.findByOrFail('id', product);
+    const quantity = request.input('quantity');
 
     //add removing item from cart if quantity is 0
-    if (payload.quantity === 0) {
+    if (quantity == 0) {
       await cartItem.delete();
-      return true;
+      console.log('Item removed from cart');
+      return response.redirect().back();
     }
-    cartItem.quantity = payload.quantity;
-    await cartItem.save();
-    return true;
+
+    cartItem.quantity = quantity
+
+    await cartItem.merge({ quantity: cartItem.quantity }).save();
+    return response.redirect().back();
   }
 
   /**
