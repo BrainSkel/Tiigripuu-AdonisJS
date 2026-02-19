@@ -1,12 +1,28 @@
+
+import Cart from '#models/cart';
 import CartItem from '#models/cart_item';
 import { addShoppingCartItem } from '#validators/add_shopping_cart_item'
 import type { HttpContext } from '@adonisjs/core/http'
+import { randomUUID } from 'node:crypto'
 
 export default class ShoppingCartsController {
   /**
    * Display a list of resource
    */
-  //async index({}: HttpContext) {}
+  async index({ params, view, request, response }: HttpContext) {
+    let cart;
+    if (!request.cookie('cartKey')) {
+      const cartKey = randomUUID();
+      cart = await Cart.create({ cartKey: cartKey, status: 'active'});
+      response.cookie('cartKey', cartKey, {httpOnly: true, maxAge: '5d'})
+    } else {
+      const cartKey = request.cookie('cartKey');
+      cart = await Cart.query().where('cartKey', cartKey).preload('items').firstOrFail();
+    }
+
+      
+    return view.render('carts/cart', { pageTitle: 'Ostukorv', cart })
+  }
 
   /**
    * Display form to create a new record
@@ -21,8 +37,8 @@ export default class ShoppingCartsController {
 
     const product = await request.validateUsing(addShoppingCartItem);
     await CartItem.create({
-        productId: product.productId,
-        quantity: product.quantity
+      productId: product.productId,
+      quantity: product.quantity
     })
     return true;
   }
@@ -30,10 +46,10 @@ export default class ShoppingCartsController {
   /**
    * Show individual record
    */
-  async show({ params }: HttpContext) {}
+  async show({ params }: HttpContext) { }
 
   //add later page to show detailed shopping cart with all items and total price
-  
+
 
   /**
    * Edit individual record
@@ -51,8 +67,8 @@ export default class ShoppingCartsController {
 
     //add removing item from cart if quantity is 0
     if (payload.quantity === 0) {
-        await cartItem.delete();
-        return true;
+      await cartItem.delete();
+      return true;
     }
     cartItem.quantity = payload.quantity;
     await cartItem.save();

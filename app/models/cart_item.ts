@@ -1,5 +1,8 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column } from '@adonisjs/lucid/orm'
+import { BaseModel, belongsTo, column } from '@adonisjs/lucid/orm'
+import type { BelongsTo } from '@adonisjs/lucid/types/relations'
+import Cart from './cart.js'
+import Product from './product.js'
 
 export default class CartItem extends BaseModel {
   @column({ isPrimary: true })
@@ -8,6 +11,13 @@ export default class CartItem extends BaseModel {
   @column()
   declare cartId: number
 
+  @belongsTo(() => Cart)
+  declare cart: BelongsTo<typeof Cart>
+
+
+  @belongsTo(()=> Product)
+  declare product: BelongsTo<typeof Product>
+  
   @column()
   declare productId: number
 

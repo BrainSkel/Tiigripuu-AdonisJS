@@ -7,7 +7,7 @@ export default class extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
 
-      table.string('session_id').notNullable().unique()
+      table.string('cart_key').notNullable().unique()
       table.enum('status', ['active', 'completed', 'abandoned']).defaultTo('active')
       table.timestamp('expires_at').nullable()
 
