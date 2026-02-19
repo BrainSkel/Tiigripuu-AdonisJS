@@ -24,13 +24,13 @@
                                 </div>
                                 @endeach
                             </div>
-                            <button class="carousel-control-prev" type="button"
-                                data-bs-target="#carouselExample" data-bs-slide="prev">
+                            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample"
+                                data-bs-slide="prev">
                                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                                 <span class="visually-hidden">Previous</span>
                             </button>
-                            <button class="carousel-control-next" type="button"
-                                data-bs-target="#carouselExample" data-bs-slide="next">
+                            <button class="carousel-control-next" type="button" data-bs-target="#carouselExample"
+                                data-bs-slide="next">
                                 <span class="carousel-control-next-icon" aria-hidden="true"></span>
                                 <span class="visually-hidden">Next</span>
                             </button>
@@ -45,6 +45,17 @@
 
                         </div>
                     </div>
+                </div>
+                <div class="col">
+                    <form action="{{route('shopping_carts.store', {productId: handicraft.id })}}?_method=POST"
+                        method="POST" style="display:inline" class="btn-group">
+                        {{ csrfField() }}
+                        <input type="hidden" name="productId" value="{{handicraft.id}}">
+                        <input type="number" name="quantity" id="quantity" value="1" min="1"
+                            class="form-control form-control-sm w-25 d-inline-block">
+                        <button type="submit" class="btn btn-sm btn-outline-secondary">Lisa ostukorvi</button>
+                    </form>
+
                 </div>
 
             </div>

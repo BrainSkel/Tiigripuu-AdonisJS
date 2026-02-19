@@ -10,7 +10,8 @@
                 <div class="col">
                     <div class="card shadow-sm">
                         @if(rental.images.length > 0)
-                        <img src="/storage/uploads/{{rental.images[0].imageUrl}}" class="card-img-top" alt="{{rental.itemName}}">
+                        <img src="/storage/uploads/{{rental.images[0].imageUrl}}" class="card-img-top"
+                            alt="{{rental.itemName}}">
                         @endif
                         <div class="card-body">
                             <h3><a href="{{route('rentals.show', { slug: rental.slug })}}">{{rental.itemName}}</a></h3>
@@ -23,6 +24,16 @@
                                         method="POST" style="display:inline" class="btn-group">
                                         {{ csrfField() }}
                                         <button type="submit" class="btn btn-sm btn-outline-secondary">Delete</button>
+                                    </form>
+                                    <form
+                                        action="{{route('shopping_carts.store', {productId: rental.id })}}?_method=POST"
+                                        method="POST" style="display:inline" class="btn-group">
+                                        {{ csrfField() }}
+                                        <input type="hidden" name="productId" value="{{rental.id}}">
+                                        <input type="number" name="quantity" id="quantity" value="1" min="1"
+                                            class="form-control form-control-sm w-25 d-inline-block">
+                                        <button type="submit" class="btn btn-sm btn-outline-secondary">Lisa
+                                            ostukorvi</button>
                                     </form>
                                 </div>
                             </div>

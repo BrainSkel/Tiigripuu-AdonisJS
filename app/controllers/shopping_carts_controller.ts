@@ -17,7 +17,12 @@ export default class ShoppingCartsController {
       response.cookie('cartKey', cartKey, {httpOnly: true, maxAge: '5d'})
     } else {
       const cartKey = request.cookie('cartKey');
-      cart = await Cart.query().where('cartKey', cartKey).preload('items').firstOrFail();
+      cart = await Cart.query().where('cartKey', cartKey).preload('items', (query) => {
+          query.preload('product', (productQuery) => {
+            productQuery.preload('images')
+          })
+        }
+    ).firstOrFail();
     }
 
       
@@ -36,9 +41,12 @@ export default class ShoppingCartsController {
   async store({ request }: HttpContext) {
 
     const product = await request.validateUsing(addShoppingCartItem);
+    const cartKey = request.cookie('cartKey');
+    const cart = await Cart.query().where('cartKey', cartKey).firstOrFail();
     await CartItem.create({
       productId: product.productId,
-      quantity: product.quantity
+      quantity: product.quantity,
+      cartId: cart.id
     })
     return true;
   }

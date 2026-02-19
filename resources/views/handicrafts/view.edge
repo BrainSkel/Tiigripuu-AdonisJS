@@ -20,7 +20,12 @@
                                         {{ csrfField() }}
                                         <button type="submit" class="btn btn-sm btn-outline-secondary">Delete</button>
                                     </form>
-                                    <a type="button" class="btn btn-sm btn-outline-secondary" href="{{route('orders.create', { type: 'handicraft', slug: handicraft.slug})}}">Osta</a>
+                                    <form action="{{route('shopping_carts.store', {productId: handicraft.id })}}?_method=POST" method="POST" style="display:inline" class="btn-group">
+                                        {{ csrfField() }}
+                                        <input type="hidden" name="productId" value="{{handicraft.id}}">
+                                        <input type="number" name="quantity" id="quantity" value="1" min="1" class="form-control form-control-sm w-25 d-inline-block">
+                                        <button type="submit" class="btn btn-sm btn-outline-secondary">Lisa ostukorvi</button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
