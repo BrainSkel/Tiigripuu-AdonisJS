@@ -11,8 +11,15 @@ export default class ShoppingCartsController {
    */
   async index({ params, view, request, response }: HttpContext) {
     let cart;
-    const cartExsists = await Cart.query().where('cartKey', request.cookie('cartKey')).first();
-    if (!request.cookie('cartKey') || !cartExsists) {
+    const cookieKey = request.cookie('cartKey')
+
+    if (cookieKey) {
+      cart = await Cart.query().where('cartKey', request.cookie('cartKey')).first();
+
+
+    }
+
+    if (!cookieKey || !cart) {
       response.clearCookie('cartKey');
       const cartKey = randomUUID();
       cart = await Cart.create({ cartKey: cartKey, status: 'active'});
@@ -40,7 +47,7 @@ export default class ShoppingCartsController {
   /**
    * Handle form submission for the create action
    */
-  async store({ request }: HttpContext) {
+  async store({ request, response }: HttpContext) {
 
     const product = await request.validateUsing(addShoppingCartItem);
     const cartKey = request.cookie('cartKey');
@@ -50,7 +57,7 @@ export default class ShoppingCartsController {
       quantity: product.quantity,
       cartId: cart.id
     })
-    return true;
+    return response.redirect().back();
   }
 
   /**
