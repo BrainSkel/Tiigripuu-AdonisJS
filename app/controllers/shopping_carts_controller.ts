@@ -99,10 +99,10 @@ export default class ShoppingCartsController {
   /**
    * Delete record
    */
-  async destroy({ params }: HttpContext) {
+  async destroy({ params, response }: HttpContext) {
     const product = params.id;
-    const cartItem = await CartItem.findByOrFail('productId', product);
+    const cartItem = await CartItem.findByOrFail('id', product);
     await cartItem.delete();
-    return true;
+    return response.redirect().back();
   }
 }
