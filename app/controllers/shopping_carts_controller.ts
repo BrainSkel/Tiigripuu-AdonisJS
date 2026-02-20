@@ -51,12 +51,27 @@ export default class ShoppingCartsController {
 
     const product = await request.validateUsing(addShoppingCartItem);
     const cartKey = request.cookie('cartKey');
-    const cart = await Cart.query().where('cartKey', cartKey).firstOrFail();
+    const cart = await Cart.query().where('cartKey', cartKey).preload('items').firstOrFail();
+    console.log(cart.items)
+
+    const existingItem = cart.items.find(
+      (item) => item.productId == product.productId
+    )
+
+    if (existingItem) {
+      existingItem.quantity += product.quantity;
+      existingItem.save()
+
+    } else {
+      
     await CartItem.create({
       productId: product.productId,
       quantity: product.quantity,
       cartId: cart.id
     })
+
+
+    }
     return response.redirect().back();
   }
 
