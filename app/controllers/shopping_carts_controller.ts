@@ -78,8 +78,34 @@ export default class ShoppingCartsController {
   /**
    * Show individual record
    */
-  async show({ params }: HttpContext) { }
+  async show({ params, view, request, response }: HttpContext) {
+    let cart;
+    const cookieKey = request.cookie('cartKey')
 
+    if (cookieKey) {
+      cart = await Cart.query().where('cartKey', request.cookie('cartKey')).first();
+
+
+    }
+
+    if (!cookieKey || !cart) {
+      response.clearCookie('cartKey');
+      const cartKey = randomUUID();
+      cart = await Cart.create({ cartKey: cartKey, status: 'active'});
+      response.cookie('cartKey', cartKey, {httpOnly: true, maxAge: '5d'})
+    } else {
+      const cartKey = request.cookie('cartKey');
+      cart = await Cart.query().where('cartKey', cartKey).preload('items', (query) => {
+          query.preload('product', (productQuery) => {
+            productQuery.preload('images')
+          })
+        }
+    ).firstOrFail();
+    }
+
+      
+    return view.render('carts/cart', { pageTitle: 'Ostukorv', cart })
+  }
   //add later page to show detailed shopping cart with all items and total price
 
 
