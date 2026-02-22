@@ -38,7 +38,7 @@ router.resource('shopping-carts', ShoppingCartsController).params({
 })
 
 
-router.get('/orders/:type/:slug/create', [OrdersController, 'create']).as('orders.create')
+router.get('/orders/create', [OrdersController, 'create']).as('orders.create')
 router.post('/orders', [OrdersController, 'store']).as('orders.store')
 router.get('/orders/edit/:orderId', [OrdersController, 'edit']).as('orders.edit')
 

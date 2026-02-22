@@ -4,35 +4,51 @@ import Order from '#models/order'
 import { createOrderSchema } from '#validators/create_order_schema';
 import { createCustomerSchema } from '#validators/create_customer_schema';
 import Customer from '#models/customer';
+import Cart from '#models/cart';
+import CartItem from '#models/cart_item';
 
 export default class OrdersController {
   /**
    * Display a list of resource
    */
-  async index({}: HttpContext) {}
+  async index({ view }: HttpContext) { }
 
   /**
    * Display form to create a new record
    */
-  async create({ view, params }: HttpContext) {
+  async create({ view, params, request }: HttpContext) {
+    const cartKey = request.cookie('cartKey')
+    const shoppingCart = await Cart.query()
+      .where('cartKey', cartKey)
+      .preload('items', (query) => { query.preload('product') })
+      .firstOrFail();
 
-    const productType = await params.type;
-    console.log(productType);
-    let order = null;
-    if( productType == "rental") {
-      order = await Product.query().where('product_type', 'rental').where('slug', params.slug).preload('rentalDetail').preload('images').preload('categories').firstOrFail()
-    } else if (productType == "handicraft") {
-      order = await Product.query().where('product_type', 'handicraft').where('slug', params.slug).preload('handicraftDetail').preload('images').preload('categories').firstOrFail()
-    } else if (productType == "custom_handicraft") {
-      console.log("No custom_handicraft created yet")
-    } else {
-      console.log("create open error")
+    let orders = [];
+
+
+
+    for (const item in shoppingCart.items) {
+      let orderProduct;
+      const product = shoppingCart.items[item].product
+      if (product.productType == "rental") {
+        orderProduct = await Product.query().where('product_type', 'rental').where('slug', product.slug).preload('rentalDetail').preload('images').preload('categories').firstOrFail()
+      } else if (product.productType == "handicraft") {
+        orderProduct = await Product.query().where('product_type', 'handicraft').where('slug', product.slug).preload('handicraftDetail').preload('images').preload('categories').firstOrFail()
+      } else if (product.productType == "custom_handicraft") {
+        console.log("No custom_handicraft created yet")
+      } else {
+        console.log("create open error")
+      }
+
+
+      orders.push(orderProduct)
     }
 
     //!!order. total price
 
-    await console.log(order);
-    return view.render('orders/create', {pageTitle: "Order", order, productType })
+    await console.log();
+    return view.render('orders/create', { pageTitle: "Order", orders })
+    //return orders;
 
   }
 
@@ -47,7 +63,7 @@ export default class OrdersController {
 
 
     const order = await Order.create(orderPayload);
-    const customerData = await {...customerPayload, orders: order.id}
+    const customerData = await { ...customerPayload, orders: order.id }
     //!! Customer.create(customerData);
     console.log(orderPayload)
 
@@ -58,25 +74,26 @@ export default class OrdersController {
   /**
    * Show individual record
    */
-  async show({ params }: HttpContext) {}
+  async show({ params }: HttpContext) { }
 
   /**
    * Edit individual record
    */
   async edit({ params, view }: HttpContext) {
     const order = await Order.query()
-    .where('id', params.id)
-    .preload('items', (itemQuery) => {
-      itemQuery.preload('product', (productQuery) => {
-        productQuery.preload('categories', (categoryQuery) => {
-          categoryQuery.pivotColumns(['product_id'])
-        }).preload('images')
-    })})
-    .firstOrFail()
+      .where('id', params.id)
+      .preload('items', (itemQuery) => {
+        itemQuery.preload('product', (productQuery) => {
+          productQuery.preload('categories', (categoryQuery) => {
+            categoryQuery.pivotColumns(['product_id'])
+          }).preload('images')
+        })
+      })
+      .firstOrFail()
     const productType = await order.items[0].product.productType
 
     let product = null;
-    if(  productType == "rental") {
+    if (productType == "rental") {
       product = await Product.query().where('product_type', 'rental').where('slug', order.items[0].product.slug).first()
     } else if (productType == "handicraft") {
       product = await Product.query().where('product_type', 'handicraft').where('slug', order.items[0].product.slug).first()
@@ -86,7 +103,7 @@ export default class OrdersController {
       console.log("edit open error")
     }
 
-    return view.render('orders/edit', {pageTitle: 'Edit', order, product})
+    return view.render('orders/edit', { pageTitle: 'Edit', order, product })
 
   }
 
