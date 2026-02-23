@@ -6,6 +6,8 @@ import { createCustomerSchema } from '#validators/create_customer_schema';
 import Customer from '#models/customer';
 import Cart from '#models/cart';
 import CartItem from '#models/cart_item';
+import mail from '@adonisjs/mail/services/main'
+import env from '#start/env'
 
 export default class OrdersController {
   /**
@@ -59,6 +61,8 @@ export default class OrdersController {
     const orderPayload = await request.validateUsing(createOrderSchema)
     const customerPayload = await request.validateUsing(createCustomerSchema)
 
+
+
     //!!const totalPrice = request.input('total_price');
 
 
@@ -66,6 +70,15 @@ export default class OrdersController {
     const customerData = await { ...customerPayload, orders: order.id }
     //!! Customer.create(customerData);
     console.log(orderPayload)
+
+    const sentOrder = await Order.query().where('id', order.id)
+    await mail.send((message) => {
+      message
+        .to(customerPayload.customer_email)
+        .from(env.get('MAIL_SENDER'))
+        .subject('Teie tellimus OrderNR TBA')
+        .htmlView('emails/create_order_to_customer')
+    })
 
     response.redirect().toRoute('admin.dashboard')
 
