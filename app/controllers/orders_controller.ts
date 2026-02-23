@@ -58,27 +58,46 @@ export default class OrdersController {
    * Handle form submission for the create action
    */
   async store({ request, response }: HttpContext) {
+
     const orderPayload = await request.validateUsing(createOrderSchema)
     const customerPayload = await request.validateUsing(createCustomerSchema)
+    const cartKey = request.cookie('cartKey')
+    const shoppingCart = await Cart.query()
+      .where('cartKey', cartKey)
+      .preload('items', (query) => { query.preload('product') })
+      .firstOrFail();
+
+
+    let totalPrice = 0;
+    for (const item in shoppingCart.items) {
+      totalPrice += shoppingCart.items[item].product.price * shoppingCart.items[item].quantity
+
+    }
+    console.log(totalPrice)
+
+
+
+
 
 
 
     //!!const totalPrice = request.input('total_price');
 
+    const customerData = await { ...customerPayload }
+    const customer = await Customer.create(customerData);
+    const orderValues = await { ...orderPayload, totalPrice: totalPrice, customerId: customer.id }
 
-    const order = await Order.create(orderPayload);
-    const customerData = await { ...customerPayload, orders: order.id }
-    //!! Customer.create(customerData);
-    console.log(orderPayload)
+    const order = await Order.create(orderValues);
+
 
     const sentOrder = await Order.query().where('id', order.id)
-    await mail.send((message) => {
-      message
-        .to(customerPayload.customer_email)
-        .from(env.get('MAIL_SENDER'))
-        .subject('Teie tellimus OrderNR TBA')
-        .htmlView('emails/create_order_to_customer')
-    })
+    // await mail.send((message) => {
+    //   message
+    //     .to(customerPayload.customer_email)
+    //     .from(env.get('MAIL_SENDER'))
+    //     .subject('Teie tellimus OrderNR TBA')
+    //     .htmlView('emails/create_order_to_customer')
+    // })
 
     response.redirect().toRoute('admin.dashboard')
 
