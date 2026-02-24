@@ -8,6 +8,7 @@ import Cart from '#models/cart';
 import CartItem from '#models/cart_item';
 import mail from '@adonisjs/mail/services/main'
 import env from '#start/env'
+import OrderItem from '#models/order_item';
 
 export default class OrdersController {
   /**
@@ -54,6 +55,34 @@ export default class OrdersController {
 
   }
 
+  async checkAvailability(cartItem: any, orderId: number) {
+    const item = await CartItem.query().where('id', cartItem).preload('product').firstOrFail()
+    console.log('test------------------')
+    if(item.quantity <= item.product.stockAmount) {
+      //console.log(item)
+      const totalPrice = item.quantity * item.product.price
+      console.log('0-------------------------------------------0')
+      await OrderItem.create({
+
+        orderId: orderId,
+        productId: item.productId,
+        quantity: item.quantity,
+        unitPrice: item.product.price,
+        totalPrice: totalPrice
+      }
+
+      )
+      console.log('-------------------------------------------')
+    }
+    
+    //If quantity less, return message saying not enoguh items in stock
+
+  }
+
+
+
+
+
   /**
    * Handle form submission for the create action
    */
@@ -81,6 +110,7 @@ export default class OrdersController {
 
 
 
+
     //!!const totalPrice = request.input('total_price');
 
     const customerData = await { ...customerPayload }
@@ -88,6 +118,11 @@ export default class OrdersController {
     const orderValues = await { ...orderPayload, totalPrice: totalPrice, customerId: customer.id }
 
     const order = await Order.create(orderValues);
+
+    for(const productI in shoppingCart.items) {
+      await this.checkAvailability(shoppingCart.items[productI].id, order.id)
+
+    }
 
 
     const sentOrder = await Order.query().where('id', order.id)
@@ -114,7 +149,7 @@ export default class OrdersController {
    */
   async edit({ params, view }: HttpContext) {
     const order = await Order.query()
-      .where('id', params.id)
+      .where('id', params.orderId)
       .preload('items', (itemQuery) => {
         itemQuery.preload('product', (productQuery) => {
           productQuery.preload('categories', (categoryQuery) => {
@@ -123,6 +158,8 @@ export default class OrdersController {
         })
       })
       .firstOrFail()
+
+      
     const productType = await order.items[0].product.productType
 
     let product = null;
