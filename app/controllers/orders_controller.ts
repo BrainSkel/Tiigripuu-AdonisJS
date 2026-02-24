@@ -98,6 +98,7 @@ export default class OrdersController {
     //     .subject('Teie tellimus OrderNR TBA')
     //     .htmlView('emails/create_order_to_customer')
     // })
+    this.deleteCartAndItems(cartKey)
 
     response.redirect().toRoute('admin.dashboard')
 
@@ -149,4 +150,12 @@ export default class OrdersController {
    * Delete record
    */
   //async destroy({ params }: HttpContext) {}
+
+  async deleteCartAndItems(cartKey: any) {
+    const cart = await Cart.query().where("cartKey", cartKey).first()
+    cart?.delete();
+    console.log('Cart deleted')
+
+  
+  }
 }
