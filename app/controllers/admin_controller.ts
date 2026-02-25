@@ -10,8 +10,10 @@ import Category from '#models/category'
 
 export default class AdminController {
   public async orders({ view }: HttpContext) {
-    const orders = await Order.all()
-    return view.render('admin/orders', { pageTitle: 'Admin- Orders', products: [], orders  })
+    const orders = await Order.query().preload('customer')
+    const completedOrders = await Order.query().where('status', 'completed').preload('customer')
+    const cancelledOrders = await Order.query().where('status', 'cancelled').preload('customer')
+    return view.render('admin/orders', { pageTitle: 'Admin- Orders', orders, completedOrders, cancelledOrders  })
   }
 
 

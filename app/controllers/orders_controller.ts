@@ -14,7 +14,12 @@ export default class OrdersController {
   /**
    * Display a list of resource
    */
-  async index({ view }: HttpContext) { }
+  async index({ view }: HttpContext) { 
+    
+    /*
+    for displaying unsensitive order details. Like products, price, status, completion date
+    */
+  }
 
   /**
    * Display form to create a new record
@@ -184,7 +189,12 @@ export default class OrdersController {
    * Handle form submission for the edit action
    */
 
-  //async update({ params, request }: HttpContext) {}          !!!!!!!!!!!!!!!!    
+  async update({ params, request, response }: HttpContext) {
+    const order = await Order.query().where('id', params.id).firstOrFail();
+    order.status = request.input('status');
+    order.save()
+    return response.redirect().back()
+  }   
 
   /*
   If updating quantity make sure to update stock too
