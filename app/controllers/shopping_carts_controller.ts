@@ -1,6 +1,7 @@
 
 import Cart from '#models/cart';
 import CartItem from '#models/cart_item';
+import Product from '#models/product';
 import { addShoppingCartItem } from '#validators/add_shopping_cart_item'
 import { Redirect, type HttpContext } from '@adonisjs/core/http'
 import { randomUUID } from 'node:crypto'
@@ -50,22 +51,31 @@ export default class ShoppingCartsController {
   async store({ request, response }: HttpContext) {
 
     const cart = await this.createCart(request, response)
-
-    const product = await request.validateUsing(addShoppingCartItem);
-
+    const productData = await request.validateUsing(addShoppingCartItem);
     const existingItem = cart.items.find(
-      (item) => item.productId == product.productId
+      (item) => item.productId == productData.productId
     )
 
+    const product = await Product.query().where('id', productData.productId).firstOrFail()
+
     if (existingItem) {
-      existingItem.quantity += product.quantity;
-      existingItem.save()
+      const newQuantity = existingItem.quantity += productData.quantity;
+
+      if (newQuantity > product.stockAmount) {
+        return response.badRequest('Not enough stock available')
+      }
+
+      existingItem.quantity = newQuantity
+      await existingItem.save()
 
     } else {
+      if (productData.quantity > product.stockAmount || productData.quantity < 0) {
+        return response.badRequest('Not enough stock available')
 
+      }
       await CartItem.create({
-        productId: product.productId,
-        quantity: product.quantity,
+        productId: productData.productId,
+        quantity: productData.quantity,
         cartId: cart.id
       })
 
@@ -94,25 +104,38 @@ export default class ShoppingCartsController {
   /**
    * Handle form submission for the edit action
    */
+
+
   async update({ params, request, response }: HttpContext) {
 
-    const product = params.id;
+    const productId = params.id;
     //const payload = await request.validateUsing(addShoppingCartItem);
-    const cartItem = await CartItem.findByOrFail('id', product);
-    const quantity = request.input('quantity');
+    const cartItem = await CartItem.findByOrFail('id', productId);
+    const quantity = Number(request.input('quantity'));
+
+    const product = await Product.query().where('id', cartItem.productId).firstOrFail()
 
     //add removing item from cart if quantity is 0
     if (quantity == 0) {
       await cartItem.delete();
-      console.log('Item removed from cart');
       return response.redirect().back();
     }
 
-    cartItem.quantity = quantity
+    if(quantity < 0) {
+      return response.badRequest('Invalid quantity')
+    }
 
-    await cartItem.merge({ quantity: cartItem.quantity }).save();
+    if(quantity > product.stockAmount) {
+      return response.badRequest('Not enought stock')
+    }
+
+    await cartItem.merge({ quantity: quantity }).save();
     return response.redirect().back();
   }
+
+
+
+
 
   /**
    * Delete record
