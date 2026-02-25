@@ -121,6 +121,9 @@ export default class OrdersController {
 
     for(const productI in shoppingCart.items) {
       await this.checkAvailability(shoppingCart.items[productI].id, order.id)
+      const cartProduct = await Product.query().where('id',shoppingCart.items[productI].productId).firstOrFail();
+      cartProduct.stockAmount -= shoppingCart.items[productI].quantity
+      cartProduct.save();
 
     }
 
@@ -181,7 +184,12 @@ export default class OrdersController {
    * Handle form submission for the edit action
    */
 
-  //async update({ params, request }: HttpContext) {}          !!!!!!!!!!!!!!!!
+  //async update({ params, request }: HttpContext) {}          !!!!!!!!!!!!!!!!    
+
+  /*
+  If updating quantity make sure to update stock too
+  */
+
 
   /**
    * Delete record
