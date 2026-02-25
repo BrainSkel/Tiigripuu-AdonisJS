@@ -30,7 +30,7 @@
                                         method="POST" style="display:inline" class="btn-group">
                                         {{ csrfField() }}
                                         <input type="hidden" name="productId" value="{{rental.id}}">
-                                        <input type="number" name="quantity" id="quantity" value="1" min="1"
+                                        <input type="number" name="quantity" id="quantity" value="1" min="1" max="{{rental.stockAmount}}"
                                             class="form-control form-control-sm w-25 d-inline-block">
                                         <button type="submit" class="btn btn-sm btn-outline-secondary">Lisa
                                             ostukorvi</button>
