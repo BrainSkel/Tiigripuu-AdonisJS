@@ -22,19 +22,19 @@ export default class ShoppingCartsController {
     if (!cookieKey || !cart) {
       response.clearCookie('cartKey');
       const cartKey = randomUUID();
-      cart = await Cart.create({ cartKey: cartKey, status: 'active'});
-      response.cookie('cartKey', cartKey, {httpOnly: true, maxAge: '5d'})
+      cart = await Cart.create({ cartKey: cartKey, status: 'active' });
+      response.cookie('cartKey', cartKey, { httpOnly: true, maxAge: '5d' })
     } else {
       const cartKey = request.cookie('cartKey');
       cart = await Cart.query().where('cartKey', cartKey).preload('items', (query) => {
-          query.preload('product', (productQuery) => {
-            productQuery.preload('images')
-          })
-        }
-    ).firstOrFail();
+        query.preload('product', (productQuery) => {
+          productQuery.preload('images')
+        })
+      }
+      ).firstOrFail();
     }
 
-      
+
     return view.render('carts/cart', { pageTitle: 'Ostukorv', cart })
   }
 
@@ -49,10 +49,9 @@ export default class ShoppingCartsController {
    */
   async store({ request, response }: HttpContext) {
 
+    const cart = await this.createCart(request, response)
+
     const product = await request.validateUsing(addShoppingCartItem);
-    const cartKey = request.cookie('cartKey');
-    const cart = await Cart.query().where('cartKey', cartKey).preload('items').firstOrFail();
-    console.log(cart.items)
 
     const existingItem = cart.items.find(
       (item) => item.productId == product.productId
@@ -63,12 +62,12 @@ export default class ShoppingCartsController {
       existingItem.save()
 
     } else {
-      
-    await CartItem.create({
-      productId: product.productId,
-      quantity: product.quantity,
-      cartId: cart.id
-    })
+
+      await CartItem.create({
+        productId: product.productId,
+        quantity: product.quantity,
+        cartId: cart.id
+      })
 
 
     }
@@ -79,31 +78,9 @@ export default class ShoppingCartsController {
    * Show individual record
    */
   async show({ params, view, request, response }: HttpContext) {
-    let cart;
-    const cookieKey = request.cookie('cartKey')
-
-    if (cookieKey) {
-      cart = await Cart.query().where('cartKey', request.cookie('cartKey')).first();
+    const cart = this.createCart(request, response)
 
 
-    }
-
-    if (!cookieKey || !cart) {
-      response.clearCookie('cartKey');
-      const cartKey = randomUUID();
-      cart = await Cart.create({ cartKey: cartKey, status: 'active'});
-      response.cookie('cartKey', cartKey, {httpOnly: true, maxAge: '5d'})
-    } else {
-      const cartKey = request.cookie('cartKey');
-      cart = await Cart.query().where('cartKey', cartKey).preload('items', (query) => {
-          query.preload('product', (productQuery) => {
-            productQuery.preload('images')
-          })
-        }
-    ).firstOrFail();
-    }
-
-      
     return view.render('carts/cart', { pageTitle: 'Ostukorv', cart })
   }
   //add later page to show detailed shopping cart with all items and total price
@@ -145,5 +122,33 @@ export default class ShoppingCartsController {
     const cartItem = await CartItem.findByOrFail('id', product);
     await cartItem.delete();
     return response.redirect().back();
+  }
+
+
+  async createCart(request: any, response: any) {
+    let cart;
+    const cookieKey = request.cookie('cartKey')
+    if (cookieKey) {
+      cart = await Cart.query().where('cartKey', request.cookie('cartKey')).first();
+
+
+    }
+
+    if (!cookieKey || !cart) {
+      response.clearCookie('cartKey');
+      const cartKey = randomUUID();
+      cart = await Cart.create({ cartKey: cartKey, status: 'active' });
+      response.cookie('cartKey', cartKey, { httpOnly: true, maxAge: '5d' })
+    } else {
+      const cartKey = request.cookie('cartKey');
+      cart = await Cart.query().where('cartKey', cartKey)
+        .firstOrFail();
+    }
+
+    return cart = Cart.query().where('id', cart.id).preload('items', (query) => {
+      query.preload('product', (productQuery) => {
+        productQuery.preload('images')
+      })
+    }).firstOrFail()
   }
 }
