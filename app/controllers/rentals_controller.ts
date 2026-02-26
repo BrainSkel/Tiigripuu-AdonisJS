@@ -6,6 +6,7 @@ import RentalDetail from '#models/rental_detail'
 import Category from '#models/category'
 import { createRentalDetailsSchema } from '#validators/create_rental_details_schema'
 import { createProductSchema } from '#validators/create_product_schema'
+import { randomUUID } from 'crypto'
 
 export default class RentalsController {
   /**
@@ -64,6 +65,7 @@ export default class RentalsController {
    * Edit individual record
    */
   async edit({ view, params }: HttpContext) {
+    console.log(params.slug)
     const rental = await Product.query()
       .where('slug', params.slug)
       .preload('images')
@@ -90,8 +92,8 @@ export default class RentalsController {
   async update({ params, request, response }: HttpContext) {
     const payload = await request.validateUsing(createProductSchema)
     const product = await Product.query().where('slug', params.slug).preload('rentalDetail').firstOrFail();
-  const detailsPayload = await request.validateUsing(createRentalDetailsSchema)
-  product.rentalDetail?.merge({ rentalInfo: detailsPayload.rental_info }).save();
+    const detailsPayload = await request.validateUsing(createRentalDetailsSchema)
+    product.rentalDetail?.merge({ rentalInfo: detailsPayload.rental_info }).save();
 
 
     const isVisible = await request.input('is_visible') === '1';
@@ -154,7 +156,8 @@ export default class RentalsController {
       imageOrder++;
       let imageName = ''
       if (img) {
-        imageName = `${product?.productType}_${imageOrder}${product?.itemName.replace(/\s+/g, '_')}.${img.extname}`
+        const safeName = await this.normalizeName(product?.itemName)
+        imageName = `${product?.productType}_${imageOrder}${safeName}_${randomUUID()}.${img.extname}`
         const key = `uploads/${imageName}`
         await img.moveToDisk(key)
       } else {
@@ -172,6 +175,13 @@ export default class RentalsController {
     }
   }
 
+  async normalizeName(name: any) {
+    return name
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-zA-Z0-9_-]/g, '_')
+  }
+
   async uploadFilesToDrive(request: any, productId: number) {
     const product = await Product.find(productId);
     const rows = request.input('instructions', []);
@@ -182,11 +192,12 @@ export default class RentalsController {
       const file_Name = row.file_name ? row.file_name : `instruction_${fileOrder}`;
       let fileName = ''
       if (file) {
-        fileName = `${product?.productType}_${fileOrder}${product?.itemName.replace(/\s+/g, '_')}.${file.extname}`
+        const safeName = await this.normalizeName(product?.itemName)
+        fileName = `${product?.productType}_${fileOrder}${safeName}_${randomUUID()}.${file.extname}`
         const key = `uploads/${fileName}`
         await file.moveToDisk(key)
       } else {
-        fileName = 'default.pdf'
+        fileName = 'default.jpg'
       }
 
       RentalInstruction.create({

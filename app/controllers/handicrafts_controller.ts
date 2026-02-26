@@ -5,6 +5,7 @@ import { createProductSchema } from '#validators/create_product_schema'
 import { createKasitooDetailsSchema } from '#validators/create_kasitoo_details_schema'
 import HandicraftDetail from '#models/handicraft_detail'
 import ProductImage from '#models/product_image'
+import { randomUUID } from 'crypto'
 
 export default class HandicraftsController {
   /**
@@ -12,10 +13,10 @@ export default class HandicraftsController {
    */
   async index({ view }: HttpContext) {
     const handicrafts = await Product.query()
-    .where('product_type', 'handicraft')
-    .preload('categories', (query) => {
-      query.pivotColumns(['product_id'])
-    }).preload('images')
+      .where('product_type', 'handicraft')
+      .preload('categories', (query) => {
+        query.pivotColumns(['product_id'])
+      }).preload('images')
     return view.render('handicrafts/view', { handicrafts, pageTitle: 'Kasitöö' })
   }
 
@@ -65,11 +66,11 @@ export default class HandicraftsController {
    */
   async edit({ params, view }: HttpContext) {
     const handicraft = await Product.query()
-    .where('slug', params.slug)
-    .preload('categories')
-    .preload('images')
-    .preload('handicraftDetail')
-    .firstOrFail();
+      .where('slug', params.slug)
+      .preload('categories')
+      .preload('images')
+      .preload('handicraftDetail')
+      .firstOrFail();
 
     const id = handicraft.id;
 
@@ -92,7 +93,7 @@ export default class HandicraftsController {
     console.log(detailsPayload)
     product.handicraftDetail?.merge({ handicraftDetails: detailsPayload.handicraft_details }).save()
 
-  
+
     const isVisible = await request.input('is_visible') === '1';
 
     const data = { ...payload, isVisible }
@@ -100,9 +101,9 @@ export default class HandicraftsController {
     product?.merge(data)
     await product?.save()
 
-    
 
-    if(request.files('image_url') != null) {
+
+    if (request.files('image_url') != null) {
       await this.uploadImagesToDrive(request, product?.id as number);
     }
 
@@ -110,8 +111,8 @@ export default class HandicraftsController {
     const slugArray = Array.isArray(slugs) ? slugs : [slugs];
 
     const categories = await Category
-    .query()
-    .whereIn('slug', slugArray)
+      .query()
+      .whereIn('slug', slugArray)
 
     //await product?.related('handicraftDetail').save(productDetails)
 
@@ -130,6 +131,13 @@ export default class HandicraftsController {
     return response.redirect().toRoute('admin.dashboard')
   }
 
+    async normalizeName(name: any) {
+    return name
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-zA-Z0-9_-]/g, '_')
+}
+
 
 
   async uploadImagesToDrive(request: any, productId: number) {
@@ -145,7 +153,8 @@ export default class HandicraftsController {
       imageOrder++;
       let imageName = ''
       if (img) {
-        imageName = `${product?.productType}_${imageOrder}${product?.itemName.replace(/\s+/g, '_')}.${img.extname}`
+        const safeName = await this.normalizeName(product?.itemName)
+        imageName = `${product?.productType}_${imageOrder}${safeName}_${randomUUID()}.${img.extname}`
         const key = `uploads/${imageName}`
         await img.moveToDisk(key)
       } else {

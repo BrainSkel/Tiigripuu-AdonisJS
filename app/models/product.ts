@@ -60,7 +60,7 @@ export default class Product extends BaseModel {
   @beforeCreate()
   static async generateSlug(product: Product) {
     if (!product.slug) {
-      product.slug = `${product.itemName.toLowerCase().replace(/\s+/g, '-')}-${Date.now()}`
+      product.slug = `${product.itemName.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, '-') .replace(/[^a-zA-Z0-9_-]/g, '_')}-${Date.now()}`
     }
   }
 }
