@@ -91,7 +91,7 @@ export default class OrdersController {
   /**
    * Handle form submission for the create action
    */
-  async store({ request, response }: HttpContext) {
+  async store({ request, response, view }: HttpContext) {
 
     const orderPayload = await request.validateUsing(createOrderSchema)
     const customerPayload = await request.validateUsing(createCustomerSchema)
@@ -133,15 +133,17 @@ export default class OrdersController {
     }
 
 
-    const sentOrder = await Order.query().where('id', order.id)
-    // await mail.send((message) => {
-    //   message
-    //     .to(customerPayload.customer_email)
-    //     .from(env.get('MAIL_SENDER'))
-    //     .subject('Teie tellimus OrderNR TBA')
-    //     .htmlView('emails/create_order_to_customer')
-    // })
+    const sentOrder = await Order.query().where('id', order.id).preload('items', (query) => { query.preload('product', (productQuery) => {productQuery.preload('images')} )}).firstOrFail()
+    console.log(sentOrder)
+    await mail.send((message) => {
+      message
+        .to(customer.email)
+        .from(env.get('MAIL_SENDER'))
+        .subject('Teie tellimus ' + sentOrder.orderNumber)
+        .htmlView('emails/create_order_to_customer', {order: sentOrder})
+    })
     this.deleteCartAndItems(cartKey)
+    return view.render('emails/create_order_to_customer', {order: sentOrder})
 
     response.redirect().toRoute('admin.dashboard')
 
@@ -193,6 +195,11 @@ export default class OrdersController {
     const order = await Order.query().where('id', params.id).firstOrFail();
     order.status = request.input('status');
     order.save()
+
+    /* TODO
+    if order is cancelled add items back to stock
+    */
+
     return response.redirect().back()
   }   
 
