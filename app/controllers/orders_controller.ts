@@ -14,8 +14,8 @@ export default class OrdersController {
   /**
    * Display a list of resource
    */
-  async index({ view }: HttpContext) { 
-    
+  async index({ view }: HttpContext) {
+
     /*
     for displaying unsensitive order details. Like products, price, status, completion date
     */
@@ -63,7 +63,7 @@ export default class OrdersController {
   async checkAvailability(cartItem: any, orderId: number) {
     const item = await CartItem.query().where('id', cartItem).preload('product').firstOrFail()
     console.log('test------------------')
-    if(item.quantity <= item.product.stockAmount) {
+    if (item.quantity <= item.product.stockAmount) {
       //console.log(item)
       const totalPrice = item.quantity * item.product.price
       console.log('0-------------------------------------------0')
@@ -79,7 +79,7 @@ export default class OrdersController {
       )
       console.log('-------------------------------------------')
     }
-    
+
     //If quantity less, return message saying not enoguh items in stock
 
   }
@@ -124,26 +124,35 @@ export default class OrdersController {
 
     const order = await Order.create(orderValues);
 
-    for(const productI in shoppingCart.items) {
+    for (const productI in shoppingCart.items) {
       await this.checkAvailability(shoppingCart.items[productI].id, order.id)
-      const cartProduct = await Product.query().where('id',shoppingCart.items[productI].productId).firstOrFail();
+      const cartProduct = await Product.query().where('id', shoppingCart.items[productI].productId).firstOrFail();
       cartProduct.stockAmount -= shoppingCart.items[productI].quantity
       cartProduct.save();
 
     }
 
 
-    const sentOrder = await Order.query().where('id', order.id).preload('items', (query) => { query.preload('product', (productQuery) => {productQuery.preload('images')} )}).firstOrFail()
+    const sentOrder = await Order.query().where('id', order.id).preload('items', (query) => { query.preload('product', (productQuery) => { productQuery.preload('images') }) }).firstOrFail()
     console.log(sentOrder)
     await mail.send((message) => {
       message
         .to(customer.email)
         .from(env.get('MAIL_SENDER'))
         .subject('Teie tellimus ' + sentOrder.orderNumber)
-        .htmlView('emails/create_order_to_customer', {order: sentOrder})
+        .htmlView('emails/create_order_to_customer', { order: sentOrder })
     })
     this.deleteCartAndItems(cartKey)
-    return view.render('emails/create_order_to_customer', {order: sentOrder})
+
+    await mail.send((message) => {
+      message
+        .to(env.get('ADMIN_EMAIL'))
+        .from(env.get('MAIL_SENDER'))
+        .subject('Uus tellimus ' + sentOrder.orderNumber)
+        .htmlView('emails/create_order_to_admin', { order: sentOrder })
+    })
+    this.deleteCartAndItems(cartKey)
+    //return view.render('emails/create_order_to_customer', {order: sentOrder})
 
     response.redirect().toRoute('admin.dashboard')
 
@@ -169,7 +178,7 @@ export default class OrdersController {
       })
       .firstOrFail()
 
-      
+
     const productType = await order.items[0].product.productType
 
     let product = null;
@@ -201,7 +210,7 @@ export default class OrdersController {
     */
 
     return response.redirect().back()
-  }   
+  }
 
   /*
   If updating quantity make sure to update stock too
@@ -218,6 +227,6 @@ export default class OrdersController {
     cart?.delete();
     console.log('Cart deleted')
 
-  
+
   }
 }

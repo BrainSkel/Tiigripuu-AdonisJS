@@ -1,0 +1,29 @@
+<html>
+    <head>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+        <link href="/resources/css/email.css" rel="stylesheet">
+    </head>
+
+
+
+<h1>Uus tellimus {{order.orderNumber}}</h1>
+<a href="#">Vaatan tellimust</a>
+@each(cartItem in order.items)
+    <div id="borderDemo">
+        <img src="/storage/uploads/{{cartItem.product.images[0].imageUrl}}" alt="" width="32" height="32"
+            class="rounded-circle flex-shrink-0">
+        <div class="d-flex gap-2 w-100 justify-content-between">
+            <div>
+                <h6 class="mb-0">{{cartItem.product.itemName}}</h6>
+                <p class="mb-0 opacity-75">{{cartItem.product.description}}</p>
+            </div>
+            <small class="opacity-50 text-nowrap">Hind: {{cartItem.product.price}}€</small>
+        </div>
+        <div class="d-flex gap-2 w-100 justify-content-between">
+            <div>
+                <h6 class="mb-0">Kogus: {{cartItem.quantity}}</h6>
+            </div>
+        </div>
+    </div>
+@endeach
+</html>
