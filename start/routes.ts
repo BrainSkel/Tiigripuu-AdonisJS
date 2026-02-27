@@ -16,9 +16,10 @@ import InstructionsController from '#controllers/instructions_controller';
 import ShoppingCartsController from '#controllers/shopping_carts_controller';
 import Order from '#models/order';
 import router from '@adonisjs/core/services/router'
+import MainsController from '#controllers/mains_controller';
 
 
-router.on('/').render('pages/home').as('home')
+router.get('/', [MainsController, 'index'] ).as('home');
 
 
 router.resource('rentals', RentalsController).params({
