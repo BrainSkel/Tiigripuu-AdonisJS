@@ -57,9 +57,9 @@
             <label for="itemName" class="form-label">Toote nimi:</label>
             <input type="text" id="itemName" name="item_name" class="form-control" value="{{rental.itemName}}">
 
-            @if(flashMessages.has('inputErrorsBag.itemName'))
+            @if(flashMessages.has('inputErrorsBag.item_name'))
             <div class="error">
-                @each(error in flashMessages.get('inputErrorsBag.itemName'))
+                @each(error in flashMessages.get('inputErrorsBag.item_name'))
                 <p>{{error}}</p>
                 @endeach
             </div>
@@ -75,9 +75,9 @@
                 <input type="file" id="imageUrl" name="image_url" accept=".png, .jpeg, .jpg" multiple
                     class="form-control">
 
-                @if(flashMessages.has('inputErrorsBag.imageUrl'))
+                @if(flashMessages.has('inputErrorsBag.image_url'))
                 <div class="error">
-                    @each(error in flashMessages.get('inputErrorsBag.imageUrl'))
+                    @each(error in flashMessages.get('inputErrorsBag.image_url'))
                     <p>{{error}}</p>
                     @endeach
                 </div>
@@ -91,9 +91,9 @@
                     value="{{rental.displayInGallery ? '1' : '0'}}" {{ rental.displayInGallery ? 'checked' : '' }}
                     class="form-check-input">
 
-                @if(flashMessages.has('inputErrorsBag.displayInGallery'))
+                @if(flashMessages.has('inputErrorsBag.display_in_gallery'))
                 <div class="error">
-                    @each(error in flashMessages.get('inputErrorsBag.displayInGallery'))
+                    @each(error in flashMessages.get('inputErrorsBag.display_in_gallery'))
                     <p>{{error}}</p>
                     @endeach
                 </div>
@@ -172,9 +172,9 @@
             <textarea type="text" id="rentalInfo" name="rental_info" required
                 class="form-control">{{rental.rentalDetail.rentalInfo}}</textarea>
 
-            @if(flashMessages.has('inputErrorsBag.rentalInfo'))
+            @if(flashMessages.has('inputErrorsBag.rental_info'))
             <div class="error">
-                @each(error in flashMessages.get('inputErrorsBag.rentalInfo'))
+                @each(error in flashMessages.get('inputErrorsBag.rental_info'))
                 <p>{{error}}</p>
                 @endeach
             </div>
@@ -204,9 +204,9 @@
 
             </div>
             <button type="button" class="btn btn-secondary mt-2" onclick="addInstruction()">Lisa juhis</button>
-            @if(flashMessages.has('inputErrorsBag.rentalInstructions'))
+            @if(flashMessages.has('inputErrorsBag.rental_instructions'))
             <div class="error">
-                @each(error in flashMessages.get('inputErrorsBag.rentalInstructions'))
+                @each(error in flashMessages.get('inputErrorsBag.rental_instructions'))
                 <p>{{error}}</p>
                 @endeach
             </div>
