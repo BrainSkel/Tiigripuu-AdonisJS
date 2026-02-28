@@ -7,7 +7,9 @@
 
     <div class="row align-items-start d-flex w-100">
 
-        <!--Categorys list-->
+        <!---------------
+        Categorys list
+        ---------------->
         <div class="col-3 text-bg-primary fs-5 p-2 ps-3">
             <h2>Categorys</h2>
             <form method="POST" action="{{route('categories.store')}}" class="mt-3 d-flex flex-column gap-2 ">
@@ -20,12 +22,12 @@
                 </div>
                 @end
                 <div>
-                    <input type="checkbox" name="allowed_product_types" value="rental">
+                    <input type="radio" name="allowed_product_types" id="rental" value="rental">
                     <label for="rental">Laenutus</label>
 
                 </div>
                 <div>
-                    <input type="checkbox" name="allowed_product_types" value="handicraft">
+                    <input type="radio" name="allowed_product_types" id="handicraft" value="handicraft">
                     <label for="handicraft">Käsitöö</label>
                 </div>
                 @if(flashMessages.has('inputErrorsBag.allowed_product_types'))
