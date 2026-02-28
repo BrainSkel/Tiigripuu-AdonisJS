@@ -36,9 +36,11 @@ export default class ImagesController {
    * Delete record
    */
   async destroy({ request, response }: HttpContext) {
+    const productId = request.input('product_id')
         const imageId = request.input('image_id');
         const image = await ProductImage.find(imageId);
-        if (image) {
+        const moreThanOneImage = await ProductImage.query().where('product_id', productId);
+        if (image && moreThanOneImage[1]) {
           await image.delete();
         }
         return response.redirect().back();

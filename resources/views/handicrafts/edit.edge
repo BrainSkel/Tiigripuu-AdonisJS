@@ -15,7 +15,10 @@
     <form method="POST" action="{{route('images.destroy', { id: image.id })}}?_method=DELETE">
         {{ csrfField() }}
         <input type="hidden" name="image_id" value="{{image.id}}">
+        <input type="hidden" name="product_id" value="{{handicraft.id}}">
+        @if(handicraft.images[1])
         <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+        @endif
     </form>
     @endeach
 
@@ -86,8 +89,8 @@
             <div>
                 <label for="displayInGallery" class="form-check-label">Näita galeriis:</label>
                 <input type="checkbox" id="displayInGallery" name="display_in_gallery"
-                    value="{{handicraft.displayInGallery ? '1' : '0'}}" {{ handicraft.displayInGallery ? 'checked' : '' }}
-                    class="form-check-input">
+                    value="{{handicraft.displayInGallery ? '1' : '0'}}" {{ handicraft.displayInGallery ? 'checked' : ''
+                    }} class="form-check-input">
 
                 @if(flashMessages.has('inputErrorsBag.displayInGallery'))
                 <div class="error">
@@ -150,8 +153,8 @@
         <!-- -->
         <div class="form-check">
             <label for="isVisible" class="form-check-label">Nähtav</label>
-            <input type="checkbox" id="isVisible" name="is_visible" value="1" {{ handicraft.isVisible ? 'checked' : '' }}
-                class="form-check-input">
+            <input type="checkbox" id="isVisible" name="is_visible" value="1" {{ handicraft.isVisible ? 'checked' : ''
+                }} class="form-check-input">
 
             @if(flashMessages.has('inputErrorsBag.is_visible'))
             <div class="error">
@@ -167,7 +170,8 @@
 
         <div>
             <label for="handicraftDetails" class="form-label">Ekstra info kasitöö osas:</label>
-            <textarea type="text" id="handicraftDetails" name="handicraft_details" required class="form-control">{{old('handicraft_details') || handicraft.handicraftDetail?.handicraftDetails}}</textarea>
+            <textarea type="text" id="handicraftDetails" name="handicraft_details" required
+                class="form-control">{{old('handicraft_details') || handicraft.handicraftDetail?.handicraftDetails}}</textarea>
 
             @if(flashMessages.has('inputErrorsBag.handicraftDetails'))
             <div class="error">
@@ -181,7 +185,7 @@
         <!-- -->
 
 
-        
+
 
 
         <button type="submit" class="btn btn-primary mt-3">Update handicraft</button>

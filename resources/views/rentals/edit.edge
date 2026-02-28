@@ -15,7 +15,10 @@
     <form method="POST" action="{{route('images.destroy', { id: image.id })}}?_method=DELETE">
         {{ csrfField() }}
         <input type="hidden" name="image_id" value="{{image.id}}">
+        <input type="hidden" name="product_id" value="{{rental.id}}">
+        @if(rental.images[1])
         <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+        @endif
     </form>
     @endeach
 
@@ -28,8 +31,7 @@
         <div>
             <label for="category" class="form-label">Kategooria</label>
             @each(category in rental.categories)
-            <p class="badge rounded-pill bg-secondary me-1">{{category.name}}
-            </p>
+            <p class="badge rounded-pill bg-secondary me-1">{{category.name}}</p>
             @endeach
 
             <select name="category[]" id="category" class="form-control" multiple>
