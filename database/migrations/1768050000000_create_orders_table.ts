@@ -13,6 +13,7 @@ export default class extends BaseSchema {
       table.decimal('total_price', 10, 2).notNullable()
       table.enu('status', ['pending', 'confirmed', 'completed', 'cancelled']).notNullable().defaultTo('pending')
       table.string('customer_note').nullable()
+      table.string('admin_note').nullable()
       table.date('order_completion_date').nullable()
 
 

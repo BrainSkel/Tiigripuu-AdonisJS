@@ -31,6 +31,9 @@ export default class Order extends BaseModel {
   @column()
   declare customerNote?: string
 
+  @column()
+  declare adminNote?: string
+
   @column.date()
   declare orderCompletionDate?: DateTime
 

@@ -9,6 +9,8 @@ import CartItem from '#models/cart_item';
 import mail from '@adonisjs/mail/services/main'
 import env from '#start/env'
 import OrderItem from '#models/order_item';
+import { updateOrderSchema } from '#validators/update_order_schema';
+import { DateTime } from 'luxon';
 
 export default class OrdersController {
   /**
@@ -168,7 +170,7 @@ export default class OrdersController {
    */
   async edit({ params, view }: HttpContext) {
     const order = await Order.query()
-      .where('id', params.orderId)
+      .where('id', params.id)
       .preload('items', (itemQuery) => {
         itemQuery.preload('product', (productQuery) => {
           productQuery.preload('categories', (categoryQuery) => {
@@ -211,15 +213,18 @@ export default class OrdersController {
 
   async update({ params, request, response }: HttpContext) {
     const order = await Order.query().where('id', params.id).firstOrFail();
+    const payload = await request.validateUsing(updateOrderSchema)
 
-    
+    const data = {...payload, orderCompletionDate: DateTime.fromJSDate(payload.order_completion_date)}
+    order.merge(data)
+
     order.save()
 
     /* TODO
     if order is cancelled add items back to stock
     */
 
-    return response.redirect().back()
+    return response.redirect().toRoute('admin.orders')
   }
 
   /*

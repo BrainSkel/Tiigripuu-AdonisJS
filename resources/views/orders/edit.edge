@@ -2,106 +2,45 @@
 
 <body>
 
-    <h1>Edit Order: {{order.orderNumber}}</h1>
-    <div>
-        <div class="d-flex">
-            <img src="/storage/uploads/{{order.imageUrl}}" alt="" width="32" height="32"
-                class="rounded-circle flex-shrink-0">
-            <div class="d-flex gap-2 w-100 justify-content-between">
-                <div>
-                    <h6 class="mb-0">{{order.itemName}}</h6>
-                    <p class="mb-0 opacity-75">{{order.description}}</p>
-                </div>
-                <small class="opacity-50 text-nowrap">Hind: {{order.price}}€</small>
-            </div>
-        </div>
-        <div class="w-auto h-auto">
-            </p>
-            <ul>
-                <li class="d-flex gap-2">
-                    <div>Categories:</div>
-                    @each(category in order.categories)
-                    <p class="badge rounded-pill bg-secondary me-1">{{category.name}}
-                    </p>
-                    @endeach
-                </li>
-                <li>slug: {{product.slug}}</li>
-                <li>itemName: {{product.itemName}}</li>
-                <li>imageUrl: {{product.imageUrl}}</li>
-                <li>price: {{product.price}}</li>
-                <li>description: {{product.description}}</li>
-            </ul>
-        </div>
-    </div>
+    <h1>Edit Order</h1>
 
-    <!-- FORM -->
-    <div class="mx-auto p-2" style="width:75%">
-        <form method="POST" action="{{route('orders.store')}}" class="form-floating">
-            {{ csrfField() }}
-            <input type="hidden" name="product_type" id="productType" value="{{productType}}">
-            <input type="hidden">
-            <input type="hidden" name="product_slug" id="productSlug" value="{{order.slug}}">
-            <input type="hidden" name="status" id="status" value="pending">
-            <div class="input-group">
-                <div class="form-floating mb-3">
-                    @if(!flashMessages.has('inputErrorsBag.customer_first_name'))
-                    <input type="text" aria-label="First name" id="customer_first_name" name="customer_first_name"
-                        class="form-control invalid" placeholder="Eesnimi">
-                    <label for="customer_first_name">Eesnimi</label>
-                    @end
-
-                    @if(flashMessages.has('inputErrorsBag.customer_first_name'))
-                    <input type="text" aria-label="First name" id="customer_first_name" name="customer_first_name"
-                        class="form-control is-invalid" placeholder="Eesnimi">
-                    <label for="customer_first_name">Invalid</label>
-                    @each(error in flashMessages.get('inputErrorsBag.customer_first_name'))
-                    <p>{{error}}</p>
-                    @endeach
-                    @end
-                </div>
-
-                <div class="form-floating mb-3">
-                    @if(!flashMessages.has('inputErrorsBag.customer_last_name'))
-                    <input type="text" aria-label="Last name" id="customer_last_name" name="customer_last_name"
-                        class="form-control invalid" placeholder="Perekonna nimi">
-                    <label for="customer_last_name">Perekonna nimi</label>
-                    @end
-
-                    @if(flashMessages.has('inputErrorsBag.customer_last_name'))
-                    <input type="text" aria-label="Last name" id="customer_last_name" name="customer_last_name"
-                        class="form-control is-invalid" placeholder="Perekonna nimi">
-                    <label for="customer_last_name">Invalid</label>
-                    @each(error in flashMessages.get('inputErrorsBag.customer_last_name'))
-                    <p>{{error}}</p>
-                    @endeach
-                    @end
-                </div>
-            </div>
-            <div class="form-floating mb-3">
-                @if(flashMessages.has('inputErrorsBag.customer_email'))
-                <input type="email" class="form-control is-invalid" id="customer_email" name="customer_email"
-                    placeholder="name@example.com" value="test@example.com">
-                <label for="customer_email">Invalid input</label>
-                @each(error in flashMessages.get('inputErrorsBag.customer_email'))
-                <p>{{error}}</p>
-                @endeach
-                @end
-                @if(!flashMessages.has('inputErrorsBag.customer_email'))
-                <input type="email" class="form-control" id="customer_email" name="customer_email"
-                    placeholder="name@example.com">
-                <label for="customer_email">Email</label>
-                @end
-            </div>
-            <button type="submit">Place Order</button>
-            @if(flashMessages.has('inputErrorsBag'))
-                @each(error in flashMessages.get('inputErrorsBag'))
-                <p>{{error}}</p>
-                @endeach
-            @end
+    <!-- 
+    add/ remove order items 
+    -->
 
 
-        </form>
-    </div>
+
+
+    <!-- 
+    order update FORM
+    -->
+    <form method="POST" action="{{route('orders.update', { id: order.id })}}?_method=PATCH"
+        enctype="multipart/form-data">
+        {{ csrfField() }}
+
+        <li><input type="radio" class="bg-yellow" name="status" value="pending" {{order.status == 'pending' ? 'checked' : ''}}>Ootel</li>
+        <li><input type="radio" name="status" value="confirmed" {{order.status == 'confirmed' ? 'checked' : ''}}>Kinnitatud</li>
+        <li><input type="radio" name="status" value="completed" {{order.status == 'completed' ? 'checked' : ''}}>Valmis</li>
+        <li><input type="radio" name="status" value="cancelled" {{order.status == 'cancelled' ? 'checked' : ''}}>Tühistatud</li>
+        <label for="orderCompletedBy">Tellimus saab valmis ajaks:</label>
+        <input type="date" name="order_completion_date" id="orderCompletedBy" min="{{ new Date().toISOString().split('T')[0] }}" value="{{order.orderCompletionDate.toISODate()}}">
+        <label for="adminNote">Notes:</label>
+        <textarea name="admin_note" id="adminNote" placeholder="Notes">{{order.adminNote || ''}}</textarea>
+
+
+
+
+        <button type="submit">Place Order</button>
+        @if(flashMessages.has('inputErrorsBag'))
+        @each(error in flashMessages.get('inputErrorsBag'))
+        <p>{{error}}</p>
+        @endeach
+        @end
+
+
+    </form>
+
+
 
 
 
