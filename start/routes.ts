@@ -48,6 +48,7 @@ router.resource('orders', OrdersController).params({
 // router.get('/orders/edit/:orderId', [OrdersController, 'edit']).as('orders.edit')
 
 router.get('/admin/orders', [AdminController, 'orders']).as('admin.orders');
+router.patch('/admin/orders/:id', [OrdersController, 'updateStatus']).as('order.updateStatus');
 router.get('/admin/dashboard', [AdminController, 'dashboard']).as('admin.dashboard');
 router.post('/admin/categories', [CategoriesController, 'store']).as('categories.store');
 router.delete('/admin/destroy/:slug', [CategoriesController, 'destroy']).as('categories.destroy');

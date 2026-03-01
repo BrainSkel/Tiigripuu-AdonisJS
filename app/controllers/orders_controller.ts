@@ -199,10 +199,20 @@ export default class OrdersController {
   /**
    * Handle form submission for the edit action
    */
+  async updateStatus({ params, request, response }: HttpContext) {
+    const order = await Order.query().where('id', params.id).firstOrFail();
+    order.status = request.input('status');
+    order.save()
+    /* TODO
+    if order is cancelled add items back to stock
+    */
+    return response.redirect().back()
+  }
 
   async update({ params, request, response }: HttpContext) {
     const order = await Order.query().where('id', params.id).firstOrFail();
-    order.status = request.input('status');
+
+    
     order.save()
 
     /* TODO

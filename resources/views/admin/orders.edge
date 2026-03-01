@@ -30,7 +30,7 @@
                 {{order.status}}
             </button>
             <ul class="dropdown-menu position-absolute z-2" data-bs-auto-close="outside">
-                <form method="POST" action="{{route('orders.update', { id: order.id })}}?_method=PATCH"
+                <form method="POST" action="{{route('order.updateStatus', { id: order.id })}}?_method=PATCH"
                     enctype="multipart/form-data">
                     {{ csrfField() }}
                     <li><input type="radio" class="bg-yellow" name="status" value="pending">Ootel</li>
