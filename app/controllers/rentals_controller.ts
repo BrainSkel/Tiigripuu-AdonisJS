@@ -20,9 +20,7 @@ export default class RentalsController {
    * Show individual record
    */
   async show({ params, view }: HttpContext) {
-    console.log(params);
-    const slug = params.slug;
-    const rental = await Product.query().where('slug', slug).preload('images').firstOrFail();
+    const rental = await Product.query().where('slug', params.slug).preload('images').firstOrFail();
     return view.render('rentals/show', { pageTitle: rental?.itemName, rental })
   }
 

@@ -23,6 +23,7 @@
                                         {{ csrfField() }}
                                         <button type="submit" class="btn btn-sm btn-outline-secondary">Delete</button>
                                     </form>
+                                    @if(rental.stockAmount != 0)
                                     <form
                                         action="{{route('shopping_carts.store', {productId: rental.id })}}?_method=POST"
                                         method="POST" style="display:inline" class="btn-group">
@@ -33,6 +34,9 @@
                                         <button type="submit" class="btn btn-sm btn-outline-secondary">Lisa
                                             ostukorvi</button>
                                     </form>
+                                    @else
+                                        <p>Out Of Stock</p>
+                                    @end
                                 </div>
                             </div>
                         </div>

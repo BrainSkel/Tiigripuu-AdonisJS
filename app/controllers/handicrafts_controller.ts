@@ -57,7 +57,7 @@ export default class HandicraftsController {
    * Show individual record
    */
   async show({ params, view }: HttpContext) {
-    const handicraft = await Product.findBy('slug', params.slug)
+    const handicraft = await Product.query().where('slug', params.slug).preload('images').firstOrFail();
     return view.render('handicrafts/show', { handicraft, pageTitle: handicraft?.itemName })
   }
 

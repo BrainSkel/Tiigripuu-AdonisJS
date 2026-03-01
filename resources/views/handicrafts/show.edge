@@ -6,26 +6,51 @@
         <div class="container">
             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
                 <div class="col">
-                    <img src="/storage/uploads/{{handicraft.imageUrl}}" class="card-img-top"
-                        alt="{{handicraft.itemName}}">
-                    <div class="card-body">
-                        <h3><a href="{{route('rentals.show', { slug : handicraft.slug })}}">{{handicraft.itemName}}</a>
-                        </h3>
-                        <p class="card-text">{{handicraft.description}}</p>
-                        <div class="d-flex justify-content-between align-items-center">
-
+                    <div class="images">
+                        <div id="carouselExample" class="carousel slide">
+                            <div class="carousel-indicators">
+                                <button type="button" data-bs-target="#carouselExample" data-bs-slide-to="0"
+                                    class="active" aria-current="true" aria-label="Slide 1"></button>
+                                <button type="button" data-bs-target="#carouselExample" data-bs-slide-to="1"
+                                    aria-label="Slide 2"></button>
+                                <button type="button" data-bs-target="#carouselExample" data-bs-slide-to="2"
+                                    aria-label="Slide 3"></button>
+                            </div>
+                            <div class="carousel-inner">
+                                @each(image in handicraft.images)
+                                <div class="carousel-item {{ image.displayOrder === 1 ? 'active' : '' }}">
+                                    <img src="/storage/uploads/{{image.imageUrl}}" class="d-block w-100"
+                                        alt="{{handicraft.itemName}}">
+                                </div>
+                                @endeach
+                            </div>
+                            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample"
+                                data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#carouselExample"
+                                data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
                         </div>
                     </div>
                 </div>
                 <div class="col">
+                    @if(handicraft.stockAmount != 0)
                     <form action="{{route('shopping_carts.store', {productId: handicraft.id })}}?_method=POST"
                         method="POST" style="display:inline" class="btn-group">
                         {{ csrfField() }}
                         <input type="hidden" name="productId" value="{{handicraft.id}}">
                         <input type="number" name="quantity" id="quantity" value="1" min="1"
-                            class="form-control form-control-sm w-25 d-inline-block">
-                        <button type="submit" class="btn btn-sm btn-outline-secondary">Lisa ostukorvi</button>
+                            max="{{handicraft.stockAmount}}" class="form-control form-control-sm w-25 d-inline-block">
+                        <button type="submit" class="btn btn-sm btn-outline-secondary">Lisa
+                            ostukorvi</button>
                     </form>
+                    @else
+                    <p>Out Of Stock</p>
+                    @end
 
                 </div>
 
