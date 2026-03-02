@@ -15,8 +15,10 @@ import RentalsController from '#controllers/rentals_controller';
 import InstructionsController from '#controllers/instructions_controller';
 import ShoppingCartsController from '#controllers/shopping_carts_controller';
 import Order from '#models/order';
-import router from '@adonisjs/core/services/router'
+import router from '@adonisjs/core/services/router';
 import MainsController from '#controllers/mains_controller';
+import {middleware} from '#start/kernel';
+import SessionController from '#controllers/session_controller';
 
 
 router.get('/', [MainsController, 'index'] ).as('home');
@@ -46,9 +48,9 @@ router.resource('orders', OrdersController).params({
 // router.get('/orders/create', [OrdersController, 'create']).as('orders.create')
 // router.post('/orders', [OrdersController, 'store']).as('orders.store')
 // router.get('/orders/edit/:orderId', [OrdersController, 'edit']).as('orders.edit')
-
-router.get('/admin/orders', [AdminController, 'orders']).as('admin.orders');
-router.patch('/admin/orders/:id', [OrdersController, 'updateStatus']).as('order.updateStatus');
-router.get('/admin/dashboard', [AdminController, 'dashboard']).as('admin.dashboard');
-router.post('/admin/categories', [CategoriesController, 'store']).as('categories.store');
-router.delete('/admin/destroy/:slug', [CategoriesController, 'destroy']).as('categories.destroy');
+router.get('/auth/login', [SessionController, 'store']).as('session.store').use(middleware.guest()) // we dont want logged in user to log in again
+router.get('/admin/orders', [AdminController, 'orders']).as('admin.orders').use(middleware.auth()); // we dont want not logged in users to see this
+router.patch('/admin/orders/:id', [OrdersController, 'updateStatus']).as('order.updateStatus').use(middleware.auth());
+router.get('/admin/dashboard', [AdminController, 'dashboard']).as('admin.dashboard').use(middleware.auth());
+router.post('/admin/categories', [CategoriesController, 'store']).as('categories.store').use(middleware.auth());
+router.delete('/admin/destroy/:slug', [CategoriesController, 'destroy']).as('categories.destroy').use(middleware.auth());
