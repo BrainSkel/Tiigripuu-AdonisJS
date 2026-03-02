@@ -23,7 +23,7 @@
         <li><input type="radio" name="status" value="completed" {{order.status == 'completed' ? 'checked' : ''}}>Valmis</li>
         <li><input type="radio" name="status" value="cancelled" {{order.status == 'cancelled' ? 'checked' : ''}}>Tühistatud</li>
         <label for="orderCompletedBy">Tellimus saab valmis ajaks:</label>
-        <input type="date" name="order_completion_date" id="orderCompletedBy" min="{{ new Date().toISOString().split('T')[0] }}" value="{{order.orderCompletionDate.toISODate()}}">
+        <input type="date" name="order_completion_date" id="orderCompletedBy" min="{{ new Date().toISOString().split('T')[0] }}" value="{{order.orderCompletionDate?.toISODate() || ''}}">
         <label for="adminNote">Notes:</label>
         <textarea name="admin_note" id="adminNote" placeholder="Notes">{{order.adminNote || ''}}</textarea>
 
