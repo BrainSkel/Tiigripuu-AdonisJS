@@ -48,7 +48,8 @@ router.resource('orders', OrdersController).params({
 // router.get('/orders/create', [OrdersController, 'create']).as('orders.create')
 // router.post('/orders', [OrdersController, 'store']).as('orders.store')
 // router.get('/orders/edit/:orderId', [OrdersController, 'edit']).as('orders.edit')
-router.get('/auth/login', [SessionController, 'store']).as('session.store').use(middleware.guest()) // we dont want logged in user to log in again
+router.get('/auth/login', [SessionController, 'login']).as('auth.login')
+router.post('/auth/store', [SessionController, 'store']).as('session.store').use(middleware.guest()) // we dont want logged in user to log in again
 router.get('/admin/orders', [AdminController, 'orders']).as('admin.orders').use(middleware.auth()); // we dont want not logged in users to see this
 router.patch('/admin/orders/:id', [OrdersController, 'updateStatus']).as('order.updateStatus').use(middleware.auth());
 router.get('/admin/dashboard', [AdminController, 'dashboard']).as('admin.dashboard').use(middleware.auth());

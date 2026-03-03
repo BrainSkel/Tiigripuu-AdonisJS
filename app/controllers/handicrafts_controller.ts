@@ -23,9 +23,10 @@ export default class HandicraftsController {
   /**
    * Display form to create a new record
    */
-  async create({ view }: HttpContext) {
+  async create({ view, bouncer }: HttpContext) {
     const categories = await Category.query().from('categories').select('*').whereNotNull('allowed_product_types')
     const handicraftCategories = categories.filter(category => category.allowed_product_types.includes('handicraft'))
+
     return view.render('handicrafts/create', { categories, handicraftCategories, pageTitle: 'Uus kasitöö' })
   }
 
