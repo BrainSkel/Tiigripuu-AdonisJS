@@ -12,6 +12,10 @@
             <li class="nav-item"><a href="/shopping-carts" class="nav-link"><u>Ostukorv</u></a></li>
             @if(auth.isAuthenticated)
             <p>Hello {{ auth.user.email }}</p>
+            <form action="{{route('auth.logOut')}}?_method=DELETE" method="POST">
+                {{ csrfField()}}
+                <button type="submit">Log Out</button>
+            </form>
             @else
                 <a href="/auth/login">Log in</a>
             @end
