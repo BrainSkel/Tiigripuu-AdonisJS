@@ -9,14 +9,16 @@
         <li class="nav-item"><a href="/admin/orders" class="nav-link">|Orders|</a></li>
 
         <li class="nav-item"><a href="/shopping-carts" class="nav-link"><u>Ostukorv</u></a></li>
+        
         @if(auth.isAuthenticated)
-        <p>Hello {{ auth.user.fullName }}</p>
+        <li class="nav-item">Hello {{ auth.user.fullName }}</li>
+        <li class="nav-item">
         <form action="{{route('auth.logOut')}}?_method=DELETE" method="POST">
             {{ csrfField()}}
-            <button type="submit">Log Out</button>
-        </form>
+            <button type="submit" class="nav-button">Log Out</button>
+        </form></li>
         @else
-        <a href="/login">Log in</a>
+        <li class="nav-item"><a href="/login" class="nav-link">Log in</a></li>
         @end
     </ul>
 </header>
