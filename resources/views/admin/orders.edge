@@ -3,8 +3,14 @@
 <body>
     @include('partials/navigation')
     <h1>Orders Management</h1>
+    @if(flashMessages.has('error'))
+    <div class="alert alert-danger">
+        {{ flashMessages.get('error') }}
+    </div>
+    @end
     @each(order in orders)
     @if(order.status == 'pending' || order.status == 'confirmed' )
+
 
 
     <div class="list-group z-0 d-flex">
@@ -87,6 +93,8 @@
         {{order.status == 'cancelled' ? 'btn-danger' : ''}}
             
             ">
+
+                        </ul>
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                             class="bi bi-clock-history" viewBox="0 0 16 16">
                             <path
@@ -99,6 +107,17 @@
                         </svg>
                         {{order.status}}
                     </button>
+                    <ul class="dropdown-menu position-absolute z-2" data-bs-auto-close="outside">
+                        <form method="POST" action="{{route('order.updateStatus', { id: order.id })}}?_method=PATCH"
+                            enctype="multipart/form-data">
+                            {{ csrfField() }}
+                            <li><input type="radio" class="bg-yellow" name="status" value="pending">Ootel</li>
+                            <li><input type="radio" name="status" value="confirmed">Kinnitatud</li>
+                            <li><input type="radio" name="status" value="completed">Valmis</li>
+                            <li><input type="radio" name="status" value="cancelled">Tühistatud</li>
+                            <li><button type="submit">Muuda staatust</button></li>
+                        </form>
+                    </ul>
                     <div class="d-flex gap-2 w-100 justify-content-between">
                         <div>
                             <h6 class="mb-0">{{order.orderNumber}}</h6>
@@ -128,15 +147,17 @@
             @each(order in cancelledOrders)
 
 
-            <div class="list-group">
+
+            <div class="list-group z-0 d-flex">
                 <a href="#" class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
-                    <button type="button" class="btn 
+                    <button type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false"
+                        class="btn dropdown-toggle 
         {{order.status == 'pending' ? 'btn-warning' : ''}}
         {{order.status == 'confirmed' ? 'btn-primary' : ''}}
         {{order.status == 'completed' ? 'btn-success' : ''}}
-        {{order.status == 'cancelled' ? 'btn-danger' : ''}}
-            
+        {{order.status == 'cancelled' ? 'btn-danger' : ''}} 
             ">
+
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                             class="bi bi-clock-history" viewBox="0 0 16 16">
                             <path
@@ -149,11 +170,30 @@
                         </svg>
                         {{order.status}}
                     </button>
+                    <ul class="dropdown-menu position-absolute z-2" data-bs-auto-close="outside">
+                        <form method="POST" action="{{route('order.updateStatus', { id: order.id })}}?_method=PATCH"
+                            enctype="multipart/form-data">
+                            {{ csrfField() }}
+                            <li><input type="radio" class="bg-yellow" name="status" value="pending">Ootel</li>
+                            <li><input type="radio" name="status" value="confirmed">Kinnitatud</li>
+                            <li><input type="radio" name="status" value="completed">Valmis</li>
+                            <li><input type="radio" name="status" value="cancelled">Tühistatud</li>
+                            <li><button type="submit">Muuda staatust</button></li>
+                        </form>
+                    </ul>
+
                     <div class="d-flex gap-2 w-100 justify-content-between">
+
                         <div>
                             <h6 class="mb-0">{{order.orderNumber}}</h6>
-
-                            <p class="mb-0 opacity-75">{{order.customerNote}}</p>
+                            @if(order.adminNote)
+                            <div>
+                                <p class="mb-0 opacity-85">Note: {{order.adminNote}}</p>
+                            </div>
+                            @endif
+                            <div>
+                                <p class="mb-0 opacity-75">Kliendi kommentaar: {{order.customerNote}}</p>
+                            </div>
                         </div>
                         <div class="flex-column flex">
                             <small class="opacity-50 text-nowrap">{{order.customer.firstName}}
@@ -162,6 +202,9 @@
                         </div>
                     </div>
                 </a>
+                <div class="list-group-item list-group-item-action">
+                    <a href="{{route('orders.edit', { id: order.id })}}">Muuda tellimuse detaile</a>
+                </div>
             </div>
             @endeach
         </div>

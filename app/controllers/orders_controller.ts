@@ -203,13 +203,35 @@ for displaying unsensitive order details. Like products, price, status, completi
   /**
    * Handle form submission for the edit action
    */
-  async updateStatus({ params, request, response }: HttpContext) {
-    const order = await Order.query().where('id', params.id).firstOrFail();
+  async updateStatus({ params, request, response, session }: HttpContext) {
+    const order = await Order.query().where('id', params.id).preload('items', (query) => {
+      query.preload('product')
+    }).firstOrFail();
+    const oldStatus = order.status;
     order.status = request.input('status');
-    order.save()
+
     /* TODO
     if order is cancelled add items back to stock
     */
+    if (oldStatus != 'cancelled' && order.status == 'cancelled') {
+      for (const item of order.items) {
+        item.product.stockAmount += item.quantity
+        await item.product.save()
+      }
+    } else if (oldStatus == 'cancelled' && order.status != 'cancelled') {
+      for (const item of order.items) {
+        if (item.product.stockAmount >= item.quantity) {
+          item.product.stockAmount -= item.quantity
+          await item.product.save()
+        } else {
+          session.flash('error', 'Pole piisavalt toodet laos')
+          return response.redirect().back()
+        }
+      }
+    }
+
+
+    await order.save()
     return response.redirect().back()
   }
 

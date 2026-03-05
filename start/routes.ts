@@ -89,7 +89,7 @@ router.group(() => {
 
     router.group(() => {
         // router.get('/orders', [AdminController, 'orders']).as('admin.orders');
-        //router.patch('/orders/:id', [OrdersController, 'updateStatus']).as('order.updateStatus');
+        router.patch('/orderStatus/:id', [OrdersController, 'updateStatus']).as('order.updateStatus');
         router.get('/dashboard', [AdminController, 'dashboard']).as('admin.dashboard');
         router.post('/categories', [CategoriesController, 'store']).as('categories.store');
         router.delete('/destroy/:slug', [CategoriesController, 'destroy']).as('categories.destroy');
