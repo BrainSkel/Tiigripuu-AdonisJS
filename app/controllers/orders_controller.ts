@@ -17,10 +17,12 @@ export default class OrdersController {
    * Display a list of resource
    */
   async index({ view }: HttpContext) {
+    const orders = await Order.query().preload('customer')
+    const completedOrders = await Order.query().where('status', 'completed').preload('customer')
+    const cancelledOrders = await Order.query().where('status', 'cancelled').preload('customer')
+    return view.render('admin/orders', { pageTitle: 'Admin- Orders', orders, completedOrders, cancelledOrders })
 
-    /*
-    for displaying unsensitive order details. Like products, price, status, completion date
-    */
+
   }
 
   /**
@@ -154,10 +156,16 @@ export default class OrdersController {
   /**
    * Show individual record
    */
-  async show({ params }: HttpContext) { }
+  async show({ params }: HttpContext) {
+
+    /*
+for displaying unsensitive order details. Like products, price, status, completion date
+*/
+
+  }
 
 
-  
+
   /**
    * Edit individual record
    */
@@ -209,7 +217,7 @@ export default class OrdersController {
     const order = await Order.query().where('id', params.id).firstOrFail();
     const payload = await request.validateUsing(updateOrderSchema)
 
-    const data = {...payload, orderCompletionDate: DateTime.fromJSDate(payload.order_completion_date)}
+    const data = { ...payload, orderCompletionDate: DateTime.fromJSDate(payload.order_completion_date) }
     order.merge(data)
 
     order.save()

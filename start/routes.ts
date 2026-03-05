@@ -47,7 +47,7 @@ router.group(() => {
 
     router.resource('orders', OrdersController).params({
         'orderId': 'id',
-    }).only(['index', 'show', 'create', 'store'])
+    }).only(['show', 'create', 'store'])
 
 
 }).use(middleware.optionalAuth())
@@ -71,9 +71,9 @@ router.group(() => {
         handicrafts: 'slug',
     }).except(['show', 'index'])
 
-        router.resource('orders', OrdersController).params({
+    router.resource('orders', OrdersController).params({
         'orderId': 'id',
-    }).except(['index', 'show', 'create', 'store'])
+    }).except(['show', 'create', 'store'])
 
     router.resource('images', ImagesController).params({
         images: 'id',
@@ -96,7 +96,8 @@ router.group(() => {
 
     router.delete('/logOut', [SessionController, 'destroy']).as('auth.logOut')
 
-}).use(middleware.auth())
+})
+    .use(middleware.auth())
     .prefix('/admin')
 
 
