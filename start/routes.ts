@@ -21,28 +21,32 @@ import {middleware} from '#start/kernel';
 import SessionController from '#controllers/session_controller';
 
 
-router.get('/', [MainsController, 'index'] ).as('home');
+router.get('/', [MainsController, 'index'] ).as('home').use(middleware.optionalAuth())
 
 
 router.resource('rentals', RentalsController).params({
     rentals: 'slug',
-})
+}).use(['create', 'destroy', 'edit', 'store', 'update', 'index', 'show'], middleware.auth({guards: ['web'], allowGuests: true }))
+
 router.resource('handicrafts', HandicraftsController).params({
     handicrafts: 'slug',
-})
+}).use(['create', 'destroy', 'edit', 'store', 'update', 'index', 'show'], middleware.auth({guards: ['web'], allowGuests: true }))
+
+
 router.resource('images', ImagesController).params({
     images: 'id',
-})
+}).use(['create', 'destroy', 'edit', 'store', 'update', 'index', 'show'], middleware.auth({guards: ['web'], allowGuests: true }))
 router.resource('instructions', InstructionsController).params({
     instructions: 'id',
-})
+}).use(['create', 'destroy', 'edit', 'store', 'update', 'index', 'show'], middleware.auth({guards: ['web'], allowGuests: true }))
+
 router.resource('shopping-carts', ShoppingCartsController).params({
     'shopping-carts': 'id',
-})
+}).use(['create', 'destroy', 'edit', 'store', 'update', 'index', 'show'], middleware.auth({guards: ['web'], allowGuests: true }))
 
 router.resource('orders', OrdersController).params({
     'orderId': 'id',
-})
+}).use(['create', 'destroy', 'edit', 'store', 'update', 'index', 'show'], middleware.auth())
 
 // router.resource('auth', SessionController).params({
 // })
@@ -52,9 +56,9 @@ router.resource('orders', OrdersController).params({
 // router.post('/orders', [OrdersController, 'store']).as('orders.store')
 // router.get('/orders/edit/:orderId', [OrdersController, 'edit']).as('orders.edit')
 
-router.get('/auth/login', [SessionController, 'index']).as('auth.login').use(middleware.guest()) // we dont want logged in user to log in again
-router.post('/auth/login', [SessionController, 'store']).as('auth.store').use(middleware.guest())
-router.delete('/auth/logOut', [SessionController, 'destroy']).as('auth.logOut').use(middleware.auth()) // we dont want logged in user to log in again
+router.get('/login', [SessionController, 'index']).as('auth.login') // we dont want logged in user to log in again
+router.post('/login', [SessionController, 'store']).as('auth.store')//.use(middleware.guest())
+router.delete('/logOut', [SessionController, 'destroy']).as('auth.logOut').use(middleware.auth()) // we dont want logged in user to log in again
 
 
 

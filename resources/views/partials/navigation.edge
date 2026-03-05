@@ -1,23 +1,22 @@
-<body>
-    <header class="d-flex justify-content-center py-3 border-bottom bg-light-subtle">
-        <ul class="nav nav-pills">
-            <li class="nav-item"><a href="/" class="nav-link active" aria-current="page">TP</a></li>
-            <li class="nav-item"><a href="/rentals" class="nav-link">Rental</a></li>
-            <li class="nav-item"><a href="/handicrafts" class="nav-link">Kästiöö</a></li>
-            <li class="nav-item"><a href="#" class="nav-link">Galerii</a></li>
-            <li class="nav-item"><a href="#" class="nav-link">Info</a></li>
-            <li class="nav-item"><a href="/admin/dashboard" class="nav-link">|Admin|</a></li>
-            <li class="nav-item"><a href="/admin/orders" class="nav-link">|Orders|</a></li>
+<header class="d-flex justify-content-center py-3 border-bottom bg-light-subtle">
+    <ul class="nav nav-pills">
+        <li class="nav-item"><a href="/" class="nav-link active" aria-current="page">TP</a></li>
+        <li class="nav-item"><a href="/rentals" class="nav-link">Rental</a></li>
+        <li class="nav-item"><a href="/handicrafts" class="nav-link">Kästiöö</a></li>
+        <li class="nav-item"><a href="#" class="nav-link">Galerii</a></li>
+        <li class="nav-item"><a href="#" class="nav-link">Info</a></li>
+        <li class="nav-item"><a href="/admin/dashboard" class="nav-link">|Admin|</a></li>
+        <li class="nav-item"><a href="/admin/orders" class="nav-link">|Orders|</a></li>
 
-            <li class="nav-item"><a href="/shopping-carts" class="nav-link"><u>Ostukorv</u></a></li>
-            @if(auth.isAuthenticated)
-            <p>Hello {{ auth.user.email }}</p>
-            <form action="{{route('auth.logOut')}}?_method=DELETE" method="POST">
-                {{ csrfField()}}
-                <button type="submit">Log Out</button>
-            </form>
-            @else
-                <a href="/auth/login">Log in</a>
-            @end
-        </ul>
-    </header>
+        <li class="nav-item"><a href="/shopping-carts" class="nav-link"><u>Ostukorv</u></a></li>
+        @if(auth.isAuthenticated)
+        <p>Hello {{ auth.user.fullName }}</p>
+        <form action="{{route('auth.logOut')}}?_method=DELETE" method="POST">
+            {{ csrfField()}}
+            <button type="submit">Log Out</button>
+        </form>
+        @else
+        <a href="/login">Log in</a>
+        @end
+    </ul>
+</header>
