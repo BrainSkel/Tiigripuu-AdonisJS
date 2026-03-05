@@ -49,6 +49,9 @@ router.group(() => {
         'orderId': 'id',
     }).only(['show', 'create', 'store'])
 
+    router.on('/noAccess').render('errors/noAccess')
+        
+
 
 }).use(middleware.optionalAuth())
 
