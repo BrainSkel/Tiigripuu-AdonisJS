@@ -38,7 +38,8 @@ router.use([
   () => import('@adonisjs/shield/shield_middleware'),
   () => import('@adonisjs/auth/initialize_auth_middleware'),
   () => import('#middleware/initialize_bouncer_middleware'),
-  () => import('#middleware/optional_auth_middleware')
+  () => import('#middleware/optional_auth_middleware'),
+  () => import('#middleware/no_cache_middleware')
 ])
 
 /**
@@ -48,5 +49,6 @@ router.use([
 export const middleware = router.named({
   guest: () => import('#middleware/guest_middleware'),
   auth: () => import('#middleware/auth_middleware'),
-  optionalAuth: () => import('#middleware/optional_auth_middleware')
+  optionalAuth: () => import('#middleware/optional_auth_middleware'),
+  noCache: () => import('#middleware/no_cache_middleware')
 })

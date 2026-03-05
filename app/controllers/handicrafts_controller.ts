@@ -23,10 +23,10 @@ export default class HandicraftsController {
   /**
    * Display form to create a new record
    */
-  async create({ view, bouncer }: HttpContext) {
+  async create({ view, response }: HttpContext) {
     const categories = await Category.query().from('categories').select('*').whereNotNull('allowed_product_types')
     const handicraftCategories = categories.filter(category => category.allowed_product_types.includes('handicraft'))
-
+    response.header('Cache-Control', 'no-store, no-cache, must-revalidate')
     return view.render('handicrafts/create', { categories, handicraftCategories, pageTitle: 'Uus kasitöö' })
   }
 
@@ -48,7 +48,7 @@ export default class HandicraftsController {
 
     await this.uploadImagesToDrive(request, newProduct.id);
 
-    return response.redirect().toRoute('admin.dashboard');
+    return response.header('Cache-Control', 'no-store, no-cache, must-revalidate').redirect().toRoute('admin.dashboard');
 
 
   }
@@ -132,12 +132,12 @@ export default class HandicraftsController {
     return response.redirect().toRoute('admin.dashboard')
   }
 
-    async normalizeName(name: any) {
+  async normalizeName(name: any) {
     return name
       .normalize('NFD')
       .replace(/[\u0300-\u036f]/g, '')
       .replace(/[^a-zA-Z0-9_-]/g, '_')
-}
+  }
 
 
 

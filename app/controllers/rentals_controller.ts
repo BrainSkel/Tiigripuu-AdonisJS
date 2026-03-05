@@ -28,9 +28,12 @@ export default class RentalsController {
   /**
    * Display form to create a new record
    */
-  async create({ view }: HttpContext) {
+  async create({ view, response }: HttpContext) {
     const categories = await Category.query().from('categories').select('*').whereNotNull('allowed_product_types')
     const rentalCategories = categories.filter(category => category.allowed_product_types.includes('rental'))
+    response.header('Cache-Control', 'no-store, no-cache, must-revalidate')
+    response.header('Pragma', 'no-cache')
+    response.header('Expires', '0')
     return view.render('rentals/create', { pageTitle: 'Uus laenutus', rentalCategories })
   }
 
@@ -53,6 +56,7 @@ export default class RentalsController {
 
 
     await this.uploadImagesToDrive(request, newProduct.id);
+
 
 
     return response.redirect().toRoute('admin.dashboard');

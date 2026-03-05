@@ -68,11 +68,11 @@ router.group(() => {
 
     router.resource('rentals', RentalsController).params({
         rentals: 'slug',
-    }).except(['show', 'index'])
+    }).except(['show', 'index']).use(['create'], middleware.noCache())
 
     router.resource('handicrafts', HandicraftsController).params({
         handicrafts: 'slug',
-    }).except(['show', 'index'])
+    }).except(['show', 'index']).use(['create'], middleware.noCache())
 
     router.resource('orders', OrdersController).params({
         'orderId': 'id',
