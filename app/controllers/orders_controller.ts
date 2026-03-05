@@ -112,12 +112,6 @@ export default class OrdersController {
     console.log(totalPrice)
 
 
-
-
-
-
-
-
     //!!const totalPrice = request.input('total_price');
 
     const customerData = await { ...customerPayload }
@@ -154,10 +148,7 @@ export default class OrdersController {
         .htmlView('emails/create_order_to_admin', { order: sentOrder })
     })
     this.deleteCartAndItems(cartKey)
-    //return view.render('emails/create_order_to_customer', {order: sentOrder})
-
     response.redirect().toRoute('admin.dashboard')
-
   }
 
   /**
@@ -165,9 +156,12 @@ export default class OrdersController {
    */
   async show({ params }: HttpContext) { }
 
+
+  
   /**
    * Edit individual record
    */
+
   async edit({ params, view }: HttpContext) {
     const order = await Order.query()
       .where('id', params.id)
