@@ -51,6 +51,9 @@ export default class Product extends BaseModel {
   @column()
   declare isVisible: boolean
 
+  @column()
+  declare isActive: boolean
+
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
 

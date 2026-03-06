@@ -13,14 +13,14 @@ export default class RentalsController {
    * Display a list of resource
    */
   public async index({ view }: HttpContext) {
-    const rentals = await Product.query().where('product_type', 'rental').preload('images')            // plain objects
+    const rentals = await Product.query().where('product_type', 'rental').where('is_active', true).preload('images')            // plain objects
     return view.render('rentals/view', { pageTitle: 'Rental', rentals })
   }
   /**
    * Show individual record
    */
   async show({ params, view }: HttpContext) {
-    const rental = await Product.query().where('slug', params.slug).preload('images').firstOrFail();
+    const rental = await Product.query().where('slug', params.slug).where('is_active', true).preload('images').firstOrFail();
     return view.render('rentals/show', { pageTitle: rental?.itemName, rental })
   }
 
@@ -70,6 +70,7 @@ export default class RentalsController {
     console.log(params.slug)
     const rental = await Product.query()
       .where('slug', params.slug)
+      .where('is_active', true)
       .preload('images')
       .preload('rentalDetail', (query) => {
         query.preload('instructions')
@@ -131,13 +132,16 @@ export default class RentalsController {
   /**
    * Delete record
    */
-  async destroy({ params, response }: HttpContext) {
+  async delete({ params, response }: HttpContext) {
     const rental = await Product
       .query()
       .where('slug', params.slug)
       .firstOrFail();
 
-    await rental.delete();
+    //await rental.delete();
+    rental.isActive = false;
+    await rental.save();
+    console.log('delete')
     return response.redirect().toRoute('admin.dashboard');
   }
 

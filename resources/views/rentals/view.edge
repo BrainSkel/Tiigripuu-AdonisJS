@@ -18,7 +18,7 @@
                                 <div class="btn-group">
                                     <a type="button" class="btn btn-sm btn-outline-secondary"
                                         href="{{route('rentals.edit', { slug: rental.slug })}}">Edit</a>
-                                    <form action="{{route('rentals.destroy', { slug: rental.slug })}}?_method=DELETE"
+                                    <form action="{{route('rentals.delete', { slug: rental.slug })}}?_method=PATCH"
                                         method="POST" style="display:inline" class="btn-group">
                                         {{ csrfField() }}
                                         <button type="submit" class="btn btn-sm btn-outline-secondary">Delete</button>

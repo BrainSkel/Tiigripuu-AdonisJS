@@ -14,6 +14,7 @@ export default class extends BaseSchema {
       table.text('description').notNullable()
       table.integer('stock_amount').notNullable().defaultTo(0)
       table.boolean('is_visible').notNullable().defaultTo(true)
+      table.boolean('is_active').notNullable().defaultTo(true) // on delete is not active anymore
 
       table.timestamp('created_at')
       table.timestamp('updated_at')

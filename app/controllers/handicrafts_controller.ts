@@ -14,6 +14,7 @@ export default class HandicraftsController {
   async index({ view }: HttpContext) {
     const handicrafts = await Product.query()
       .where('product_type', 'handicraft')
+      .where('is_active', true)
       .preload('categories', (query) => {
         query.pivotColumns(['product_id'])
       }).preload('images')
@@ -68,6 +69,7 @@ export default class HandicraftsController {
   async edit({ params, view }: HttpContext) {
     const handicraft = await Product.query()
       .where('slug', params.slug)
+      .where('is_active', true)
       .preload('categories')
       .preload('images')
       .preload('handicraftDetail')
@@ -125,10 +127,12 @@ export default class HandicraftsController {
   /**
    * Delete record
    */
-  async destroy({ params, response }: HttpContext) {
+  async delete({ params, response }: HttpContext) {
     const handicraft = await Product.query().where('slug', params.slug).firstOrFail();
 
-    await handicraft?.delete()
+    //await handicraft?.delete()
+    handicraft.isActive = false;
+    await handicraft.save();
     return response.redirect().toRoute('admin.dashboard')
   }
 

@@ -84,6 +84,7 @@
                     <a href="{{route('rentals.create')}}" class="btn btn-primary">Create new rental</a>
                 </div>
                 @each(rental in rentals)
+                @if(rental.isActive)
                 <div>
                     <div class="d-flex">
                         <a href="{{route('rentals.show', { slug: rental.slug })}}"
@@ -104,7 +105,7 @@
                             <div class="btn-group flex-column">
                                 <a type="button" class="btn btn-sm btn-outline-secondary"
                                     href="{{route('rentals.edit', { slug: rental.slug })}}">Edit</a>
-                                <form action="{{route('rentals.destroy', { slug: rental.slug })}}?_method=DELETE"
+                                <form action="{{route('rentals.delete', { slug: rental.slug })}}?_method=PATCH"
                                     method="POST" style="display:inline" class="btn-group">
                                     {{ csrfField() }}
                                     <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
@@ -139,6 +140,7 @@
                         </div>
                     </div>
                 </div>
+                @endif
                 @endeach
             </div>
         </div>
@@ -153,6 +155,7 @@
                         handicraft</a>
                 </div>
                 @each(handicraft in handicrafts)
+                @if(handicraft.isActive)
                 <div>
                     <div class="d-flex">
                         <a href="{{route('handicrafts.show', { slug: handicraft.slug })}}"
@@ -211,6 +214,7 @@
                         </div>
                     </div>
                 </div>
+                @endif
                 @endeach
             </div>
         </div>
