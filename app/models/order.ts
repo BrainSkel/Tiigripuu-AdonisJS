@@ -47,7 +47,7 @@ export default class Order extends BaseModel {
   @beforeCreate()
   public static async generateOrderNumber(order: Order) {
     const random = nanoid(6).toUpperCase()
-    const orderType = "temporary"//await order.productType[0].toUpperCase()
+    const orderType = "O" //await order.productType[0].toUpperCase()
 
     const orderNumber = `${orderType}-${DateTime.now().toFormat('ddMM')}${random}`
 

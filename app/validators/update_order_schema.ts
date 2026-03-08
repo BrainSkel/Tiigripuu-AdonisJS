@@ -2,7 +2,7 @@ import vine from '@vinejs/vine'
 
 export const updateOrderSchema = vine.compile(vine.object({
     order_completion_date: vine.date(),
-    admin_note: vine.string(),
+    admin_note: vine.string().optional(),
     status: vine.enum(['pending','confirmed','completed', 'cancelled']),
 
 

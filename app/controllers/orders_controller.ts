@@ -248,7 +248,7 @@ for displaying unsensitive order details. Like products, price, status, completi
     if order is cancelled add items back to stock
     */
 
-    return response.redirect().toRoute('admin.orders')
+    return response.redirect().toRoute('orders.index')
   }
 
   /*
