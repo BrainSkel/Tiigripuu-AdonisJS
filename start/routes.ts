@@ -22,7 +22,12 @@ import SessionController from '#controllers/session_controller';
 
 
 router.get('/', [MainsController, 'index']).as('home').use(middleware.optionalAuth())
-
+const order = await Order.query().where("id", 3).preload('items', (query) => {
+    query.preload('product', (productQuery) => {
+        productQuery.preload('images').preload('categories').preload('rentalDetail').preload('handicraftDetail')
+    })
+}).preload('customer').firstOrFail()
+router.on('/test').render('emails/create_order_to_customer', {order})
 
 
 

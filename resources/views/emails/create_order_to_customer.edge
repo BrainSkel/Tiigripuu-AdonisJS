@@ -1,28 +1,54 @@
 <html>
-    <head>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-        <link href="/resources/css/email.css" rel="stylesheet">
-    </head>
+
+<body>
+
+    <table style="border:2px solid orange; background-color:gray">
+        <tbody>
+            <tr style="border-bottom: 2px solid black;">
+                <td style="border-bottom: 2px solid black;">
+                    <h1>Teie tellimus {{order.orderNumber}}</h1>
+                </td>
+                <td>
+                    <img src="/storage/">
+                </td>
+                
+            </tr>
+        </tbody>
 
 
+        @each(orderItem in order.items)
+        <tbody style="border:2px outset black; width:100%">
+            <tr>
+                <td><img src="/storage/uploads/{{orderItem.product.images[0].imageUrl}}" alt="" width="auto"
+                        height="64"></td>
+            </tr>
+            <tr>
+                <td>
+                    <h4>{{orderItem.product.itemName}}</h6>
+                    <p>{{orderItem.product.description}}</p>
+                    <br>
+                </td>
+            </tr>
+            <tr>
+                <td><small>Tükihind: {{orderItem.unitPrice}} €</small></td>
+            </tr>
+            <br />
+            <tr>
+                <td><small>Hind: {{orderItem.totalPrice}} €</small></td>
+            </tr>
+            <tr>
+                <td>
+                    <h6 class="mb-0">Kogus: {{orderItem.quantity}}</h6>
+                </td>
+            </tr>
+        </tbody>
+        @endeach
+        <tbody>
+            <tr>
+                <td style="border-top: 2px inset black;"><p>Kogu hind: {{order.totalPrice}} €</p></td>
+            </tr>
+        </tbody>
+    </table>
+</body>
 
-<h1>Teie tellimus {{order.orderNumber}}</h1>
-@each(cartItem in order.items)
-    <div id="borderDemo">
-        <img src="/storage/uploads/{{cartItem.product.images[0].imageUrl}}" alt="" width="32" height="32"
-            class="rounded-circle flex-shrink-0">
-        <div class="d-flex gap-2 w-100 justify-content-between">
-            <div>
-                <h6 class="mb-0">{{cartItem.product.itemName}}</h6>
-                <p class="mb-0 opacity-75">{{cartItem.product.description}}</p>
-            </div>
-            <small class="opacity-50 text-nowrap">Hind: {{cartItem.product.price}}€</small>
-        </div>
-        <div class="d-flex gap-2 w-100 justify-content-between">
-            <div>
-                <h6 class="mb-0">Kogus: {{cartItem.quantity}}</h6>
-            </div>
-        </div>
-    </div>
-@endeach
 </html>
