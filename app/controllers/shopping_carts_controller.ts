@@ -48,7 +48,7 @@ export default class ShoppingCartsController {
   /**
    * Handle form submission for the create action
    */
-  async store({ request, response }: HttpContext) {
+  async store({ request, response, session }: HttpContext) {
 
     const cart = await this.createCart(request, response)
     const productData = await request.validateUsing(addShoppingCartItem);
@@ -62,7 +62,7 @@ export default class ShoppingCartsController {
       const newQuantity = existingItem.quantity += productData.quantity;
 
       if (newQuantity > product.stockAmount) {
-        return response.badRequest('Not enough stock available')
+        return response.redirect().back()
       }
 
       existingItem.quantity = newQuantity
@@ -70,7 +70,7 @@ export default class ShoppingCartsController {
 
     } else {
       if (productData.quantity > product.stockAmount || productData.quantity < 0) {
-        return response.badRequest('Not enough stock available')
+        return response.redirect().back()
 
       }
       await CartItem.create({
@@ -121,11 +121,11 @@ export default class ShoppingCartsController {
       return response.redirect().back();
     }
 
-    if(quantity < 0) {
+    if (quantity < 0) {
       return response.badRequest('Invalid quantity')
     }
 
-    if(quantity > product.stockAmount) {
+    if (quantity > product.stockAmount) {
       return response.badRequest('Not enought stock')
     }
 

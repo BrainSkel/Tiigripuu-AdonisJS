@@ -15,9 +15,11 @@ export default class HandicraftsController {
     const handicrafts = await Product.query()
       .where('product_type', 'handicraft')
       .where('is_active', true)
+      .preload('images')
       .preload('categories', (query) => {
         query.pivotColumns(['product_id'])
-      }).preload('images')
+      })
+      .preload('handicraftDetail')
     return view.render('handicrafts/view', { handicrafts, pageTitle: 'Kasitöö' })
   }
 
@@ -59,7 +61,7 @@ export default class HandicraftsController {
    * Show individual record
    */
   async show({ params, view }: HttpContext) {
-    const handicraft = await Product.query().where('slug', params.slug).preload('images').firstOrFail();
+    const handicraft = await Product.query().where('slug', params.slug).preload('images').preload('categories').preload('handicraftDetail').firstOrFail();
     return view.render('handicrafts/show', { handicraft, pageTitle: handicraft?.itemName })
   }
 
