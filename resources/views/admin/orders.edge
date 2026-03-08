@@ -35,15 +35,17 @@
                 {{order.status}}
             </button>
             <ul class="dropdown-menu position-absolute z-2" data-bs-auto-close="outside">
-                <form method="POST" action="{{route('order.updateStatus', { id: order.id })}}?_method=PATCH"
+                <form method="POST" id="orderForm-{{order.id}}"
+                    action="{{route('order.updateStatus', { id: order.id })}}?_method=PATCH"
                     enctype="multipart/form-data">
                     {{ csrfField() }}
                     <li><input type="radio" class="bg-yellow" name="status" value="pending">Ootel</li>
                     <li><input type="radio" name="status" value="confirmed">Kinnitatud</li>
                     <li><input type="radio" name="status" value="completed">Valmis</li>
                     <li><input type="radio" name="status" value="cancelled">Tühistatud</li>
-                    <li><button type="submit">Muuda staatust</button></li>
                 </form>
+                <li><button data-bs-toggle="modal" data-bs-target="#modal-{{order.id}}">Muuda
+                        staatust</button></li>
             </ul>
 
             <div class="d-flex gap-2 w-100 justify-content-between">
@@ -69,10 +71,34 @@
         <div class="list-group-item list-group-item-action">
             <a href="{{route('orders.edit', { id: order.id })}}">Muuda tellimuse detaile</a>
         </div>
+        <div class="modal fade" id="modal-{{order.id}}" tabindex="-1" aria-labelledby="orderModel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="orderModel">Modal title</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        ...
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" form="orderForm-{{order.id}}">Muuda
+                            staatust</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     @endif
     @endeach
 
+
+
+
+    <!-- 
+COMPLETED ORDERS 
+-->
     <div>
         <p class="d-inline-flex gap-1">
             <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCompleted"
@@ -86,7 +112,8 @@
 
             <div class="list-group">
                 <a href="#" class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
-                    <button type="button" class="btn 
+                    <button type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false"
+                        class="btn dropdown-toggle 
         {{order.status == 'pending' ? 'btn-warning' : ''}}
         {{order.status == 'confirmed' ? 'btn-primary' : ''}}
         {{order.status == 'completed' ? 'btn-success' : ''}}
@@ -108,15 +135,17 @@
                         {{order.status}}
                     </button>
                     <ul class="dropdown-menu position-absolute z-2" data-bs-auto-close="outside">
-                        <form method="POST" action="{{route('order.updateStatus', { id: order.id })}}?_method=PATCH"
+                        <form method="POST" id="orderForm-{{order.id}}"
+                            action="{{route('order.updateStatus', { id: order.id })}}?_method=PATCH"
                             enctype="multipart/form-data">
                             {{ csrfField() }}
                             <li><input type="radio" class="bg-yellow" name="status" value="pending">Ootel</li>
                             <li><input type="radio" name="status" value="confirmed">Kinnitatud</li>
                             <li><input type="radio" name="status" value="completed">Valmis</li>
                             <li><input type="radio" name="status" value="cancelled">Tühistatud</li>
-                            <li><button type="submit">Muuda staatust</button></li>
                         </form>
+                        <li><button data-bs-toggle="modal" data-bs-target="#modal-{{order.id}}">Muuda
+                                staatust</button></li>
                     </ul>
                     <div class="d-flex gap-2 w-100 justify-content-between">
                         <div>
@@ -130,10 +159,59 @@
                         </div>
                     </div>
                 </a>
+                <div class="list-group-item list-group-item-action">
+                    <a href="{{route('orders.edit', { id: order.id })}}">Muuda tellimuse detaile</a>
+                </div>
+                <div class="modal fade" id="modal-{{order.id}}" tabindex="-1" aria-labelledby="orderModel"
+                    aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="orderModel">Modal title</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                ...
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary" form="orderForm-{{order.id}}">Muuda
+                                    staatust</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade" id="modal-{{order.id}}" tabindex="-1" aria-labelledby="orderModel"
+                    aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="orderModel">Modal title</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                ...
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary" form="orderForm-{{order.id}}">Muuda
+                                    staatust</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             @endeach
         </div>
     </div>
+
+
+
+    <!-- 
+CANCELLED ORDERS 
+-->
     <div>
         <p class="d-inline-flex gap-1">
             <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCancelled"
@@ -171,16 +249,19 @@
                         {{order.status}}
                     </button>
                     <ul class="dropdown-menu position-absolute z-2" data-bs-auto-close="outside">
-                        <form method="POST" action="{{route('order.updateStatus', { id: order.id })}}?_method=PATCH"
+                        <form id="orderForm-{{order.id}}" method="POST"
+                            action="{{route('order.updateStatus', { id: order.id })}}?_method=PATCH"
                             enctype="multipart/form-data">
                             {{ csrfField() }}
                             <li><input type="radio" class="bg-yellow" name="status" value="pending">Ootel</li>
                             <li><input type="radio" name="status" value="confirmed">Kinnitatud</li>
                             <li><input type="radio" name="status" value="completed">Valmis</li>
                             <li><input type="radio" name="status" value="cancelled">Tühistatud</li>
-                            <li><button type="submit">Muuda staatust</button></li>
                         </form>
+                        <li><button data-bs-toggle="modal" data-bs-target="#modal-{{order.id}}">Muuda
+                                staatust</button></li>
                     </ul>
+
 
                     <div class="d-flex gap-2 w-100 justify-content-between">
 
@@ -206,8 +287,30 @@
                     <a href="{{route('orders.edit', { id: order.id })}}">Muuda tellimuse detaile</a>
                 </div>
             </div>
+            <div class="modal fade" id="modal-{{order.id}}" tabindex="-1" aria-labelledby="orderModel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="orderModel">Modal title</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            ...
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary" form="orderForm-{{order.id}}">Muuda
+                                staatust</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
             @endeach
         </div>
     </div>
+
+
+
 
 </body>
