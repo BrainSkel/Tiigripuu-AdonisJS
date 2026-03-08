@@ -62,6 +62,7 @@ export default class ShoppingCartsController {
       const newQuantity = existingItem.quantity += productData.quantity;
 
       if (newQuantity > product.stockAmount) {
+        session.flash('error', 'Not enough in stock')
         return response.redirect().back()
       }
 
@@ -70,6 +71,7 @@ export default class ShoppingCartsController {
 
     } else {
       if (productData.quantity > product.stockAmount || productData.quantity < 0) {
+        session.flash('error', 'Not enough in stock')
         return response.redirect().back()
 
       }
@@ -106,7 +108,7 @@ export default class ShoppingCartsController {
    */
 
 
-  async update({ params, request, response }: HttpContext) {
+  async update({ params, request, response, session }: HttpContext) {
 
     const productId = params.id;
     //const payload = await request.validateUsing(addShoppingCartItem);
@@ -122,11 +124,13 @@ export default class ShoppingCartsController {
     }
 
     if (quantity < 0) {
-      return response.badRequest('Invalid quantity')
+      session.flash('error', 'Invalid number')
+      return response.redirect().back()
     }
 
     if (quantity > product.stockAmount) {
-      return response.badRequest('Not enought stock')
+      session.flash('error', 'Not enough in stock')
+      return response.redirect().back()
     }
 
     await cartItem.merge({ quantity: quantity }).save();

@@ -4,6 +4,11 @@
     @include('partials/navigation')
     <div class="album py-5 bg-body-tertiary">
         <div class="container">
+            @if(flashMessages.has('error'))
+  <div class="alert alert-error">
+    {{ flashMessages.get('error') }}
+  </div>
+@end
             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
                 <div class="col">
                     <div class="images">
