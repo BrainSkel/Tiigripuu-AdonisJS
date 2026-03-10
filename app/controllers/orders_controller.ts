@@ -183,20 +183,9 @@ for displaying unsensitive order details. Like products, price, status, completi
       .firstOrFail()
 
 
-    const productType = await order.items[0].product.productType
+      const orderItems = await order.items;
 
-    let product = null;
-    if (productType == "rental") {
-      product = await Product.query().where('product_type', 'rental').where('slug', order.items[0].product.slug).first()
-    } else if (productType == "handicraft") {
-      product = await Product.query().where('product_type', 'handicraft').where('slug', order.items[0].product.slug).first()
-    } else if (productType == "custom_handicraft") {
-      console.log("No custom_handicraft created yet")
-    } else {
-      console.log("edit open error")
-    }
-
-    return view.render('orders/edit', { pageTitle: 'Edit', order, product })
+    return view.render('orders/edit', { pageTitle: 'Edit', order, orderItems })
 
   }
 
