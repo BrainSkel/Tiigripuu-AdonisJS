@@ -199,9 +199,7 @@ for displaying unsensitive order details. Like products, price, status, completi
     const oldStatus = order.status;
     order.status = request.input('status');
 
-    /* TODO
-    if order is cancelled add items back to stock
-    */
+
     if (oldStatus != 'cancelled' && order.status == 'cancelled') {
       for (const item of order.items) {
         item.product.stockAmount += item.quantity
@@ -224,18 +222,37 @@ for displaying unsensitive order details. Like products, price, status, completi
     return response.redirect().back()
   }
 
-  async update({ params, request, response }: HttpContext) {
-    const order = await Order.query().where('id', params.id).firstOrFail();
+  async update({ params, request, response, session }: HttpContext) {
+    const order = await Order.query().where('id', params.id).preload('items', (query) => {
+      query.preload('product')
+    }).firstOrFail();
     const payload = await request.validateUsing(updateOrderSchema)
 
     const data = { ...payload, orderCompletionDate: DateTime.fromJSDate(payload.order_completion_date) }
+
+    const oldStatus = order.status;
+    order.status = request.input('status');
+
+
+    if (oldStatus != 'cancelled' && order.status == 'cancelled') {
+      for (const item of order.items) {
+        item.product.stockAmount += item.quantity
+        await item.product.save()
+      }
+    } else if (oldStatus == 'cancelled' && order.status != 'cancelled') {
+      for (const item of order.items) {
+        if (item.product.stockAmount >= item.quantity) {
+          item.product.stockAmount -= item.quantity
+          await item.product.save()
+        } else {
+          session.flash('error', 'Pole piisavalt toodet laos')
+          return response.redirect().back()
+        }
+      }
+    }
     order.merge(data)
 
     order.save()
-
-    /* TODO
-    if order is cancelled add items back to stock
-    */
 
     return response.redirect().toRoute('orders.index')
   }
