@@ -1,24 +1,43 @@
-<header class="d-flex justify-content-center py-3 border-bottom bg-light-subtle">
-    <ul class="nav nav-pills">
-        <li class="nav-item"><a href="/" class="nav-link active" aria-current="page">TP</a></li>
-        <li class="nav-item"><a href="/rentals" class="nav-link">Rental</a></li>
-        <li class="nav-item"><a href="/handicrafts" class="nav-link">Kästiöö</a></li>
-        <li class="nav-item"><a href="#" class="nav-link">Galerii</a></li>
-        <li class="nav-item"><a href="#" class="nav-link">Info</a></li>
-        <li class="nav-item"><a href="/admin/dashboard" class="nav-link">|Admin|</a></li>
-        <li class="nav-item"><a href="/admin/orders" class="nav-link">|Orders|</a></li>
+<header>
+    <nav class="d-flex justify-content-center py-3 border-bottom bg-light-subtle">
+        <ul class="nav nav-pills">
+            <li class="nav-item"><a href="/" class="nav-link navbar-brand" aria-current="page"><img
+                        src="/storage/website/logo.png" alt="TP" style="" height="48"></a></li>
+            <li class="nav-item"><a href="/rentals" class="nav-link">Rental</a></li>
+            <li class="nav-item"><a href="/handicrafts" class="nav-link">Kästiöö</a></li>
+            <li class="nav-item"><a href="#" class="nav-link">Galerii</a></li>
+            <li class="nav-item"><a href="#" class="nav-link">Info</a></li>
+            @if(auth.isAuthenticated)
+            <li class="nav-item"><a href="/admin/dashboard" class="nav-link">|Admin|</a></li>
+            <li class="nav-item"><a href="/admin/orders" class="nav-link">|Orders|</a></li>
+            @end
 
-        <li class="nav-item"><a href="/shopping-carts" class="nav-link"><u>Ostukorv</u></a></li>
-        
-        @if(auth.isAuthenticated)
-        <li class="nav-item">Hello {{ auth.user.fullName }}</li>
-        <li class="nav-item">
-        <form action="{{route('auth.logOut')}}?_method=DELETE" method="POST">
-            {{ csrfField()}}
-            <button type="submit" class="nav-button">Log Out</button>
-        </form></li>
-        @else
-        <li class="nav-item"><a href="/login" class="nav-link">Log in</a></li>
-        @end
-    </ul>
+
+
+            @if(auth.isAuthenticated)
+            <li class="nav-item">Oled sisselogitud {{ auth.user.fullName }}</li>
+            <li class="nav-item">
+                <form action="{{route('auth.logOut')}}?_method=DELETE" method="POST">
+                    {{ csrfField()}}
+                    <button type="submit" class="nav-button">Logi välja</button>
+                </form>
+            </li>
+            @else
+            <li class="nav-item"><a href="/login" class="nav-link">Logi sisse</a></li>
+            @end
+
+
+
+            @if(request.cookie('cartKey'))
+            <li class="nav-item">
+                <a href="/shopping-carts" class="nav-link"><svg xmlns="http://www.w3.org/2000/svg" width="16"
+                        height="16" fill="currentColor" class="bi bi-cart-fill" viewBox="0 0 16 16">
+                        <path
+                            d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5M5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4m7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4m-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2m7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2" />
+                    </svg></a>
+            </li>
+            @endif
+        </ul>
+    </nav>
+
 </header>
