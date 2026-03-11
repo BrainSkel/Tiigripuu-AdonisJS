@@ -43,13 +43,15 @@ export default class HandicraftsController {
     const newProduct = await Product.create(data);
     const payloadDetails = await request.validateUsing(createKasitooDetailsSchema)
 
+    await this.uploadImagesToDrive(request, newProduct.id);
+    
     await HandicraftDetail.create({
       productId: newProduct.id,
       handicraftDetails: payloadDetails.handicraft_details,
     })
     await newProduct.related('categories').attach(categories.map((id: string) => Number(id)));
 
-    await this.uploadImagesToDrive(request, newProduct.id);
+    
 
     return response.header('Cache-Control', 'no-store, no-cache, must-revalidate').redirect().toRoute('admin.dashboard');
 

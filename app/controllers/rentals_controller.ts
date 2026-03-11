@@ -14,10 +14,10 @@ export default class RentalsController {
    */
   public async index({ view }: HttpContext) {
     const rentals = await Product.query()
-    .where('product_type', 'rental')
-    .where('is_active', true)
-    .preload('images')
-    .preload('categories', (query) => {
+      .where('product_type', 'rental')
+      .where('is_active', true)
+      .preload('images')
+      .preload('categories', (query) => {
         query.pivotColumns(['product_id'])
       }).preload('rentalDetail')            // plain objects
     return view.render('rentals/view', { pageTitle: 'Rental', rentals })
@@ -52,16 +52,20 @@ export default class RentalsController {
     const data = { ...payload, product_type: 'rental' }
     const newProduct = await Product.create(data);
     const payloadDetails = await request.validateUsing(createRentalDetailsSchema)
+
+    await this.uploadFilesToDrive(request, newProduct.id);
+
+
+    await this.uploadImagesToDrive(request, newProduct.id);
+
+
     await RentalDetail.create({
       productId: newProduct.id,
       rentalInfo: payloadDetails.rental_info,
     })
     await newProduct.related('categories').attach(categories.map((id: string) => Number(id)));
 
-    await this.uploadFilesToDrive(request, newProduct.id);
 
-
-    await this.uploadImagesToDrive(request, newProduct.id);
 
 
 
