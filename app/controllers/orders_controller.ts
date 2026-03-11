@@ -150,7 +150,7 @@ export default class OrdersController {
         .htmlView('emails/create_order_to_admin', { order: sentOrder })
     })
     this.deleteCartAndItems(cartKey)
-    response.redirect().toRoute('admin.dashboard')
+    response.redirect().toRoute('home')
   }
 
   /**
