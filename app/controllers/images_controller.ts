@@ -5,7 +5,12 @@ export default class ImagesController {
   /**
    * Display a list of resource
    */
-  //async index({}: HttpContext) {}
+  async index({ view}: HttpContext) {
+    const images = await ProductImage.query().where('display_in_gallery', true)
+
+    return view.render('gallery/view', {images: images})
+
+  }
 
   /**
    * Display form to create a new record

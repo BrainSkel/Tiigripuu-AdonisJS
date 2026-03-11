@@ -8,7 +8,7 @@ export default class extends BaseSchema {
       table.increments('id')
 
       table.integer('product_id').unsigned().references('id').inTable('products').onDelete('CASCADE')
-      table.boolean('dispaly_in_gallery').notNullable().defaultTo(false)
+      table.boolean('display_in_gallery').notNullable().defaultTo(false)
       table.string('image_url').notNullable()
       table.integer('display_order').notNullable().defaultTo(0)
 

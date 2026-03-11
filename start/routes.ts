@@ -38,6 +38,10 @@ router.get('/', [MainsController, 'index']).as('home').use(middleware.optionalAu
 //------------------------------
 router.group(() => {
 
+    router.resource('gallery', ImagesController).params({
+        imageId: 'id',
+    }).only(['index'])
+
     router.resource('rentals', RentalsController).params({
         rentals: 'slug',
     }).only(['show', 'index'])

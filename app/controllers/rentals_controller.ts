@@ -53,10 +53,7 @@ export default class RentalsController {
     const newProduct = await Product.create(data);
     const payloadDetails = await request.validateUsing(createRentalDetailsSchema)
 
-    await this.uploadFilesToDrive(request, newProduct.id);
 
-
-    await this.uploadImagesToDrive(request, newProduct.id);
 
 
     await RentalDetail.create({
@@ -65,7 +62,10 @@ export default class RentalsController {
     })
     await newProduct.related('categories').attach(categories.map((id: string) => Number(id)));
 
+    await this.uploadFilesToDrive(request, newProduct.id);
 
+
+    await this.uploadImagesToDrive(request, newProduct.id);
 
 
 
@@ -179,13 +179,12 @@ export default class RentalsController {
       } else {
         imageName = 'default.jpg'
       }
-
-
-      const dispalyInGallery = request.input('display_in_gallery') === '1' ? true : false;
+      
+      const displayInGallery = request.input('display_in_gallery') == '1' ? true : false;
       ProductImage.create({
         imageUrl: imageName,
         productId: productId,
-        dispalyInGallery: dispalyInGallery,
+        displayInGallery: displayInGallery,
         displayOrder: imageOrder
       })
     }

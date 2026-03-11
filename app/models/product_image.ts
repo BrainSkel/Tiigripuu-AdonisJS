@@ -14,7 +14,7 @@ export default class ProductImage extends BaseModel {
   declare productId: number
 
   @column()
-  declare dispalyInGallery: boolean
+  declare displayInGallery: boolean
 
   @column()
   declare imageUrl: string

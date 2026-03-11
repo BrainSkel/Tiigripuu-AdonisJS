@@ -43,7 +43,7 @@ export default class HandicraftsController {
     const newProduct = await Product.create(data);
     const payloadDetails = await request.validateUsing(createKasitooDetailsSchema)
 
-    await this.uploadImagesToDrive(request, newProduct.id);
+
     
     await HandicraftDetail.create({
       productId: newProduct.id,
@@ -51,7 +51,7 @@ export default class HandicraftsController {
     })
     await newProduct.related('categories').attach(categories.map((id: string) => Number(id)));
 
-    
+    await this.uploadImagesToDrive(request, newProduct.id);
 
     return response.header('Cache-Control', 'no-store, no-cache, must-revalidate').redirect().toRoute('admin.dashboard');
 
@@ -171,11 +171,11 @@ export default class HandicraftsController {
       }
 
 
-      const dispalyInGallery = request.input('display_in_gallery') === '1' ? true : false;
+      const displayInGallery = request.input('display_in_gallery') === '1' ? true : false;
       ProductImage.create({
         imageUrl: imageName,
         productId: productId,
-        dispalyInGallery: dispalyInGallery,
+        displayInGallery: displayInGallery,
         displayOrder: imageOrder
       })
     }
