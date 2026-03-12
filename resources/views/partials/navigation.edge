@@ -1,43 +1,66 @@
 <header>
-    <nav class="d-flex justify-content-center py-3 border-bottom bg-light-subtle">
-        <ul class="nav nav-pills">
-            <li class="nav-item"><a href="/" class="nav-link navbar-brand" aria-current="page"><img
-                        src="/storage/website/logo.png" alt="TP" style="" height="48"></a></li>
-            <li class="nav-item"><a href="/rentals" class="nav-link">Rental</a></li>
-            <li class="nav-item"><a href="/handicrafts" class="nav-link">Kästiöö</a></li>
-            <li class="nav-item"><a href="/gallery" class="nav-link">Galerii</a></li>
-            <li class="nav-item"><a href="#" class="nav-link">Info</a></li>
-            @if(auth.isAuthenticated)
-            <li class="nav-item"><a href="/admin/dashboard" class="nav-link">|Admin|</a></li>
-            <li class="nav-item"><a href="/admin/orders" class="nav-link">|Orders|</a></li>
-            @end
+<nav class="navbar navbar-expand-lg navbar-danger bg-danger">
+    <div class="container">
 
+        <button class="navbar-toggler" type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarMain">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
+        <div class="collapse navbar-collapse" id="navbarMain">
 
-            @if(auth.isAuthenticated)
-            <li class="nav-item">Oled sisselogitud {{ auth.user.fullName }}</li>
-            <li class="nav-item">
+            <!-- LEFT -->
+            <div class="d-flex align-items-center flex-grow-1">
+            </div>
+
+            <!-- CENTER -->
+            <ul class="navbar-nav mx-auto text-center">
+                                <a class="navbar-brand" href="/">
+                    <img src="/storage/website/logo.png" alt="TP" height="40">
+                </a>
+                <li class="nav-item"><a href="/rentals" class="nav-link">Rental</a></li>
+                <li class="nav-item"><a href="/handicrafts" class="nav-link">Käsitöö</a></li>
+                <li class="nav-item"><a href="/gallery" class="nav-link">Galerii</a></li>
+                <li class="nav-item"><a href="#" class="nav-link">Info</a></li>
+
+                @if(auth.isAuthenticated)
+                <li class="nav-item"><a href="/admin/dashboard" class="nav-link">|Admin|</a></li>
+                <li class="nav-item"><a href="/admin/orders" class="nav-link">|Orders|</a></li>
+                @end
+            </ul>
+
+            <!-- RIGHT -->
+            <div class="d-flex align-items-center justify-content-end flex-grow-1">
+
+                @if(auth.isAuthenticated)
+                <span class="navbar-text text-light me-3">
+                    {{ auth.user.fullName }}
+                </span>
+
                 <form action="{{route('auth.logOut')}}?_method=DELETE" method="POST">
                     {{ csrfField()}}
-                    <button type="submit" class="nav-button">Logi välja</button>
+                    <button type="submit" class="btn btn-sm btn-outline-light">Logi välja</button>
                 </form>
-            </li>
-            @else
-            <li class="nav-item"><a href="/login" class="nav-link">Logi sisse</a></li>
-            @end
+                @end
 
+            </div>
 
+        </div>
+    </div>
+</nav>
+@if(request.cookie('cartKey'))
+<a href="/shopping-carts" class="cart-fab">
 
-            @if(request.cookie('cartKey'))
-            <li class="nav-item">
-                <a href="/shopping-carts" class="nav-link"><svg xmlns="http://www.w3.org/2000/svg" width="16"
-                        height="16" fill="currentColor" class="bi bi-cart-fill" viewBox="0 0 16 16">
-                        <path
-                            d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5M5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4m7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4m-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2m7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2" />
-                    </svg></a>
-            </li>
-            @endif
-        </ul>
-    </nav>
+    <svg xmlns="http://www.w3.org/2000/svg"
+        width="26"
+        height="26"
+        fill="white"
+        class="bi bi-cart-fill"
+        viewBox="0 0 16 16">
+        <path d="M0 1.5A.5.5 0 0 1 .5 1H2l.89 2H14.5a.5.5 0 0 1 .49.59l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.49-.41L2.01 3.61 1.61 2H.5A.5.5 0 0 1 0 1.5z"/>
+    </svg>
 
+</a>
+@endif
 </header>

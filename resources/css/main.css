@@ -1,0 +1,8 @@
+.horizontal-scroll::-webkit-scrollbar {
+    height: 6px;
+}
+
+.horizontal-scroll::-webkit-scrollbar-thumb {
+    background: orangered;
+    border-radius: 10px;
+}

@@ -1,0 +1,29 @@
+.navbar-brand img {
+    height: 40px;
+    object-fit: contain;
+}
+
+.cart-fab{
+    position: fixed;
+    top: 10px;
+    right: 20px;
+
+    width: 60px;
+    height: 60px;
+
+    background: #dc3545; /* bootstrap danger */
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    box-shadow: 0 6px 14px rgba(0,0,0,0.25);
+
+    z-index: 1050;
+}
+
+.cart-fab:hover{
+    background:#bb2d3b;
+    transform:scale(1.05);
+}
