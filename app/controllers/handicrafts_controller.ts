@@ -6,12 +6,13 @@ import { createKasitooDetailsSchema } from '#validators/create_kasitoo_details_s
 import HandicraftDetail from '#models/handicraft_detail'
 import ProductImage from '#models/product_image'
 import { randomUUID } from 'crypto'
+import Cart from '#models/cart'
 
 export default class HandicraftsController {
   /**
    * Display a list of resource
    */
-  async index({ view }: HttpContext) {
+  async index({ view, response, request }: HttpContext) {
     const handicrafts = await Product.query()
       .where('product_type', 'handicraft')
       .where('is_active', true)
@@ -20,7 +21,31 @@ export default class HandicraftsController {
         query.pivotColumns(['product_id'])
       })
       .preload('handicraftDetail')
-    return view.render('handicrafts/view', { handicrafts, pageTitle: 'Kasitöö' })
+
+      let cart;
+          const cookieKey = request.cookie('cartKey')
+      
+          if (cookieKey) {
+            cart = await Cart.query().where('cartKey', request.cookie('cartKey')).first();
+      
+      
+          }
+      
+          if (!cookieKey || !cart) {
+            response.clearCookie('cartKey');
+            const cartKey = randomUUID();
+            cart = await Cart.create({ cartKey: cartKey, status: 'active' });
+            response.cookie('cartKey', cartKey, { httpOnly: true, maxAge: '5d' })
+          } else {
+            const cartKey = request.cookie('cartKey');
+            cart = await Cart.query().where('cartKey', cartKey).preload('items', (query) => {
+              query.preload('product', (productQuery) => {
+                productQuery.preload('images')
+              })
+            }
+            ).firstOrFail();
+          }
+    return view.render('handicrafts/view', { handicrafts, pageTitle: 'Kasitöö', cart })
   }
 
   /**
@@ -43,6 +68,7 @@ export default class HandicraftsController {
     const newProduct = await Product.create(data);
     const payloadDetails = await request.validateUsing(createKasitooDetailsSchema)
 
+    
 
     
     await HandicraftDetail.create({
@@ -62,9 +88,33 @@ export default class HandicraftsController {
   /**
    * Show individual record
    */
-  async show({ params, view }: HttpContext) {
+  async show({ params, view, response, request }: HttpContext) {
     const handicraft = await Product.query().where('slug', params.slug).preload('images').preload('categories').preload('handicraftDetail').firstOrFail();
-    return view.render('handicrafts/show', { handicraft, pageTitle: handicraft?.itemName })
+
+          let cart;
+          const cookieKey = request.cookie('cartKey')
+      
+          if (cookieKey) {
+            cart = await Cart.query().where('cartKey', request.cookie('cartKey')).first();
+      
+      
+          }
+      
+          if (!cookieKey || !cart) {
+            response.clearCookie('cartKey');
+            const cartKey = randomUUID();
+            cart = await Cart.create({ cartKey: cartKey, status: 'active' });
+            response.cookie('cartKey', cartKey, { httpOnly: true, maxAge: '5d' })
+          } else {
+            const cartKey = request.cookie('cartKey');
+            cart = await Cart.query().where('cartKey', cartKey).preload('items', (query) => {
+              query.preload('product', (productQuery) => {
+                productQuery.preload('images')
+              })
+            }
+            ).firstOrFail();
+          }
+    return view.render('handicrafts/show', { handicraft, pageTitle: handicraft?.itemName, cart })
   }
 
   /**

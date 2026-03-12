@@ -7,12 +7,13 @@ import Category from '#models/category'
 import { createRentalDetailsSchema } from '#validators/create_rental_details_schema'
 import { createProductSchema } from '#validators/create_product_schema'
 import { randomUUID } from 'crypto'
+import Cart from '#models/cart'
 
 export default class RentalsController {
   /**
    * Display a list of resource
    */
-  public async index({ view }: HttpContext) {
+  public async index({ view, response, request }: HttpContext) {
     const rentals = await Product.query()
       .where('product_type', 'rental')
       .where('is_active', true)
@@ -20,14 +21,62 @@ export default class RentalsController {
       .preload('categories', (query) => {
         query.pivotColumns(['product_id'])
       }).preload('rentalDetail')            // plain objects
-    return view.render('rentals/view', { pageTitle: 'Rental', rentals })
+
+            let cart;
+                const cookieKey = request.cookie('cartKey')
+            
+                if (cookieKey) {
+                  cart = await Cart.query().where('cartKey', request.cookie('cartKey')).first();
+            
+            
+                }
+            
+                if (!cookieKey || !cart) {
+                  response.clearCookie('cartKey');
+                  const cartKey = randomUUID();
+                  cart = await Cart.create({ cartKey: cartKey, status: 'active' });
+                  response.cookie('cartKey', cartKey, { httpOnly: true, maxAge: '5d' })
+                } else {
+                  const cartKey = request.cookie('cartKey');
+                  cart = await Cart.query().where('cartKey', cartKey).preload('items', (query) => {
+                    query.preload('product', (productQuery) => {
+                      productQuery.preload('images')
+                    })
+                  }
+                  ).firstOrFail();
+                }
+    return view.render('rentals/view', { pageTitle: 'Rental', rentals, cart })
   }
   /**
    * Show individual record
    */
-  async show({ params, view }: HttpContext) {
+  async show({ params, view, response, request }: HttpContext) {
     const rental = await Product.query().where('slug', params.slug).where('is_active', true).preload('images').preload('categories').preload('rentalDetail').firstOrFail();
-    return view.render('rentals/show', { pageTitle: rental?.itemName, rental })
+
+          let cart;
+              const cookieKey = request.cookie('cartKey')
+          
+              if (cookieKey) {
+                cart = await Cart.query().where('cartKey', request.cookie('cartKey')).first();
+          
+          
+              }
+          
+              if (!cookieKey || !cart) {
+                response.clearCookie('cartKey');
+                const cartKey = randomUUID();
+                cart = await Cart.create({ cartKey: cartKey, status: 'active' });
+                response.cookie('cartKey', cartKey, { httpOnly: true, maxAge: '5d' })
+              } else {
+                const cartKey = request.cookie('cartKey');
+                cart = await Cart.query().where('cartKey', cartKey).preload('items', (query) => {
+                  query.preload('product', (productQuery) => {
+                    productQuery.preload('images')
+                  })
+                }
+                ).firstOrFail();
+              }
+    return view.render('rentals/show', { pageTitle: rental?.itemName, rental , cart})
   }
 
 
