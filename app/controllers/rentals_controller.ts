@@ -262,16 +262,14 @@ export default class RentalsController {
         fileName = `${product?.productType}_${fileOrder}${safeName}_${randomUUID()}.${file.extname}`
         const key = `uploads/${fileName}`
         await file.moveToDisk(key)
-      } else {
-        fileName = 'default.jpg'
-      }
-
-      RentalInstruction.create({
+        RentalInstruction.create({
         instructionUrl: fileName,
         fileName: file_Name,
         fileOrder: fileOrder,
         rentalDetailId: productId,
       })
+      }
+      
     }
   }
 
