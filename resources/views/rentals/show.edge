@@ -49,6 +49,11 @@
                         @endeach
                         <h3><a href="{{route('rentals.show', { slug: rental.slug })}}">{{rental.itemName}}</a></h3>
                         <p class="card-text">{{rental.description}}</p>
+                        <p class="card-tesxt">{{rental.rentalDetail.rentalInfo}}</p>
+
+                        @each(file in rental.rentalDetail.instructions)
+                        <a download href="/storage/uploads/{{file.instructionUrl}}">{{file.fileName}}</a>
+                        @end
                         <div class="d-flex justify-content-between align-items-center">
 
                         </div>

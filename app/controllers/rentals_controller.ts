@@ -51,7 +51,9 @@ export default class RentalsController {
    * Show individual record
    */
   async show({ params, view, response, request }: HttpContext) {
-    const rental = await Product.query().where('slug', params.slug).where('is_active', true).preload('images').preload('categories').preload('rentalDetail').firstOrFail();
+    const rental = await Product.query().where('slug', params.slug).where('is_active', true).preload('images').preload('categories').preload('rentalDetail', (query) => {
+      query.preload('instructions', (instructionQuery) => instructionQuery.orderBy('file_order', "asc"))
+    }).firstOrFail();
 
           let cart;
               const cookieKey = request.cookie('cartKey')

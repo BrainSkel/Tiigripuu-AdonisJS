@@ -32,12 +32,12 @@
                             <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample"
                                 data-bs-slide="prev">
                                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                <span class="visually-hidden">Previous</span>
+                                <span class="visually-hidden">Eelmine</span>
                             </button>
                             <button class="carousel-control-next" type="button" data-bs-target="#carouselExample"
                                 data-bs-slide="next">
                                 <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                <span class="visually-hidden">Next</span>
+                                <span class="visually-hidden">Järgmine</span>
                             </button>
                         </div>
                     </div>
@@ -51,6 +51,7 @@
                     <h3><a href="{{route('handicrafts.show', { slug: handicraft.slug })}}">{{handicraft.itemName}}</a>
                     </h3>
                     <p class="card-text">{{handicraft.description}}</p>
+                    <p class="card-text">{{handicraft.handicraftDetail.handicraftDetails}}</p>
                     <div class="d-flex justify-content-between align-items-center">
 
                     </div>
