@@ -16,7 +16,7 @@
                 <div class="d-flex gap-2 w-100 justify-content-between">
                     <div>
                         <h6 class="mb-0">{{cartItem.product.itemName}}</h6>
-                        <p class="mb-0 opacity-75">{{cartItem.product.description}}</p>
+                        <p class="mb-0 opacity-75">Toote kirjeldus: {{cartItem.product.description}}</p>
                     </div>
                     <small class="opacity-50 text-nowrap">Hind: {{cartItem.product.price}}€</small>
                 </div>
@@ -35,7 +35,7 @@
                         <form action="{{route('shopping_carts.destroy', { id: cartItem.id })}}?_method=DELETE"
                             method="POST" style="display:inline" class="btn-group">
                             {{ csrfField() }}
-                            <button type="submit" class="btn btn-sm btn-outline-secondary">Delete</button>
+                            <button type="submit" class="btn btn-sm btn-outline-secondary">Eemalda</button>
                         </form>
                     </div>
                 </div>
