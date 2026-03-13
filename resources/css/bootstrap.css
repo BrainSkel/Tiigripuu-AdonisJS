@@ -5574,7 +5574,7 @@ textarea.form-control-lg {
   --bs-backdrop-zindex: 1050;
   --bs-backdrop-bg: #000;
   --bs-backdrop-opacity: 0.5;
-  position: fixed;
+  position: none;
   top: 0;
   left: 0;
   z-index: var(--bs-backdrop-zindex);

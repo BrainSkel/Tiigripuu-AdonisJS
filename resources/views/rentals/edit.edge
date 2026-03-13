@@ -150,10 +150,11 @@
         </div>
 
         <!-- -->
-        <div class="form-check">
-            <label for="isVisible" class="form-check-label">Nähtav</label>
-            <input type="checkbox" id="isVisible" name="is_visible" value="1" {{ rental.isVisible ? 'checked' : '' }}
-                class="form-check-input">
+                <div class="form-switch">
+            
+            <input type="checkbox" role="switch" id="flexSwitchCheckChecked" name="is_visible" value="1" {{ rental.isVisible ? 'checked' : ''
+            }} class="form-check-input">
+            <label for="flexSwitchCheckChecked" class="form-check-label">Nähtav</label>
 
             @if(flashMessages.has('inputErrorsBag.is_visible'))
             <div class="error">
