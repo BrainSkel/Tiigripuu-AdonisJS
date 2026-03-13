@@ -1,5 +1,5 @@
 @include('partials/head')
-
+@let(totalPrice = 0)
 <body>
     @include('partials/navigation')
     <div class="position-relative">
@@ -18,7 +18,7 @@
                         <h6 class="mb-0">{{cartItem.product.itemName}}</h6>
                         <p class="mb-0 opacity-75">Toote kirjeldus: {{cartItem.product.description}}</p>
                     </div>
-                    <small class="opacity-50 text-nowrap">Hind: {{cartItem.product.price}}€</small>
+                    <small class="opacity-50 text-nowrap">Hind: {{totalPrice += (cartItem.product.price * cartItem.quantity)}}€</small>
                 </div>
                 <div class="d-flex gap-2 w-100 justify-content-between">
                     <div>
@@ -42,8 +42,9 @@
             </div>
             @endeach
         </div>
-        <div>
-            <a href="{{route('orders.create')}}">Vormista tellimus</button>
+        <div class="my-3">
+            <p>Kogu hind: {{totalPrice}}€</p>
+            <a class="btn btn-lg btn-primary" href="{{route('orders.create')}}">Vormista tellimus</a>
         </div>
     </div>
 </body>

@@ -37,7 +37,7 @@
                                         <button type="submit" class="btn btn-sm btn-outline-secondary">Delete</button>
                                     </form> --}}
                                     @if(handicraft.stockAmount != 0)
-                                    @let(cartItem = cart.items.find((item) => item.productId === handicraft.id))
+                                    @let(cartItem = cart?.items?.find((item) => item.productId === handicraft.id))
                                     <form
                                         action="{{route('shopping_carts.store', {productId: handicraft.id })}}?_method=POST"
                                         method="POST" style="display:inline" class="btn-group mx-4 input-group d-flex">

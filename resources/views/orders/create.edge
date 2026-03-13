@@ -1,20 +1,16 @@
 @include('partials/head')
 
-<body>
+<body class="container">
 
     <h1>Create Order</h1>
     @each(order in orders)
-    <div>
+    <div class="my-2 border-bottom">
         <div class="d-flex">
             @if(order.productType == "rental")
-            <li>
-                <h3>Laenutus</h3>
-            </li>
+            <h5>Laenutus</h5>
             @end
             @if(order.productType == "handicraft")
-            <li>
-                <h3>Handicraft</h3>
-            </li>
+            <h5>Handicraft</h5>
             @end
             <img src="/storage/uploads/{{order.images[0].imageUrl}}" alt="" width="32" height="32"
                 class="rounded-circle flex-shrink-0">
@@ -23,7 +19,7 @@
                     <h6 class="mb-0">{{order.itemName}}</h6>
                     <p class="mb-0 opacity-75">{{order.description}}</p>
                 </div>
-                <small class="opacity-50 text-nowrap">Hind: {{order.price}}€</small>
+                <small class="opacity-50 text-nowrap">Tüki hind: {{order.price}}€</small>
 
                 @if(order.productType == "rental")
                 <p>Info: {{order.rentalDetail.rentalInfo}}</p>
@@ -45,84 +41,90 @@
 
 
         <div class="input-group">
-                <div class="form-floating mb-3">
-                    @if(!flashMessages.has('inputErrorsBag.first_name'))
-                    <input type="text" aria-label="First name" id="first_name" name="first_name"
-                        class="form-control invalid" placeholder="Eesnimi">
-                    <label for="irst_name">Eesnimi</label>
-                    @end
-
-                    @if(flashMessages.has('inputErrorsBag.first_name'))
-                    <input type="text" aria-label="First name" id="customerFirstName" name="first_name"
-                        class="form-control is-invalid" placeholder="Eesnimi">
-                    <label for="first_name">Invalid</label>
-                    @each(error in flashMessages.get('inputErrorsBag.first_name'))
-                    <p>{{error}}</p>
-                    @endeach
-                    @end
-                </div>
-
-                <div class="form-floating mb-3">
-                    @if(!flashMessages.has('inputErrorsBag.last_name'))
-                    <input type="text" aria-label="Last name" id="last_name" name="last_name"
-                        class="form-control invalid" placeholder="Perekonna nimi">
-                    <label for="last_name">Perekonna nimi</label>
-                    @end
-
-                    @if(flashMessages.has('inputErrorsBag.last_name'))
-                    <input type="text" aria-label="Last name" id="last_name" name="last_name"
-                        class="form-control is-invalid" placeholder="Perekonna nimi">
-                    <label for="last_name">Invalid</label>
-                    @each(error in flashMessages.get('inputErrorsBag.last_name'))
-                    <p>{{error}}</p>
-                    @endeach
-                    @end
-                </div>
-            </div>
             <div class="form-floating mb-3">
-                @if(flashMessages.has('inputErrorsBag.email'))
-                <input type="email" class="form-control is-invalid" id="email" name="email"
-                    placeholder="name@example.com" value="test@example.com">
-                <label for="email">Invalid input</label>
-                @each(error in flashMessages.get('inputErrorsBag.email'))
+                @if(!flashMessages.has('inputErrorsBag.first_name'))
+                <input type="text" aria-label="First name" id="first_name" name="first_name"
+                    class="form-control invalid" placeholder="Eesnimi">
+                <label for="irst_name">Eesnimi</label>
+                @end
+
+                @if(flashMessages.has('inputErrorsBag.first_name'))
+                <input type="text" aria-label="First name" id="customerFirstName" name="first_name"
+                    class="form-control is-invalid" placeholder="Eesnimi">
+                <label for="first_name">Invalid</label>
+                @each(error in flashMessages.get('inputErrorsBag.first_name'))
                 <p>{{error}}</p>
                 @endeach
                 @end
-                @if(!flashMessages.has('inputErrorsBag.email'))
-                <input type="email" class="form-control" id="email" name="email"
-                    placeholder="name@example.com">
-                <label for="email">Email</label>
-                @end
             </div>
+
             <div class="form-floating mb-3">
-                @if(flashMessages.has('inputErrorsBag.phone_number'))
-                <input type="text" class="form-control is-invalid" id="phone_number"
-                    name="phone_number" placeholder="Telefoninumber" value="test@example.com">
-                <label for="phone_number">Invalid input</label>
-                @each(error in flashMessages.get('inputErrorsBag.phone_number'))
+                @if(!flashMessages.has('inputErrorsBag.last_name'))
+                <input type="text" aria-label="Last name" id="last_name" name="last_name" class="form-control invalid"
+                    placeholder="Perekonna nimi">
+                <label for="last_name">Perekonna nimi</label>
+                @end
+
+                @if(flashMessages.has('inputErrorsBag.last_name'))
+                <input type="text" aria-label="Last name" id="last_name" name="last_name"
+                    class="form-control is-invalid" placeholder="Perekonna nimi">
+                <label for="last_name">Invalid</label>
+                @each(error in flashMessages.get('inputErrorsBag.last_name'))
                 <p>{{error}}</p>
                 @endeach
                 @end
-                @if(!flashMessages.has('inputErrorsBag.phone_number'))
-                <input type="text" class="form-control" id="phone_number" name="phone_number"
-                    placeholder="Telefoninumber">
-                <label for="phone_number">Telefoninumber</label>
-                @end
             </div>
-            <div>
-                <textarea class="form-control" id="customerNote" name="customer_note" placeholder="Kommentaar müüjale..."></textarea>
-            </div>
-            <button type="submit">Place Order</button>
+        </div>
+        <div class="form-floating mb-3">
+            @if(flashMessages.has('inputErrorsBag.email'))
+            <input type="email" class="form-control is-invalid" id="email" name="email" placeholder="name@example.com"
+                value="test@example.com">
+            <label for="email">Invalid input</label>
+            @each(error in flashMessages.get('inputErrorsBag.email'))
+            <p>{{error}}</p>
+            @endeach
+            @end
+            @if(!flashMessages.has('inputErrorsBag.email'))
+            <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com">
+            <label for="email">Email</label>
+            @end
+        </div>
+        <div class="form-floating mb-3">
+            @if(flashMessages.has('inputErrorsBag.phone_number'))
+            <input type="text" class="form-control is-invalid" id="phone_number" name="phone_number"
+                placeholder="Telefoninumber" value="test@example.com">
+            <label for="phone_number">Invalid input</label>
+            @each(error in flashMessages.get('inputErrorsBag.phone_number'))
+            <p>{{error}}</p>
+            @endeach
+            @end
+            @if(!flashMessages.has('inputErrorsBag.phone_number'))
+            <input type="text" class="form-control" id="phone_number" name="phone_number" placeholder="Telefoninumber">
+            <label for="phone_number">Telefoninumber</label>
+            @end
+        </div>
+        <div>
+            <textarea class="form-control" id="customerNote" name="customer_note"
+                placeholder="Kommentaar müüjale..."></textarea>
+        </div>
+
+        <div class="my-3">
+            <p>Hind: {{totalPrice}}€
+
+            </p>
+
+            <button type="submit" class="btn btn-success my-1">Place Order</button>
             @if(flashMessages.has('inputErrorsBag'))
             @each(error in flashMessages.get('inputErrorsBag'))
             <p>{{error}}</p>
             @endeach
             @end
-        
+
+        </div>
 
     </form>
 
-    
+
 
 
 

@@ -12,6 +12,7 @@ export default class ShoppingCartsController {
    */
   async index({ params, view, request, response }: HttpContext) {
     let cart;
+    let totalPrice = 0;
     const cookieKey = request.cookie('cartKey')
 
     if (cookieKey) {

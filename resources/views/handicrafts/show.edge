@@ -58,37 +58,34 @@
                 </div>
             </div>
             <div class="col">
-                                @if(handicraft.stockAmount != 0)
-                                    @let(cartItem = cart.items.find((item) => item.productId === handicraft.id))
-                                    <form
-                                        action="{{route('shopping_carts.store', {productId: handicraft.id })}}?_method=POST"
-                                        method="POST" style="display:inline" class="btn-group mx-4 input-group d-flex">
-                                        {{ csrfField() }}
-                                        <input type="hidden" name="productId" value="{{handicraft.id}}">
+                @if(handicraft.stockAmount != 0)
+                @let(cartItem = cart?.items?.find((item) => item.productId === handicraft.id))
+                <form action="{{route('shopping_carts.store', {productId: handicraft.id })}}?_method=POST" method="POST"
+                    style="display:inline" class="btn-group mx-4 input-group d-flex">
+                    {{ csrfField() }}
+                    <input type="hidden" name="productId" value="{{handicraft.id}}">
 
-                                        <input type="number" class="form-control " aria-label="Kogus" name="quantity"
-                                            placeholder="1" value="1" min="1" aria-describedby="button-addon2"
-                                            max="{{cartItem ? handicraft.stockAmount - cartItem.quantity : handicraft.stockAmount}}">
-                                        <button class="btn btn-primary flex-grow-2" type="submit" 
-                                        @if(cartItem)
-                                            @if(handicraft.stockAmount===cartItem.quantity) 
-                                            disabled
-                                            id="button-addon2">Maksimum kogus</button>
+                    <input type="number" class="form-control " aria-label="Kogus" name="quantity" placeholder="1"
+                        value="1" min="1" aria-describedby="button-addon2"
+                        max="{{cartItem ? handicraft.stockAmount - cartItem.quantity : handicraft.stockAmount}}">
+                    <button class="btn btn-primary flex-grow-2" type="submit" @if(cartItem)
+                        @if(handicraft.stockAmount===cartItem.quantity) disabled id="button-addon2">Maksimum
+                        kogus</button>
 
-                                        @else
-                                        id="button-addon2">Lisa
-                                        ostukorvi</button>
-                                        @end
-                                        @else
-                                        id="button-addon2">Lisa
-                                        ostukorvi</button>
-                                        @end
+                    @else
+                    id="button-addon2">Lisa
+                    ostukorvi</button>
+                    @end
+                    @else
+                    id="button-addon2">Lisa
+                    ostukorvi</button>
+                    @end
 
 
-                                    </form>
-                                    @else
-                                    <p>Hetkel otsas!</p>
-                                    @end
+                </form>
+                @else
+                <p>Hetkel otsas!</p>
+                @end
 
             </div>
 

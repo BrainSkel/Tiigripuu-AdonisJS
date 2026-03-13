@@ -30,6 +30,7 @@ export default class OrdersController {
    */
   async create({ view, params, request }: HttpContext) {
     const cartKey = request.cookie('cartKey')
+    let totalPrice = 0;
     const shoppingCart = await Cart.query()
       .where('cartKey', cartKey)
       .preload('items', (query) => { query.preload('product') })
@@ -39,9 +40,9 @@ export default class OrdersController {
 
 
 
-    for (const item in shoppingCart.items) {
+    for (const item of shoppingCart.items) {
       let orderProduct;
-      const product = shoppingCart.items[item].product
+      const product = item.product
       if (product.productType == "rental") {
         orderProduct = await Product.query().where('product_type', 'rental').where('slug', product.slug).preload('rentalDetail').preload('images').preload('categories').firstOrFail()
       } else if (product.productType == "handicraft") {
@@ -56,11 +57,12 @@ export default class OrdersController {
       orders.push(orderProduct)
     }
 
-    //!!order. total price
+    for(const orderItem of shoppingCart.items) {
+      totalPrice += (orderItem.product.price * orderItem.quantity)
+    }
 
     await console.log();
-    return view.render('orders/create', { pageTitle: "Order", orders })
-    //return orders;
+    return view.render('orders/create', { pageTitle: "Order", orders, totalPrice })
 
   }
 
@@ -108,7 +110,7 @@ export default class OrdersController {
 
     let totalPrice = 0;
     for (const item in shoppingCart.items) {
-      totalPrice += shoppingCart.items[item].product.price * shoppingCart.items[item].quantity
+      totalPrice += (shoppingCart.items[item].product.price * shoppingCart.items[item].quantity)
 
     }
     console.log(totalPrice)
