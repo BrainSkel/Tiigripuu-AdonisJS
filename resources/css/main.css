@@ -1,5 +1,5 @@
 .horizontal-scroll::-webkit-scrollbar {
-    height: 6px;
+    height: 8px;
 }
 
 .horizontal-scroll::-webkit-scrollbar-thumb {

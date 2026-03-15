@@ -15,13 +15,19 @@
                 @if(rental.isVisible)
                 <div class="col">
                     <div class="card shadow-sm">
-                        <img src="/storage/uploads/{{rental.images[0].imageUrl}}" class="card-img-top"
-                            alt="{{rental.itemName}}">
+                        <a href="{{route('rentals.show', { slug: rental.slug })}}">
+                            <img src="/storage/uploads/{{rental.images[0].imageUrl}}" class="card-img-top" alt="{{rental.itemName}}">
+                        </a>
                         <div class="card-body">
                             @each(category in rental.categories)
                             <span class="badge rounded-pill text-bg-secondary">{{category.name}}</span>
                             @endeach
-                            <h3><a href="{{route('rentals.show', { slug: rental.slug })}}">{{rental.itemName}}</a></h3>
+                            <div class="d-flex justify-content-between">
+                                <h3>
+                                    <a href="{{route('rentals.show', { slug: rental.slug })}}">{{rental.itemName}}</a>
+                                </h3>
+                                <small class="opacity-50 text-nowrap">Hind: {{rental.price}}€</small>
+                            </div>
                             <p class="card-text">{{rental.description}}</p>
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="btn-group">
