@@ -42,8 +42,12 @@
             @endeach
         </div>
         <div class="my-3">
+            @if(cart?.items?.length > 0)
             <p>Kogu hind: {{totalPrice}}€</p>
             <a class="btn btn-lg btn-primary" href="{{route('orders.create')}}">Vormista tellimus</a>
+            @else
+            <a href="{{route('/')}}">Teie ostukorv on tühi. Mine tagasi avalehele</a>
+            @end
         </div>
     </div>
 </body>

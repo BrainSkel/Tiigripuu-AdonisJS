@@ -28,7 +28,7 @@ export default class OrdersController {
   /**
    * Display form to create a new record
    */
-  async create({ view, params, request }: HttpContext) {
+  async create({ view, params, request, response }: HttpContext) {
     const cartKey = request.cookie('cartKey')
     let totalPrice = 0;
     const shoppingCart = await Cart.query()
@@ -60,19 +60,19 @@ export default class OrdersController {
     for(const orderItem of shoppingCart.items) {
       totalPrice += (orderItem.product.price * orderItem.quantity)
     }
-
-    await console.log();
-    return view.render('orders/create', { pageTitle: "Order", orders, totalPrice })
+    if(orders[0]) {
+      return view.render('orders/create', { pageTitle: "Order", orders, totalPrice })
+    } else {
+      return response.redirect().back()
+    }
+    
 
   }
 
   async checkAvailability(cartItem: any, orderId: number) {
     const item = await CartItem.query().where('id', cartItem).preload('product').firstOrFail()
-    console.log('test------------------')
     if (item.quantity <= item.product.stockAmount) {
-      //console.log(item)
       const totalPrice = item.quantity * item.product.price
-      console.log('0-------------------------------------------0')
       await OrderItem.create({
 
         orderId: orderId,
@@ -83,7 +83,6 @@ export default class OrdersController {
       }
 
       )
-      console.log('-------------------------------------------')
     }
 
     //If quantity less, return message saying not enoguh items in stock
@@ -113,7 +112,6 @@ export default class OrdersController {
       totalPrice += (shoppingCart.items[item].product.price * shoppingCart.items[item].quantity)
 
     }
-    console.log(totalPrice)
 
 
     //!!const totalPrice = request.input('total_price');
@@ -134,7 +132,6 @@ export default class OrdersController {
 
 
     const sentOrder = await Order.query().where('id', order.id).preload('items', (query) => { query.preload('product', (productQuery) => { productQuery.preload('images') }) }).firstOrFail()
-    console.log(sentOrder)
     await mail.send((message) => {
       message
         .to(customer.email)
@@ -272,7 +269,6 @@ for displaying unsensitive order details. Like products, price, status, completi
   async deleteCartAndItems(cartKey: any) {
     const cart = await Cart.query().where("cartKey", cartKey).first()
     cart?.delete();
-    console.log('Cart deleted')
 
 
   }

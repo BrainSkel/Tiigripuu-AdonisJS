@@ -35,8 +35,9 @@ export default class ShoppingCartsController {
       }
       ).firstOrFail();
 
-      for(const cartItem of cart.items)
-      totalPrice += cartItem.quantity * cartItem.product.price
+      for(const cartItem of cart.items) {
+      totalPrice += await (cartItem.quantity * cartItem.product.price)
+      }
     }
 
 
