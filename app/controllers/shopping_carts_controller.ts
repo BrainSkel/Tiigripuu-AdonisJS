@@ -34,10 +34,13 @@ export default class ShoppingCartsController {
         })
       }
       ).firstOrFail();
+
+      for(const cartItem of cart.items)
+      totalPrice += cartItem.quantity * cartItem.product.price
     }
 
 
-    return view.render('carts/cart', { pageTitle: 'Ostukorv', cart })
+    return view.render('carts/cart', { pageTitle: 'Ostukorv', cart, totalPrice })
   }
 
   /**
