@@ -51,10 +51,12 @@
                         <p class="card-text">{{rental.description}}</p>
                         <p class="card-tesxt">{{rental.rentalDetail.rentalInfo}}</p>
 
-                        @each(file in rental.rentalDetail.instructions)
-                        <a download href="/storage/uploads/{{file.instructionUrl}}">{{file.fileName}}</a>
+                        @if(rental.rentalDetail.instructions)
+                            @each(file in rental.rentalDetail.instructions)
+                            <a download href="/storage/uploads/{{file.instructionUrl}}">{{file.fileName}}</a>
+                            @end
+                            <div class="d-flex justify-content-between align-items-center">
                         @end
-                        <div class="d-flex justify-content-between align-items-center">
 
                         </div>
                     </div>
@@ -70,17 +72,19 @@
                         <input type="number" class="form-control " aria-label="Kogus" name="quantity" placeholder="1"
                             value="1" min="1" aria-describedby="button-addon2"
                             max="{{cartItem ? rental.stockAmount - cartItem.quantity : rental.stockAmount}}">
-                        <button class="btn btn-primary flex-grow-2" type="submit" @if(cartItem)
-                            @if(rental.stockAmount===cartItem.quantity) disabled id="button-addon2">Maksimum
+                        <button class="btn btn-primary flex-grow-2" type="submit"
+                        @if(cartItem)
+                            @if(rental.stockAmount===cartItem.quantity) 
+                            disabled id="button-addon2">Maksimum
                             kogus</button>
 
+                            @else
+                            id="button-addon2">Lisa
+                            ostukorvi</button>
+                            @end
                         @else
-                        id="button-addon2">Lisa
-                        ostukorvi</button>
-                        @end
-                        @else
-                        id="button-addon2">Lisa
-                        ostukorvi</button>
+                            id="button-addon2">Lisa
+                            ostukorvi</button>
                         @end
 
 
