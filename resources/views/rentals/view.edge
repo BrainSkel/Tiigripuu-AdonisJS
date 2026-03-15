@@ -22,7 +22,7 @@
                             @each(category in rental.categories)
                             <span class="badge rounded-pill text-bg-secondary">{{category.name}}</span>
                             @endeach
-                            <div class="d-flex justify-content-between">
+                            <div class="d-flex justify-content-between overflow-hidden">
                                 <h3>
                                     <a href="{{route('rentals.show', { slug: rental.slug })}}">{{rental.itemName}}</a>
                                 </h3>

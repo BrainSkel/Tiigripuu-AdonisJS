@@ -1,4 +1,10 @@
+<!DOCTYPE html>
+<html>
+
+
+<head>
 @include('partials/head')
+</head>
 
 <body>
     @include('partials/navigation')
@@ -23,9 +29,9 @@
                             @each(category in handicraft.categories)
                             <span class="badge rounded-pill text-bg-secondary">{{category.name}}</span>
                             @endeach
-                            <div class="d-flex justify-content-between">
-                                <h3>
-                                    <a href="{{route('handicrafts.show', { slug: handicraft.slug })}}">{{handicraft.itemName}}</a>
+                            <div class="d-flex justify-content-between overflow-hidden">
+                                <h3 data-bs-toggle="tooltip" data-bs-title="Default tooltip">
+                                    <a href="{{route('handicrafts.show', { slug: handicraft.slug })}} ">{{handicraft.itemName}}</a>
                                 </h3>
                                 <small class="opacity-50 text-nowrap">Hind: {{handicraft.price}}€</small>
                             </div>
