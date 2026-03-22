@@ -7,7 +7,7 @@
 </head>
 
 
-<body class="">
+<body>
   @include('partials/navigation')
 
   <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
@@ -44,8 +44,11 @@
                 </a>
               </div>
 
-              <img class="object-fit-cover" height="200" width="150"
+<a href="{{route('rentals.show', { slug: rental.slug })}}">
+                                <img class="object-fit-cover" height="200" width="150"
                 src="/storage/uploads/{{rental.images[0].imageUrl}}">
+                </a>
+
 
             </div>
           </div>
@@ -77,9 +80,11 @@
                   Vaata
                 </a>
               </div>
-
-              <img class="object-fit-cover" height="200" width="150"
+                <a href="{{route('handicrafts.show', { slug: handicraft.slug })}}">
+                  <img class="object-fit-cover" height="200" width="150"
                 src="/storage/uploads/{{handicraft.images[0].imageUrl}}">
+                </a>
+
 
             </div>
           </div>

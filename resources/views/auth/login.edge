@@ -9,15 +9,15 @@
     
 
     <main class="form-signin m-auto btn-group bg-primary p-2">
-        <form action="{{route('auth.store')}}?_method=POST" method="POST" style="display:inline">
-            <img class="mb-4" src="/storage/website/logo.png" alt="TP" width="72" height="57">
-            <h1 class="h3 mb-3 fw-normal">Logi sisse</h1>
+        <form action="{{route('auth.store')}}?_method=POST" method="POST" class=" d-flex flex-column w-auto">
+            <img class="mb-4 mx-auto" src="/storage/website/logo.png" alt="TP" width="72" height="57">
+            <h1 class="h3 mb-3 fw-normal px-5">Logi sisse</h1>
             {{ csrfField() }}
-            <div class="form-floating">
+            <div class="form-floating ">
                 <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com" name="email">
                 <label for="floatingInput">Email</label>
             </div>
-            <div class="form-floating">
+            <div class="form-floating ">
                 <input type="password" class="form-control" id="floatingPassword" placeholder="Password"
                     name="password">
                 <label for="floatingPassword">Parool</label>
