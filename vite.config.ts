@@ -2,7 +2,14 @@ import { defineConfig } from 'vite'
 import adonisjs from '@adonisjs/vite/client'
 
 export default defineConfig({
+  
+    server: {
+    allowedHosts: [
+      'cathrine-doughier-opposedly.ngrok-free.dev'
+    ]
+  },
   plugins: [
+    
     adonisjs({
       /**
        * Entrypoints of your application. Each entrypoint will
