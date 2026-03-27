@@ -32,10 +32,10 @@
           @each(rental in rentals)
           @if(rental.isVisible)
 
-          <div style="min-width:320px; max-width:320px; m-2">
+          <div class="bg-dark" style="min-width:320px; max-width:320px; --bs-bg-opacity: .2">
             <div class="border rounded shadow-sm h-100 d-flex">
 
-              <div class="p-3 d-flex flex-column flex-grow-1">
+              <div class="p-3 d-flex flex-column flex-grow-1 overflow-hidden">
                 <h5 class="mb-2">{{rental.itemName}}</h5>
                 <p class="mb-auto small">{{rental.description}}</p>
 
@@ -44,10 +44,9 @@
                 </a>
               </div>
 
-<a href="{{route('rentals.show', { slug: rental.slug })}}">
-                                <img class="object-fit-cover" height="200" width="150"
-                src="/storage/uploads/{{rental.images[0].imageUrl}}">
-                </a>
+              <a href="{{route('rentals.show', { slug: rental.slug })}}">
+                <img class="object-fit-cover" height="200" width="150" src="/storage/uploads/{{rental.images[0].imageUrl}}">
+              </a>
 
 
             </div>
@@ -69,10 +68,10 @@
           @each(handicraft in handicrafts)
           @if(handicraft.isVisible)
 
-          <div style="min-width:320px; max-width:320px;">
+          <div class="bg-dark " style="min-width:320px; max-width:320px; --bs-bg-opacity: .2">
             <div class="border rounded shadow-sm h-100 d-flex">
 
-              <div class="p-3 d-flex flex-column flex-grow-1">
+              <div class="p-3 d-flex flex-column flex-grow-1  overflow-hidden">
                 <h5 class="mb-2">{{handicraft.itemName}}</h5>
                 <p class="mb-auto small">{{handicraft.description}}</p>
 
