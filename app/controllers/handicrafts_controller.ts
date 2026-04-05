@@ -63,7 +63,7 @@ export default class HandicraftsController {
    */
   async store({ request, response }: HttpContext) {
     const payload = await request.validateUsing(createProductSchema)
-    const categories = request.input('categories') || [];
+    //const categories = request.input('categories') || [];
     const data = { ...payload, product_type: 'handicraft' }
     const newProduct = await Product.create(data);
     const payloadDetails = await request.validateUsing(createKasitooDetailsSchema)
@@ -75,7 +75,17 @@ export default class HandicraftsController {
       productId: newProduct.id,
       handicraftDetails: payloadDetails.handicraft_details,
     })
-    await newProduct.related('categories').attach(categories.map((id: string) => Number(id)));
+    const slugs = request.input('category', [])
+    const slugArray = Array.isArray(slugs) ? slugs : [slugs];
+
+    const categories = await Category
+      .query()
+      .whereIn('slug', slugArray)
+
+    //await product?.related('handicraftDetail').save(productDetails)
+
+    await newProduct?.related('categories').attach(categories.map(c => c.id))
+    //await newProduct.related('categories').attach(categories.map((id: string) => Number(id)));
 
     await this.uploadImagesToDrive(request, newProduct.id);
 

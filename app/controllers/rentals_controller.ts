@@ -22,29 +22,29 @@ export default class RentalsController {
         query.pivotColumns(['product_id'])
       }).preload('rentalDetail')            // plain objects
 
-            let cart;
-                const cookieKey = request.cookie('cartKey')
-            
-                if (cookieKey) {
-                  cart = await Cart.query().where('cartKey', request.cookie('cartKey')).first();
-            
-            
-                }
-            
-                if (!cookieKey || !cart) {
-                  response.clearCookie('cartKey');
-                  const cartKey = randomUUID();
-                  cart = await Cart.create({ cartKey: cartKey, status: 'active' });
-                  response.cookie('cartKey', cartKey, { httpOnly: true, maxAge: '5d' })
-                } else {
-                  const cartKey = request.cookie('cartKey');
-                  cart = await Cart.query().where('cartKey', cartKey).preload('items', (query) => {
-                    query.preload('product', (productQuery) => {
-                      productQuery.preload('images')
-                    })
-                  }
-                  ).firstOrFail();
-                }
+    let cart;
+    const cookieKey = request.cookie('cartKey')
+
+    if (cookieKey) {
+      cart = await Cart.query().where('cartKey', request.cookie('cartKey')).first();
+
+
+    }
+
+    if (!cookieKey || !cart) {
+      response.clearCookie('cartKey');
+      const cartKey = randomUUID();
+      cart = await Cart.create({ cartKey: cartKey, status: 'active' });
+      response.cookie('cartKey', cartKey, { httpOnly: true, maxAge: '5d' })
+    } else {
+      const cartKey = request.cookie('cartKey');
+      cart = await Cart.query().where('cartKey', cartKey).preload('items', (query) => {
+        query.preload('product', (productQuery) => {
+          productQuery.preload('images')
+        })
+      }
+      ).firstOrFail();
+    }
     return view.render('rentals/view', { pageTitle: 'Rental', rentals, cart })
   }
   /**
@@ -55,30 +55,30 @@ export default class RentalsController {
       query.preload('instructions', (instructionQuery) => instructionQuery.orderBy('file_order', "asc"))
     }).firstOrFail();
 
-          let cart;
-              const cookieKey = request.cookie('cartKey')
-          
-              if (cookieKey) {
-                cart = await Cart.query().where('cartKey', request.cookie('cartKey')).first();
-          
-          
-              }
-          
-              if (!cookieKey || !cart) {
-                response.clearCookie('cartKey');
-                const cartKey = randomUUID();
-                cart = await Cart.create({ cartKey: cartKey, status: 'active' });
-                response.cookie('cartKey', cartKey, { httpOnly: true, maxAge: '5d' })
-              } else {
-                const cartKey = request.cookie('cartKey');
-                cart = await Cart.query().where('cartKey', cartKey).preload('items', (query) => {
-                  query.preload('product', (productQuery) => {
-                    productQuery.preload('images')
-                  })
-                }
-                ).firstOrFail();
-              }
-    return view.render('rentals/show', { pageTitle: rental?.itemName, rental , cart})
+    let cart;
+    const cookieKey = request.cookie('cartKey')
+
+    if (cookieKey) {
+      cart = await Cart.query().where('cartKey', request.cookie('cartKey')).first();
+
+
+    }
+
+    if (!cookieKey || !cart) {
+      response.clearCookie('cartKey');
+      const cartKey = randomUUID();
+      cart = await Cart.create({ cartKey: cartKey, status: 'active' });
+      response.cookie('cartKey', cartKey, { httpOnly: true, maxAge: '5d' })
+    } else {
+      const cartKey = request.cookie('cartKey');
+      cart = await Cart.query().where('cartKey', cartKey).preload('items', (query) => {
+        query.preload('product', (productQuery) => {
+          productQuery.preload('images')
+        })
+      }
+      ).firstOrFail();
+    }
+    return view.render('rentals/show', { pageTitle: rental?.itemName, rental, cart })
   }
 
 
@@ -99,7 +99,7 @@ export default class RentalsController {
    */
   async store({ request, response }: HttpContext) {
     const payload = await request.validateUsing(createProductSchema)
-    const categories = request.input('categories') || [];
+    //const categories = request.input('categories') || [];
     const data = { ...payload, product_type: 'rental' }
     const newProduct = await Product.create(data);
     const payloadDetails = await request.validateUsing(createRentalDetailsSchema)
@@ -111,7 +111,16 @@ export default class RentalsController {
       productId: newProduct.id,
       rentalInfo: payloadDetails.rental_info,
     })
-    await newProduct.related('categories').attach(categories.map((id: string) => Number(id)));
+    const slugs = request.input('category', [])
+    const slugArray = Array.isArray(slugs) ? slugs : [slugs];
+
+    const categories = await Category
+      .query()
+      .whereIn('slug', slugArray)
+
+    //await product?.related('handicraftDetail').save(productDetails)
+
+    await newProduct?.related('categories').attach(categories.map(c => c.id))
 
     await this.uploadFilesToDrive(request, newProduct.id);
 
@@ -230,7 +239,7 @@ export default class RentalsController {
       } else {
         imageName = 'default.jpg'
       }
-      
+
       const displayInGallery = request.input('display_in_gallery') == '1' ? true : false;
       ProductImage.create({
         imageUrl: imageName,
@@ -263,13 +272,13 @@ export default class RentalsController {
         const key = `uploads/${fileName}`
         await file.moveToDisk(key)
         RentalInstruction.create({
-        instructionUrl: fileName,
-        fileName: file_Name,
-        fileOrder: fileOrder,
-        rentalDetailId: productId,
-      })
+          instructionUrl: fileName,
+          fileName: file_Name,
+          fileOrder: fileOrder,
+          rentalDetailId: productId,
+        })
       }
-      
+
     }
   }
 
