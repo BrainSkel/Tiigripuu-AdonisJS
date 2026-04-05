@@ -2,13 +2,14 @@
 
 <body cl>
     @include('partials/navigation')
-    <h1>Orders Management</h1>
+    
     @if(flashMessages.has('error'))
     <div class="alert alert-danger">
         {{ flashMessages.get('error') }}
     </div>
     @end
     <div class="container">
+        <h1>Halda tellimusi</h1>
         @each(order in orders)
         @if(order.status == 'pending' || order.status == 'confirmed' )
 
