@@ -37,7 +37,7 @@
 
               <div class="p-3 d-flex flex-column flex-grow-1 overflow-hidden">
                 <h5 class="mb-2">{{rental.itemName}}</h5>
-                <p class="mb-auto small">{{rental.description}}</p>
+                <p class="mb-auto small overflow-hidden" style="max-height: 75px;">{{rental.description}}</p>
 
                 <a href="{{route('rentals.show', { slug: rental.slug })}}">
                   Vaata
@@ -73,7 +73,7 @@
 
               <div class="p-3 d-flex flex-column flex-grow-1  overflow-hidden">
                 <h5 class="mb-2">{{handicraft.itemName}}</h5>
-                <p class="mb-auto small">{{handicraft.description}}</p>
+                <p class="mb-auto small overflow-hidden" style="max-height: 75px;">{{handicraft.description}}</p>
 
                 <a href="{{route('handicrafts.show', { slug: handicraft.slug })}}">
                   Vaata
