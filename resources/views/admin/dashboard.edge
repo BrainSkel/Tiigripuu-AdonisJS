@@ -203,7 +203,7 @@
                                 <a type="button" class="btn btn-sm btn-outline-secondary"
                                     href="{{route('handicrafts.edit', { slug: handicraft.slug })}}">Muuda</a>
                                 <form
-                                    action="{{route('handicrafts.destroy', { slug: handicraft.slug })}}?_method=DELETE"
+                                    action="{{route('handicrafts.delete', { slug: handicraft.slug })}}?_method=PATCH"
                                     method="POST" style="display:inline" class="btn-group">
                                     {{ csrfField() }}
                                     <button type="submit" class="btn btn-sm btn-outline-danger">Kustuta</button>
