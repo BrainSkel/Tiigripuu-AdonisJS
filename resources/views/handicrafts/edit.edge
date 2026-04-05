@@ -89,8 +89,7 @@
             <div>
                 <label for="displayInGallery" class="form-check-label">Näita galeriis:</label>
                 <input type="checkbox" id="displayInGallery" name="display_in_gallery"
-                    value="{{handicraft.displayInGallery ? '1' : '0'}}" {{ handicraft.displayInGallery ? 'checked' : ''
-                    }} class="form-check-input">
+                    value="1" class="form-check-input">
 
                 @if(flashMessages.has('inputErrorsBag.display_in_gallery'))
                 <div class="error">
