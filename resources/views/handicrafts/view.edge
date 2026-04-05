@@ -16,6 +16,9 @@
                     {{ flashMessages.get('error') }}
                 </div>
                 @end
+                @if(handicrafts.length === 0)
+                <p>Tooteid pole saadaval.</p>
+                @endif
 
                 @each(handicraft in handicrafts)
                 @if(handicraft.isVisible)

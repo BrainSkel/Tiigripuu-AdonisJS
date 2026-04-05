@@ -9,8 +9,11 @@
                 {{ flashMessages.get('error') }}
             </div>
             @end
-            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3 mx-2">
 
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3 mx-2">
+                @if(rentals.length === 0)
+                <p>Tooteid pole saadaval.</p>
+                @endif
                 @each(rental in rentals)
                 @if(rental.isVisible)
                 <div class="col">
