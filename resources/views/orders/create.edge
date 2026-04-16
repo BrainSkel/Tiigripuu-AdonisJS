@@ -10,10 +10,10 @@
             <h5>Laenutus</h5>
             @end
             @if(order.productType == "handicraft")
-            <h5>Handicraft</h5>
+            <h5>Käsitöö</h5>
             @end
             <img src="/storage/uploads/{{order.images[0].imageUrl}}" alt="" width="32" height="32"
-                class="rounded-circle flex-shrink-0">
+                class="rounded-circle flex-shrink-0 mx-2">
             <div class="d-flex gap-2 w-100 justify-content-between">
                 <div>
                     <h6 class="mb-0">{{order.itemName}}</h6>
@@ -22,14 +22,15 @@
                 <small class="opacity-50 text-nowrap">Tüki hind: {{order.price}}€</small>
 
                 @if(order.productType == "rental")
-                <p>Info: {{order.rentalDetail.rentalInfo}}</p>
+                <p>Lisainfo: {{order.rentalDetail.rentalInfo}}</p>
 
                 @end
 
                 @if(order.productType == "handicraft")
-                <p>Info: {{order.handicraftDetail.handicraftDetails}}</p>
+                <p>Lisainfo: {{order.handicraftDetail.handicraftDetails}}</p>
                 @end
             </div>
+
         </div>
     </div>
     @endeach

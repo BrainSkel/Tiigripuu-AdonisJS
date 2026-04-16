@@ -1,66 +1,75 @@
 <header>
-<nav class="navbar navbar-expand-lg navbar-danger bg-danger sticky-md-top">
-    <div class="container">
+    <nav class="navbar navbar-expand-lg navbar-danger bg-danger sticky-md-top">
+        <div class="container">
 
-        <button class="navbar-toggler" type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarMain">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-        <div class="collapse navbar-collapse" id="navbarMain">
+            <div class="collapse navbar-collapse" id="navbarMain">
 
-            <!-- LEFT -->
-            <div class="d-flex align-items-center flex-grow-1">
+                <!-- LEFT -->
+                <div class="d-flex align-items-center flex-grow-1">
+                </div>
+
+                <!-- CENTER -->
+                <ul class="navbar-nav mx-auto text-center">
+                    <a class="navbar-brand" href="/">
+                        <img src="/storage/website/logo.png" alt="TP" height="40">
+                    </a>
+                    <li class="nav-item"><a href="/rentals" class="nav-link">Laenutus</a></li>
+                    <li class="nav-item"><a href="/handicrafts" class="nav-link">Käsitöö</a></li>
+                    <li class="nav-item"><a href="/gallery" class="nav-link">Galerii</a></li>
+                    <li class="nav-item"><a href="#" class="nav-link">Info</a></li>
+
+                    @if(auth.isAuthenticated)
+                    <li class="nav-item"><a href="/admin/dashboard" class="nav-link">|Admin|</a></li>
+                    <li class="nav-item"><a href="/admin/orders" class="nav-link">|Tellimused|</a></li>
+                    @end
+                </ul>
+
+                <!-- RIGHT -->
+                <div class="d-flex align-items-center justify-content-end flex-grow-1">
+
+                    @if(auth.isAuthenticated)
+                    <span class="navbar-text text-light me-3">
+                        {{ auth.user.fullName }}
+                    </span>
+
+                    <form action="{{route('auth.logOut')}}?_method=DELETE" method="POST">
+                        {{ csrfField()}}
+                        <button type="submit" class="btn btn-sm btn-outline-light">Logi välja</button>
+                    </form>
+                    @end
+                    <ul>
+                        <li class="nav-item">
+                            <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                                Võta ühendust
+                            </button>
+                            <div class="collapse" id="collapseExample">
+                                <div class="card card-body">
+                                    @include('partials/contactus')
+                                </div>
+                            </div>
+
+                        </li>
+                    </ul>
+
+                </div>
+
             </div>
-
-            <!-- CENTER -->
-            <ul class="navbar-nav mx-auto text-center">
-                                <a class="navbar-brand" href="/">
-                    <img src="/storage/website/logo.png" alt="TP" height="40">
-                </a>
-                <li class="nav-item"><a href="/rentals" class="nav-link">Laenutus</a></li>
-                <li class="nav-item"><a href="/handicrafts" class="nav-link">Käsitöö</a></li>
-                <li class="nav-item"><a href="/gallery" class="nav-link">Galerii</a></li>
-                <li class="nav-item"><a href="#" class="nav-link">Info</a></li>
-
-                @if(auth.isAuthenticated)
-                <li class="nav-item"><a href="/admin/dashboard" class="nav-link">|Admin|</a></li>
-                <li class="nav-item"><a href="/admin/orders" class="nav-link">|Tellimused|</a></li>
-                @end
-            </ul>
-
-            <!-- RIGHT -->
-            <div class="d-flex align-items-center justify-content-end flex-grow-1">
-
-                @if(auth.isAuthenticated)
-                <span class="navbar-text text-light me-3">
-                    {{ auth.user.fullName }}
-                </span>
-
-                <form action="{{route('auth.logOut')}}?_method=DELETE" method="POST">
-                    {{ csrfField()}}
-                    <button type="submit" class="btn btn-sm btn-outline-light">Logi välja</button>
-                </form>
-                @end
-
-            </div>
-
         </div>
-    </div>
-</nav>
-@if(request.cookie('cartKey'))
-<a href="/shopping-carts" class="cart-fab">
+    </nav>
+    @if(request.cookie('cartKey'))
+    <a href="/shopping-carts" class="cart-fab">
 
-    <svg xmlns="http://www.w3.org/2000/svg"
-        width="26"
-        height="26"
-        fill="white"
-        class="bi bi-cart-fill"
-        viewBox="0 0 16 16">
-        <path d="M0 1.5A.5.5 0 0 1 .5 1H2l.89 2H14.5a.5.5 0 0 1 .49.59l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.49-.41L2.01 3.61 1.61 2H.5A.5.5 0 0 1 0 1.5z"/>
-    </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="white" class="bi bi-cart-fill"
+            viewBox="0 0 16 16">
+            <path
+                d="M0 1.5A.5.5 0 0 1 .5 1H2l.89 2H14.5a.5.5 0 0 1 .49.59l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.49-.41L2.01 3.61 1.61 2H.5A.5.5 0 0 1 0 1.5z" />
+        </svg>
 
-</a>
-@endif
+    </a>
+    @endif
 </header>

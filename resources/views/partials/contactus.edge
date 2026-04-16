@@ -1,0 +1,21 @@
+<div class="contactUs d-flex flex-column align-items-center justify-content-center position-fixed top-50 start-50 translate-middle bg-light p-4 rounded">
+
+    <h1>Võta meiega ühendust</h1>
+
+    <form method="POST" action="{{route('contact.send')}}" enctype="multipart/form-data" class="d-flex flex-column align-items-center justify-content-center">
+        {{ csrfField()}}
+        <label for="name">Nimi:</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="email">E-post:</label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="subject">Teema:</label>
+        <input type="text" id="subject" name="subject" required>
+
+        <label for="message">Sõnum:</label>
+        <textarea id="message" name="message" rows="5" required></textarea>
+
+        <button type="submit">Saada sõnum</button>
+    </form>
+</div>

@@ -5,16 +5,18 @@ import type { HttpContext } from '@adonisjs/core/http'
 export default class ContactsController {
 
     public async send({ request, response }: HttpContext) {
-        const data = request.all();
-        
+        const data = await request.all();
+        console.log(data)
 
-    await mail.send((message) => {
-        message
-        .to(env.get('ADMIN_EMAIL'))
-        .from(data.email)
-        .subject(data.name + ': ' + data.subject)
-        .htmlView('emails/contactUs', { data: data })
-    })
-    return response.redirect().back()
+        await mail.send((message) => {
+            message
+                .to(env.get('ADMIN_EMAIL'))
+                .from(env.get('MAIL_SENDER'))
+                .subject(data.name + ': ' + data.subject)
+                .htmlView('emails/contactUs', { data: data })
+        })
+
+        console.log('Email sent successfully')
+        return response.redirect().back()
     }
 }
