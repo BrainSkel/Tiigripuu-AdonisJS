@@ -139,7 +139,6 @@ export default class OrdersController {
         .subject('Teie tellimus ' + sentOrder.orderNumber)
         .htmlView('emails/create_order_to_customer', { order: sentOrder })
     })
-    this.deleteCartAndItems(cartKey)
 
     await mail.send((message) => {
       message

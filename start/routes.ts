@@ -19,6 +19,7 @@ import router from '@adonisjs/core/services/router';
 import MainsController from '#controllers/mains_controller';
 import { middleware } from '#start/kernel';
 import SessionController from '#controllers/session_controller';
+import ContactsController from '#controllers/contacts_controller';
 
 
 router.get('/', [MainsController, 'index']).as('home').use(middleware.optionalAuth())
@@ -60,6 +61,7 @@ router.group(() => {
 
     router.on('/noAccess').render('errors/noAccess')
         
+    router.post('/contactUs', [ContactsController, 'send']).as('contact.send')
 
 
 }).use(middleware.optionalAuth())
